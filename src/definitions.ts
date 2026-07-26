@@ -127,7 +127,8 @@ export type Medication = z.infer<typeof medicationSchema>;
 
 export const appointmentSchema = z.object({
   id: z.string(),
-  start: z.string().datetime(),
+  /** ISO datetime with an explicit offset (e.g. +03:00) — Israel local time, not UTC. */
+  start: z.string().datetime({ offset: true }),
   doctorName: z.string().nullable(),
   specialty: z.string().nullable(),
   clinic: z.string().nullable(),

@@ -79,13 +79,20 @@ function jerusalemOffsetMinutes(instant: Date): number {
   return match ? Number(match[1]) * 60 : 120;
 }
 
+function formatOffset(minutes: number): string {
+  const sign = minutes >= 0 ? '+' : '-';
+  const abs = Math.abs(minutes);
+  const hours = String(Math.floor(abs / 60)).padStart(2, '0');
+  const mins = String(abs % 60).padStart(2, '0');
+  return `${sign}${hours}:${mins}`;
+}
+
 /**
  * Combines a day-first date and an "HH:mm" time, both rendered in Israel local time,
- * into an ISO instant.
- *
- * ponytail: the offset is resolved once from a same-day UTC guess rather than
- * iterated to convergence — wrong only in the ambiguous hour around a DST switch,
- * which does not matter for an appointment reminder.
+ * into an ISO datetime carrying that same wall-clock time with its correct explicit
+ * offset (+03:00 in DST, +02:00 out of it) — what a member actually sees on the fund's
+ * site, not a UTC conversion of it. Still unambiguous and sortable: the offset is
+ * explicit, not implied.
  */
 export function parseIsraeliDateTime(
   dateValue: string | null | undefined,
@@ -98,18 +105,19 @@ export function parseIsraeliDateTime(
   if (!date || !match) return null;
 
   const [, hourRaw, minuteRaw] = match;
+  if (!hourRaw || !minuteRaw) return null;
+  const hour = hourRaw.padStart(2, '0');
+  const minute = minuteRaw.padStart(2, '0');
+
   const [yearRaw, monthRaw, dayRaw] = date.split('-');
-  const year = Number(yearRaw);
-  const month = Number(monthRaw);
-  const day = Number(dayRaw);
-  const hour = Number(hourRaw);
-  const minute = Number(minuteRaw);
+  // Only used to resolve which side of a DST boundary this date falls on — the actual
+  // wall-clock hour/minute above are kept exactly as rendered, never shifted.
+  const reference = new Date(
+    Date.UTC(Number(yearRaw), Number(monthRaw) - 1, Number(dayRaw), Number(hourRaw), Number(minuteRaw)),
+  );
+  const offset = formatOffset(jerusalemOffsetMinutes(reference));
 
-  const guessUtcMs = Date.UTC(year, month - 1, day, hour, minute);
-  const offsetMinutes = jerusalemOffsetMinutes(new Date(guessUtcMs));
-  const instant = new Date(guessUtcMs - offsetMinutes * 60_000);
-
-  return instant.toISOString();
+  return `${date}T${hour}:${minute}:00${offset}`;
 }
 
 /** Pulls the first integer out of a cell like "נותרו 2 ניפוקים". */

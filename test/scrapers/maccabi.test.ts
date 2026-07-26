@@ -84,10 +84,19 @@ describe('appointmentRowToAppointment', () => {
     expect(() => appointmentSchema.parse(appointment)).not.toThrow();
   });
 
-  it('combines the date and time into an ISO instant, ignoring the "שעה" prefix', () => {
+  it('combines the date and time into Israel local time with its offset, ignoring the "שעה" prefix', () => {
     const appointment = appointmentRowToAppointment(appointmentRow)!;
-    // Israel is UTC+3 in August (DST), so 14:30 local is 11:30 UTC.
-    expect(appointment.start).toBe('2026-08-09T11:30:00.000Z');
+    // Israel is UTC+3 in August (DST) — same wall-clock time, explicit offset attached.
+    expect(appointment.start).toBe('2026-08-09T14:30:00+03:00');
+  });
+
+  it('uses the winter offset for a date outside DST', () => {
+    const appointment = appointmentRowToAppointment({
+      ...appointmentRow,
+      date: '09/01/26',
+      time: 'שעה 14:30',
+    })!;
+    expect(appointment.start).toBe('2026-01-09T14:30:00+02:00');
   });
 
   it('carries doctor and specialty through, and leaves clinic null', () => {
