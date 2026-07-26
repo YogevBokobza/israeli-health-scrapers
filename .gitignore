@@ -1,0 +1,12 @@
+node_modules/
+dist/
+
+.env
+.env.*
+
+# Stored sessions and diagnostics dumps. The dumps contain page HTML from a
+# logged-in medical account — they must never be committed.
+data/
+
+*.log
+.DS_Store

@@ -1,0 +1,74 @@
+<!--
+  Representative shape of Maccabi's standing-prescriptions page.
+
+  Hand-written from the structures the scraper is built to handle, NOT captured from a
+  live account — it carries no real medical data. Replace it with a real (redacted)
+  dump once the selectors are calibrated against an actual session; the tests are
+  written against the parser, so a better fixture strengthens them without changes.
+
+  It deliberately includes the awkward cases: an unrelated table above the real one,
+  a two-digit year, a blank cell, an unmapped extra column, and a totals row with no
+  drug name.
+-->
+<div class="page">
+  <table class="summary">
+    <thead>
+      <tr><th>הודעות</th><th>תאריך</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>תזכורת לחיסון</td><td>01/06/2026</td></tr>
+    </tbody>
+  </table>
+
+  <table class="prescriptions">
+    <thead>
+      <tr>
+        <th>שם התרופה</th>
+        <th>מינון</th>
+        <th>צורת מתן</th>
+        <th>רופא מטפל</th>
+        <th>ניפוק אחרון</th>
+        <th>בתוקף עד</th>
+        <th>ניפוקים שנותרו</th>
+        <th>מרפאה</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>אומפרדקס 20 מ"ג</td>
+        <td>20 מ"ג</td>
+        <td>קפסולות</td>
+        <td>ד"ר כהן רותי</td>
+        <td>12/05/2026</td>
+        <td>12/08/2026</td>
+        <td>נותרו 2 ניפוקים</td>
+        <td>מרפאת רמת אביב</td>
+      </tr>
+      <tr>
+        <td>אלטרוקסין 100 מק"ג</td>
+        <td>100 מק"ג</td>
+        <td>טבליות</td>
+        <td>ד"ר לוי אבנר</td>
+        <td>03/07/26</td>
+        <td>03/01/27</td>
+        <td>5</td>
+        <td>מרפאת רמת אביב</td>
+      </tr>
+      <tr>
+        <td>ונטולין</td>
+        <td>-</td>
+        <td>משאף</td>
+        <td>ד"ר כהן רותי</td>
+        <td>20/01/2026</td>
+        <td>20/04/2026</td>
+        <td>0</td>
+        <td>מרפאת רמת אביב</td>
+      </tr>
+      <tr class="totals">
+        <td></td><td></td><td></td><td></td><td></td><td></td>
+        <td>סה"כ 3</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
