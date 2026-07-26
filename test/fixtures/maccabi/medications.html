@@ -1,74 +1,49 @@
 <!--
-  Representative shape of Maccabi's standing-prescriptions page.
+  Representative shape of Maccabi's ValidPrescriptions page.
 
-  Hand-written from the structures the scraper is built to handle, NOT captured from a
-  live account — it carries no real medical data. Replace it with a real (redacted)
-  dump once the selectors are calibrated against an actual session; the tests are
-  written against the parser, so a better fixture strengthens them without changes.
+  Captured (structurally, not the actual medical data) from a real logged-in session:
+  each prescription is a card in a `[data-testid="prescription-row"]` list, not a
+  <table>. A "תרופה קבועה" (standing medication) badge distinguishes a standing
+  prescription from a one-off; only the former is a `Medication` we surface.
 
-  It deliberately includes the awkward cases: an unrelated table above the real one,
-  a two-digit year, a blank cell, an unmapped extra column, and a totals row with no
-  drug name.
+  It deliberately includes: a standing row, a one-off row with no badge (must be
+  filtered out), a two-digit year, and a row missing its name (a layout artifact that
+  must not survive parsing).
 -->
-<div class="page">
-  <table class="summary">
-    <thead>
-      <tr><th>הודעות</th><th>תאריך</th></tr>
-    </thead>
-    <tbody>
-      <tr><td>תזכורת לחיסון</td><td>01/06/2026</td></tr>
-    </tbody>
-  </table>
+<div role="list" data-hook="LazyLoading">
+  <div role="listitem" data-testid="prescription-row">
+    <div data-hook="Badge">תרופה קבועה</div>
+    <div data-hook="TimeLineDate">09/08/26</div>
+    <div class="TimeLineItem-module__header___gW2KR">DIOVAN FCT TAB 40MG (28)</div>
+    <div class="MedicationsTimelineRow__specializationRow___WuCpD">
+      <p class="m-0">דר טטיאנה ברוניפולסקי, משפחה, פנימית וכללית</p>
+    </div>
+  </div>
 
-  <table class="prescriptions">
-    <thead>
-      <tr>
-        <th>שם התרופה</th>
-        <th>מינון</th>
-        <th>צורת מתן</th>
-        <th>רופא מטפל</th>
-        <th>ניפוק אחרון</th>
-        <th>בתוקף עד</th>
-        <th>ניפוקים שנותרו</th>
-        <th>מרפאה</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>אומפרדקס 20 מ"ג</td>
-        <td>20 מ"ג</td>
-        <td>קפסולות</td>
-        <td>ד"ר כהן רותי</td>
-        <td>12/05/2026</td>
-        <td>12/08/2026</td>
-        <td>נותרו 2 ניפוקים</td>
-        <td>מרפאת רמת אביב</td>
-      </tr>
-      <tr>
-        <td>אלטרוקסין 100 מק"ג</td>
-        <td>100 מק"ג</td>
-        <td>טבליות</td>
-        <td>ד"ר לוי אבנר</td>
-        <td>03/07/26</td>
-        <td>03/01/27</td>
-        <td>5</td>
-        <td>מרפאת רמת אביב</td>
-      </tr>
-      <tr>
-        <td>ונטולין</td>
-        <td>-</td>
-        <td>משאף</td>
-        <td>ד"ר כהן רותי</td>
-        <td>20/01/2026</td>
-        <td>20/04/2026</td>
-        <td>0</td>
-        <td>מרפאת רמת אביב</td>
-      </tr>
-      <tr class="totals">
-        <td></td><td></td><td></td><td></td><td></td><td></td>
-        <td>סה"כ 3</td>
-        <td></td>
-      </tr>
-    </tbody>
-  </table>
+  <div role="listitem" data-testid="prescription-row">
+    <div data-hook="Badge">תרופה קבועה</div>
+    <div data-hook="TimeLineDate">03/01/27</div>
+    <div class="TimeLineItem-module__header___gW2KR">אלטרוקסין 100 מק"ג</div>
+    <div class="MedicationsTimelineRow__specializationRow___WuCpD">
+      <p class="m-0">דר לוי אבנר, אנדוקרינולוגיה</p>
+    </div>
+  </div>
+
+  <div role="listitem" data-testid="prescription-row">
+    <!-- No Badge: a one-off prescription, not a standing one. Must be dropped. -->
+    <div data-hook="TimeLineDate">20/01/26</div>
+    <div class="TimeLineItem-module__header___gW2KR">PEN RAFA VK CAP 500MG 40TAB</div>
+    <div class="MedicationsTimelineRow__specializationRow___WuCpD">
+      <p class="m-0">דר אריאלה שטאל, משפחה</p>
+    </div>
+  </div>
+
+  <div role="listitem" data-testid="prescription-row">
+    <div data-hook="Badge">תרופה קבועה</div>
+    <div data-hook="TimeLineDate">01/06/26</div>
+    <!-- No header element: a layout artifact with no drug name. Must be dropped. -->
+    <div class="MedicationsTimelineRow__specializationRow___WuCpD">
+      <p class="m-0">דר כהן רותי</p>
+    </div>
+  </div>
 </div>

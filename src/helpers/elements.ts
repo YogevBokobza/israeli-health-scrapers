@@ -31,6 +31,27 @@ export async function fillFirst(
   return false;
 }
 
+/**
+ * Types the first matching selector's value one keystroke at a time. Some inputs
+ * (OTP boxes especially) enable their submit button only from real keydown/keyup
+ * events; a one-shot `fill()` sets the value without ever firing those and leaves
+ * the button looking unready. Returns false when none of the selectors exist.
+ */
+export async function typeFirst(
+  page: Page,
+  selectors: readonly string[],
+  value: string,
+): Promise<boolean> {
+  for (const selector of selectors) {
+    const locator = page.locator(selector).first();
+    if ((await locator.count()) > 0) {
+      await locator.pressSequentially(value, { delay: 50 });
+      return true;
+    }
+  }
+  return false;
+}
+
 export async function clickFirst(page: Page, selectors: readonly string[]): Promise<boolean> {
   for (const selector of selectors) {
     const locator = page.locator(selector).first();

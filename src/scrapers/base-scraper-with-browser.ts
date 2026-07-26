@@ -15,8 +15,8 @@ import {
   VIEWPORT,
 } from '../constants.js';
 import { BaseScraper } from './base-scraper.js';
-import { ScraperError, TwoFactorRetrieverMissingError } from './errors.js';
-import { clickFirst, elementExists, fillFirst, waitUntil } from '../helpers/elements.js';
+import { ScraperError, SelectorDriftError, TwoFactorRetrieverMissingError } from './errors.js';
+import { clickFirst, elementExists, fillFirst, typeFirst, waitUntil } from '../helpers/elements.js';
 import { captureDiagnostics } from '../helpers/debug.js';
 import { isExpired, loadSession, saveSession } from '../helpers/session.js';
 
@@ -64,6 +64,13 @@ export interface LoginOptions {
   /** Where the OTP code is typed, when the fund asks for one. */
   otpFieldSelectors?: readonly string[];
   otpSubmitSelectors?: readonly string[];
+  /**
+   * Runs right after the submit click, before polling for an outcome. Some funds
+   * insert an interim "how do you want to verify" screen between submit and the OTP
+   * field; this is where a scraper clicks past it. A no-op when the screen never
+   * appears is expected — not every account or fund shows one.
+   */
+  afterSubmit?: (page: Page) => Promise<void>;
   /** Runs after a successful login, e.g. dismissing an interstitial. */
   postLogin?: (page: Page) => Promise<void>;
 }
@@ -166,13 +173,20 @@ export abstract class BaseScraperWithBrowser extends BaseScraper {
     const successConditions = loginOptions.possibleResults[LoginResults.Success];
     if (!successConditions) return false;
 
-    for (const condition of successConditions) {
-      if (await conditionMatches(condition, this.activePage)) return true;
-    }
-    return false;
+    // A restored session redirects straight to the logged-in SPA, but its markers
+    // only exist post-hydration — a single check right after domcontentloaded would
+    // catch it mid-render and wrongly fall through to a login form that isn't there.
+    return waitUntil(async () => {
+      for (const condition of successConditions) {
+        if (await conditionMatches(condition, this.activePage)) return true;
+      }
+      return false;
+    }, 5_000);
   }
 
   override async login(credentials: ScraperCredentials): Promise<ScraperLoginResult> {
+    if (!this.page) await this.initialize();
+
     const loginOptions = this.getLoginOptions();
     const page = this.activePage;
 
@@ -181,6 +195,9 @@ export abstract class BaseScraperWithBrowser extends BaseScraper {
     if (await this.alreadyLoggedIn(loginOptions)) {
       this.log('reused stored session');
       await loginOptions.postLogin?.(page);
+      // Some funds rotate the session token on each use; re-saving keeps the stored
+      // copy valid for next time instead of it working exactly once.
+      await this.persistSession();
       return { success: true };
     }
 
@@ -188,19 +205,20 @@ export abstract class BaseScraperWithBrowser extends BaseScraper {
 
     for (const field of loginOptions.fields(credentials)) {
       if (!(await fillFirst(page, field.selectors, field.value))) {
-        throw new ScraperError(
-          `Could not find a login field matching: ${field.selectors.join(', ')}`,
-          ScraperErrorTypes.SelectorDrift,
+        const diagnostics = await captureDiagnostics(page, this.options.companyId, 'login-field-missing');
+        throw new SelectorDriftError(
+          `a login field matching: ${field.selectors.join(', ')}`,
+          diagnostics,
         );
       }
     }
 
     if (!(await clickFirst(page, loginOptions.submitButtonSelectors))) {
-      throw new ScraperError(
-        'Could not find the login submit button.',
-        ScraperErrorTypes.SelectorDrift,
-      );
+      const diagnostics = await captureDiagnostics(page, this.options.companyId, 'login-submit-missing');
+      throw new SelectorDriftError('the login submit button', diagnostics);
     }
+
+    await loginOptions.afterSubmit?.(page);
 
     let result = await this.awaitLoginResult(loginOptions);
 
@@ -214,10 +232,12 @@ export abstract class BaseScraperWithBrowser extends BaseScraper {
       return { success: true };
     }
 
+    const diagnostics = await captureDiagnostics(page, this.options.companyId, `login-${result.toLowerCase()}`);
+
     return {
       success: false,
       errorType: LOGIN_RESULT_ERRORS[result] ?? ScraperErrorTypes.General,
-      errorMessage: `Login finished as ${result}.`,
+      errorMessage: `Login finished as ${result}.${diagnostics ? ` Diagnostics: ${diagnostics}.` : ''}`,
     };
   }
 
@@ -266,14 +286,24 @@ export abstract class BaseScraperWithBrowser extends BaseScraper {
     const code = await this.options.otpCodeRetriever();
     const page = this.activePage;
 
-    if (!(await fillFirst(page, loginOptions.otpFieldSelectors, code))) {
+    if (!(await typeFirst(page, loginOptions.otpFieldSelectors, code))) {
       throw new ScraperError(
         'The one-time code field is no longer on the page.',
         ScraperErrorTypes.SelectorDrift,
       );
     }
 
-    await clickFirst(page, loginOptions.otpSubmitSelectors ?? loginOptions.submitButtonSelectors);
+    if (!(await clickFirst(page, loginOptions.otpSubmitSelectors ?? loginOptions.submitButtonSelectors))) {
+      throw new ScraperError(
+        'Could not find the one-time code submit button.',
+        ScraperErrorTypes.SelectorDrift,
+      );
+    }
+
+    // The verify call is async and the OTP field is still on the page until it
+    // resolves; polling immediately would read that as "asking again" (rejected)
+    // before the fund ever had a chance to accept it.
+    await page.waitForTimeout(1_500);
 
     const result = await this.awaitLoginResult(loginOptions);
 
@@ -361,13 +391,20 @@ export abstract class BaseScraperWithBrowser extends BaseScraper {
       throw new ScraperError('This scraper declares no OTP field.', ScraperErrorTypes.SelectorDrift);
     }
 
-    if (!(await fillFirst(page, loginOptions.otpFieldSelectors, otpCode))) {
+    if (!(await typeFirst(page, loginOptions.otpFieldSelectors, otpCode))) {
       throw new ScraperError(
         'The one-time code field is no longer on the page.',
         ScraperErrorTypes.SelectorDrift,
       );
     }
-    await clickFirst(page, loginOptions.otpSubmitSelectors ?? loginOptions.submitButtonSelectors);
+    if (!(await clickFirst(page, loginOptions.otpSubmitSelectors ?? loginOptions.submitButtonSelectors))) {
+      throw new ScraperError(
+        'Could not find the one-time code submit button.',
+        ScraperErrorTypes.SelectorDrift,
+      );
+    }
+
+    await page.waitForTimeout(1_500);
 
     const result = await this.awaitLoginResult(loginOptions);
     if (result !== LoginResults.Success) return { success: false };
