@@ -1,7 +1,9 @@
+import { createHash } from 'node:crypto';
 import type { Page } from 'playwright';
 
 import {
   HealthFundTypes,
+  type Appointment,
   type HealthAccount,
   type Medication,
   type ScraperCredentials,
@@ -13,8 +15,8 @@ import {
   type LoginField,
 } from './base-scraper-with-browser.js';
 import { SelectorDriftError } from './errors.js';
-import { deriveExpiry, parseIsraeliDate, textOrNull } from '../helpers/dates.js';
-import { clickFirst, elementExists, waitUntil } from '../helpers/elements.js';
+import { deriveExpiry, parseIsraeliDate, parseIsraeliDateTime, textOrNull } from '../helpers/dates.js';
+import { clickFirst, elementExists, fillFirst, waitUntil } from '../helpers/elements.js';
 import { captureDiagnostics } from '../helpers/debug.js';
 
 /**
@@ -23,10 +25,9 @@ import { captureDiagnostics } from '../helpers/debug.js';
  * Every Maccabi-specific URL and selector lives in this file. The site will change —
  * that is a certainty, not a risk — and when it does this is the only file to edit.
  *
- * NOTE: these selectors have not been calibrated against a live logged-in session,
- * which needs a real member account. Treat the first run as a calibration pass: on
- * failure the scraper writes an HTML dump under data/diagnostics, and the fix belongs
- * in the constants below.
+ * NOTE: login, medications, and appointments selectors are all calibrated against a
+ * live account (see git history). On failure the scraper writes an HTML dump under
+ * data/diagnostics, and the fix belongs in the constants below.
  */
 
 const BASE_URL = 'https://online.maccabi4u.co.il';
@@ -37,10 +38,14 @@ const urls = {
   // time it was picked up. ValidPrescriptions is the deduplicated, currently-standing
   // view this scraper models: one row per drug with its next refill deadline.
   medications: `${BASE_URL}/sonline/medicalfile/medications/ValidPrescriptions/`,
+  appointments: `${BASE_URL}/sonline/appointmentOrder/FutureAppointments/Lobby/`,
 } as const;
 
 const selectors = {
-  idInput: ['input#idNumber', 'input[name="idNumber"]'],
+  // The id-only screen and the id+password screen render two different id fields
+  // (idNumber vs idNumber2/citizenId) rather than reusing one — both are listed so
+  // fillFirst finds whichever is actually on the page.
+  idInput: ['input#idNumber', 'input[name="idNumber"]', 'input#idNumber2', 'input[name="citizenId"]'],
   passwordInput: ['input[autocomplete="current-password"]', 'input[type="password"]'],
   submitButton: ['button[type="submit"]', 'input[type="submit"]'],
   otpInput: [
@@ -51,10 +56,31 @@ const selectors = {
   ],
   /** The interim "how do you want to verify" screen shown before the OTP field. */
   otpMethodSms: ['#otpCodebySMS'],
+  /**
+   * On that same interim screen, "כניסה עם סיסמה" (log in with a password) — the only
+   * way to a password field. It sits on a separate screen from the id field, not next
+   * to it, so a password login is id-submit, then this link, then id+password again.
+   */
+  passwordLoginLink: ['a:has-text("כניסה עם סיסמה")'],
   loggedInMarker: ['a[data-hook="Button__logout"]', 'a[href*="Logout" i]', 'a[href*="signout" i]'],
   invalidCredentials: ['[class*="error" i]', '[role="alert"]'],
   blocked: ['[class*="blocked" i]', '[class*="חסום"]'],
   prescriptionRow: ['[data-testid="prescription-row"]'],
+  // No data-testid on this page — matched by the component's own class instead,
+  // same convention as invalidCredentials/blocked above.
+  appointmentRow: ['[class*="TimeLineItem-module__item"]'],
+  /**
+   * The list view carries no clinic/location at all — only the per-appointment detail
+   * page (AppointmentInfo) does, reached by clicking a row (it has no href; navigation
+   * is a client-side route change). Address, phone, and fax all share the providerInfo
+   * class, so the one we want is matched by its sibling title text ("כתובת:"), not by
+   * being first.
+   */
+  appointmentAddressItem: ['[class*="ProviderDetails__PipeItemWrap"]'],
+  appointmentAddressTitle: ['[class*="ProviderDetails__title"]'],
+  appointmentAddressValue: ['[class*="ProviderDetails__providerInfo"]'],
+  /** "הנחיות לפני ביקור" (pre-visit instructions), also only on the detail page. */
+  appointmentInstructionItem: ['[class*="VisitInstructions__instructionItem"]'],
 } as const;
 
 /* -------------------------------------------------------------------------- */
@@ -120,34 +146,163 @@ export async function scrapePrescriptionRows(page: Page): Promise<ScrapedPrescri
   }, selectors.prescriptionRow[0]);
 }
 
+/** One appointment row as read straight from the DOM, before interpretation. */
+export interface ScrapedAppointmentRow {
+  date: string | null;
+  time: string | null;
+  doctorName: string | null;
+  specialty: string | null;
+  /** Only ever populated from the detail page — the list view has no clinic column. */
+  clinic: string | null;
+  /** Pre-visit instructions ("הנחיות לפני ביקור"), also only on the detail page. */
+  instructions: string[];
+}
+
+/**
+ * Turns one scraped row into an `Appointment`.
+ *
+ * Returns null when the row carries no parseable date/time — the schema's `start` is
+ * required, so a row we cannot place on a timeline is not an appointment we can report.
+ */
+export function appointmentRowToAppointment(row: ScrapedAppointmentRow): Appointment | null {
+  const start = parseIsraeliDateTime(row.date, row.time);
+  if (!start) return null;
+
+  const doctorName = textOrNull(row.doctorName);
+  const specialty = textOrNull(row.specialty);
+  const clinic = textOrNull(row.clinic);
+
+  // No stable id is exposed by the page, so one is derived from the fields that
+  // together identify a single booking — stable across re-fetches of the same
+  // appointment, distinct from any other row on the list.
+  const id = createHash('sha1')
+    .update([start, doctorName, specialty, clinic].join('|'))
+    .digest('hex')
+    .slice(0, 16);
+
+  return {
+    id,
+    start,
+    doctorName,
+    specialty,
+    clinic,
+    provider: HealthFundTypes.maccabi,
+    ...(row.instructions.length > 0 ? { raw: { instructions: row.instructions } } : {}),
+  };
+}
+
+/** Reads every appointment row off the page as plain strings. */
+export async function scrapeAppointmentRows(page: Page): Promise<ScrapedAppointmentRow[]> {
+  return page.evaluate((rowSelector) => {
+    const text = (el: Element | null) => {
+      const value = (el?.textContent ?? '').replace(/\s+/g, ' ').trim();
+      return value.length > 0 ? value : null;
+    };
+
+    return Array.from(document.querySelectorAll(rowSelector)).map((row) => {
+      // The date and its time render as two sibling divs under the same TimeLineDate
+      // wrapper — the time one prefixed with the word "שעה" ("hour"), not bare HH:mm.
+      const dateTimeDivs = Array.from(
+        row.querySelector('[data-hook="TimeLineDate"]')?.querySelectorAll(':scope > div') ?? [],
+      );
+
+      return {
+        date: text(dateTimeDivs[0] ?? null),
+        time: text(dateTimeDivs[1] ?? null),
+        doctorName: text(row.querySelector('[class*="providerName"]')),
+        // Specialty and visit type render as one combined string ("אף אוזן וגרון | ביקור
+        // רגיל"); the schema has no separate slot for visit type, so it stays combined.
+        specialty: text(row.querySelector('[class*="providerServiceType"]')),
+        // Neither exists on the list view — only the detail page has them (see
+        // scrapeAppointmentDetail), merged in by fetchAppointments after this runs.
+        clinic: null,
+        instructions: [] as string[],
+      };
+    });
+  }, selectors.appointmentRow[0]);
+}
+
+/** Reads the clinic address and pre-visit instructions off an appointment's detail page. */
+export async function scrapeAppointmentDetail(
+  page: Page,
+): Promise<{ clinic: string | null; instructions: string[] }> {
+  return page.evaluate(
+    ({ addressItem, addressTitle, addressValue, instructionItem }) => {
+      const text = (el: Element | null) => {
+        const value = (el?.textContent ?? '').replace(/\s+/g, ' ').trim();
+        return value.length > 0 ? value : null;
+      };
+
+      // Address, phone, and fax all share the same value class — the one we want is
+      // matched by its sibling title text, not by being first.
+      const address = Array.from(document.querySelectorAll(addressItem)).find((item) =>
+        (item.querySelector(addressTitle)?.textContent ?? '').includes('כתובת'),
+      );
+
+      const instructions = Array.from(document.querySelectorAll(instructionItem))
+        .map((item) => text(item))
+        .filter((item): item is string => item !== null);
+
+      return { clinic: text(address?.querySelector(addressValue) ?? null), instructions };
+    },
+    {
+      addressItem: selectors.appointmentAddressItem[0],
+      addressTitle: selectors.appointmentAddressTitle[0],
+      addressValue: selectors.appointmentAddressValue[0],
+      instructionItem: selectors.appointmentInstructionItem[0],
+    },
+  );
+}
+
 export class MaccabiScraper extends BaseScraperWithBrowser {
   protected getLoginOptions(): LoginOptions {
     return {
       loginUrl: urls.login,
 
-      fields: (credentials: ScraperCredentials) => {
-        const fields: LoginField[] = [{ selectors: selectors.idInput, value: credentials.id }];
-        // The password is optional: an OTP-only account never shows the field, and
-        // demanding one would block exactly the members this fund is configured for.
-        if (credentials.password) {
-          fields.push({ selectors: selectors.passwordInput, value: credentials.password });
-        }
-        return fields;
-      },
+      // The first screen only ever asks for the id — password, when there is one, lives
+      // on a screen reached by a link on the verification picker (see afterSubmit).
+      fields: (credentials: ScraperCredentials) => [
+        { selectors: selectors.idInput, value: credentials.id },
+      ],
 
       submitButtonSelectors: selectors.submitButton,
       otpFieldSelectors: selectors.otpInput,
       // #sendOtp carries no type="submit" attribute, so it never matches submitButton.
       otpSubmitSelectors: ['#sendOtp', '#sendOtpMobile'],
 
-      // Only some accounts see the verification-method picker between submit and the
-      // OTP field; waitUntil returns false and this is a no-op when it never shows.
-      afterSubmit: async (page) => {
-        await waitUntil(async () => {
-          if (!(await elementExists(page, selectors.otpMethodSms))) return false;
-          await clickFirst(page, selectors.otpMethodSms);
-          return true;
-        }, 5_000);
+      // The verification picker appears between the id submit and the OTP field. Most
+      // accounts want SMS; a caller that supplied a password instead wants the
+      // password link, which leads to its own id+password screen and its own submit.
+      afterSubmit: async (page, credentials) => {
+        const reachedPicker = await waitUntil(
+          async () =>
+            (await elementExists(page, selectors.otpMethodSms)) ||
+            (await elementExists(page, selectors.passwordLoginLink)),
+          5_000,
+        );
+        if (!reachedPicker) return;
+
+        if (credentials.password && (await elementExists(page, selectors.passwordLoginLink))) {
+          await clickFirst(page, selectors.passwordLoginLink);
+          await waitUntil(async () => elementExists(page, selectors.passwordInput), 5_000);
+
+          const idFilled = await fillFirst(page, selectors.idInput, credentials.id);
+          const passwordFilled = await fillFirst(page, selectors.passwordInput, credentials.password);
+          if (!idFilled || !passwordFilled) {
+            const diagnostics = await captureDiagnostics(
+              page,
+              HealthFundTypes.maccabi,
+              'password-screen-field-missing',
+            );
+            const missing = [!idFilled && 'id', !passwordFilled && 'password'].filter(Boolean).join(' and ');
+            throw new SelectorDriftError(`the ${missing} field on the password login screen`, diagnostics);
+          }
+
+          await clickFirst(page, selectors.submitButton);
+          return;
+        }
+
+        await clickFirst(page, selectors.otpMethodSms);
       },
 
       // Order matters: the specific failure states are checked before Success, so a
@@ -173,6 +328,10 @@ export class MaccabiScraper extends BaseScraperWithBrowser {
 
     if (targets.includes('medications')) {
       account.medications = await this.fetchMedications();
+    }
+
+    if (targets.includes('appointments')) {
+      account.appointments = await this.fetchAppointments();
     }
 
     return [account];
@@ -211,5 +370,90 @@ export class MaccabiScraper extends BaseScraperWithBrowser {
     medications.sort((a, b) => (a.daysUntilExpiry ?? Infinity) - (b.daysUntilExpiry ?? Infinity));
 
     return medications;
+  }
+
+  /** Reads upcoming appointments, soonest first. */
+  private async fetchAppointments(): Promise<Appointment[]> {
+    const page = this.activePage;
+    await page.goto(urls.appointments, { waitUntil: 'domcontentloaded' });
+
+    if (await elementExists(page, selectors.passwordInput)) {
+      const diagnostics = await captureDiagnostics(page, this.options.companyId, 'appointments-logged-out');
+      throw new SelectorDriftError('a logged-in appointments page', diagnostics);
+    }
+
+    await waitUntil(async () => elementExists(page, selectors.appointmentRow), 8_000);
+
+    const rows = await scrapeAppointmentRows(page);
+
+    // The list view carries no clinic/location or instructions — only each row's detail
+    // page does, and getting there is a click, not a URL. Fetched one at a time and
+    // merged back in; the list re-renders after each goBack, so this must run before
+    // mapping to Appointment rather than in the same pass as scrapeAppointmentRows.
+    for (const [i, row] of rows.entries()) {
+      const detail = await this.fetchAppointmentDetail(page, i);
+      row.clinic = detail.clinic;
+      row.instructions = detail.instructions;
+    }
+
+    const appointments = rows
+      .map((row) => appointmentRowToAppointment(row))
+      .filter((appointment): appointment is Appointment => appointment !== null);
+
+    if (appointments.length === 0) {
+      // Same reasoning as fetchMedications: an empty list and a page we failed to read
+      // look identical, so a dump is kept without treating "none" as an error.
+      const diagnostics = await captureDiagnostics(page, this.options.companyId, 'appointments-empty');
+      this.log('no appointment rows found', { diagnostics });
+    }
+
+    appointments.sort((a, b) => Date.parse(a.start) - Date.parse(b.start));
+
+    return appointments;
+  }
+
+  /**
+   * Clicks into one appointment's detail page for its clinic/address and pre-visit
+   * instructions, then returns to the list. Best-effort: a missing address is logged
+   * with diagnostics rather than failing the whole fetch over fields the list view
+   * never had to begin with.
+   */
+  private async fetchAppointmentDetail(
+    page: Page,
+    index: number,
+  ): Promise<{ clinic: string | null; instructions: string[] }> {
+    await page.locator(selectors.appointmentRow[0]).nth(index).click();
+
+    const reachedDetail = await waitUntil(async () => page.url().includes('AppointmentInfo'), 8_000);
+    if (!reachedDetail) {
+      const diagnostics = await captureDiagnostics(
+        page,
+        this.options.companyId,
+        'appointment-detail-unreached',
+      );
+      this.log('appointment detail page did not open', { index, diagnostics });
+      return { clinic: null, instructions: [] };
+    }
+
+    // The URL changes the instant the client-side route does, well before the detail
+    // page's own data fetch resolves — reading immediately here is the same race the
+    // OTP submit button had. Wait for the address itself rather than a fixed delay, but
+    // proceed either way: a genuinely missing selector should still get diagnosed.
+    await waitUntil(async () => elementExists(page, selectors.appointmentAddressValue), 5_000);
+
+    const detail = await scrapeAppointmentDetail(page);
+    if (!detail.clinic) {
+      const diagnostics = await captureDiagnostics(
+        page,
+        this.options.companyId,
+        'appointment-clinic-missing',
+      );
+      this.log('no clinic address found on appointment detail page', { index, diagnostics });
+    }
+
+    await page.goBack({ waitUntil: 'domcontentloaded' });
+    await waitUntil(async () => elementExists(page, selectors.appointmentRow), 8_000);
+
+    return detail;
   }
 }

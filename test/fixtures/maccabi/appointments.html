@@ -1,0 +1,59 @@
+<!--
+  Real shape of Maccabi's FutureAppointments/Lobby page, calibrated against a live
+  account (structure only — invented names, specialties, and dates below; the real
+  page also shows the member's own name in the header div, which this scraper never
+  reads and this fixture reproduces as an unrelated placeholder).
+
+  Each row is a `[class*="TimeLineItem-module__item"]` div, not a data-testid'd one.
+  Date and time are two sibling divs under `[data-hook="TimeLineDate"]`, the time
+  prefixed with the word "שעה" ("hour"). Specialty and visit type render as one
+  combined string. There is no clinic/location column in this list view at all.
+
+  Includes a row with a missing time div (dropped — the schema's `start` is required).
+-->
+<div role="list" data-hook="LazyLoading">
+  <div class="node_modules-@maccabi-m-ui-src-components-TimeLineItem-TimeLineItem-module__item___qA9U2" role="link" tabindex="0">
+    <div class="node_modules-@maccabi-m-ui-src-components-TimeLineItem-TimeLineItem-module__header___gW2KR">
+      <div class="">ישראל ישראלי</div>
+      <div class="node_modules-@maccabi-m-ui-src-components-TimeLineItem-TimeLineItem-module__date___nvaOu" data-hook="TimeLineDate">
+        <div>09/08/26  </div>
+        <div class="FutureAppointmentsTimeLine__inHour___ei_O4">שעה 14:30</div>
+      </div>
+      <div class="FutureAppointmentsTimeLine__providerWrap___y28S_">
+        <div class="FutureAppointmentsTimeLine__providerName___KhP5L">
+          <a class="FutureAppointmentsTimeLine__providerLinkDoctor___cLd_C" href="https://online.maccabi4u.co.il/serguide/heb/redirectpage/?object_id=1">דר כהן רונית</a>
+        </div>
+        <div class="FutureAppointmentsTimeLine__providerServiceType___x35Cf">עור | ביקור רגיל</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="node_modules-@maccabi-m-ui-src-components-TimeLineItem-TimeLineItem-module__item___qA9U2" role="link" tabindex="0">
+    <div class="node_modules-@maccabi-m-ui-src-components-TimeLineItem-TimeLineItem-module__header___gW2KR">
+      <div class="">ישראל ישראלי</div>
+      <div class="node_modules-@maccabi-m-ui-src-components-TimeLineItem-TimeLineItem-module__date___nvaOu" data-hook="TimeLineDate">
+        <div>15/09/26  </div>
+        <div class="FutureAppointmentsTimeLine__inHour___ei_O4">שעה 09:00</div>
+      </div>
+      <div class="FutureAppointmentsTimeLine__providerWrap___y28S_">
+        <div class="FutureAppointmentsTimeLine__providerName___KhP5L">
+          <a class="FutureAppointmentsTimeLine__providerLinkDoctor___cLd_C" href="https://online.maccabi4u.co.il/serguide/heb/redirectpage/?object_id=2">דר לוי אבי</a>
+        </div>
+        <div class="FutureAppointmentsTimeLine__providerServiceType___x35Cf">אורתופדיה | ביקור מעקב</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="node_modules-@maccabi-m-ui-src-components-TimeLineItem-TimeLineItem-module__item___qA9U2" role="link" tabindex="0">
+    <div class="node_modules-@maccabi-m-ui-src-components-TimeLineItem-TimeLineItem-module__header___gW2KR">
+      <div class="">ישראל ישראלי</div>
+      <!-- No TimeLineDate div at all: an incomplete render. Must be dropped. -->
+      <div class="FutureAppointmentsTimeLine__providerWrap___y28S_">
+        <div class="FutureAppointmentsTimeLine__providerName___KhP5L">
+          <a class="FutureAppointmentsTimeLine__providerLinkDoctor___cLd_C" href="https://online.maccabi4u.co.il/serguide/heb/redirectpage/?object_id=3">דר גל שירה</a>
+        </div>
+        <div class="FutureAppointmentsTimeLine__providerServiceType___x35Cf">רפואת משפחה | ביקור רגיל</div>
+      </div>
+    </div>
+  </div>
+</div>

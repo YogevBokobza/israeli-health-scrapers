@@ -61,6 +61,65 @@ export function parseIsraeliDate(value: string | null | undefined): string | nul
   return `${String(year).padStart(4, '0')}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
 }
 
+/**
+ * Reads the UTC offset (in minutes) Jerusalem observes at a given instant.
+ *
+ * Used instead of a hard-coded +2/+3 so a date crossing a DST boundary still lands on
+ * the right day — Node ships full tz data, so this is a stdlib lookup, not a guess.
+ */
+function jerusalemOffsetMinutes(instant: Date): number {
+  const part = new Intl.DateTimeFormat('en-US', {
+    timeZone: 'Asia/Jerusalem',
+    timeZoneName: 'shortOffset',
+  })
+    .formatToParts(instant)
+    .find((p) => p.type === 'timeZoneName')?.value;
+
+  const match = part?.match(/GMT([+-]\d+)/);
+  return match ? Number(match[1]) * 60 : 120;
+}
+
+function formatOffset(minutes: number): string {
+  const sign = minutes >= 0 ? '+' : '-';
+  const abs = Math.abs(minutes);
+  const hours = String(Math.floor(abs / 60)).padStart(2, '0');
+  const mins = String(abs % 60).padStart(2, '0');
+  return `${sign}${hours}:${mins}`;
+}
+
+/**
+ * Combines a day-first date and an "HH:mm" time, both rendered in Israel local time,
+ * into an ISO datetime carrying that same wall-clock time with its correct explicit
+ * offset (+03:00 in DST, +02:00 out of it) — what a member actually sees on the fund's
+ * site, not a UTC conversion of it. Still unambiguous and sortable: the offset is
+ * explicit, not implied.
+ */
+export function parseIsraeliDateTime(
+  dateValue: string | null | undefined,
+  timeValue: string | null | undefined,
+): string | null {
+  const date = parseIsraeliDate(dateValue);
+  const time = normalizeText(timeValue);
+  // Not anchored: Maccabi renders this as "שעה 09:55", not a bare "09:55".
+  const match = time.match(/(\d{1,2}):(\d{2})/);
+  if (!date || !match) return null;
+
+  const [, hourRaw, minuteRaw] = match;
+  if (!hourRaw || !minuteRaw) return null;
+  const hour = hourRaw.padStart(2, '0');
+  const minute = minuteRaw.padStart(2, '0');
+
+  const [yearRaw, monthRaw, dayRaw] = date.split('-');
+  // Only used to resolve which side of a DST boundary this date falls on — the actual
+  // wall-clock hour/minute above are kept exactly as rendered, never shifted.
+  const reference = new Date(
+    Date.UTC(Number(yearRaw), Number(monthRaw) - 1, Number(dayRaw), Number(hourRaw), Number(minuteRaw)),
+  );
+  const offset = formatOffset(jerusalemOffsetMinutes(reference));
+
+  return `${date}T${hour}:${minute}:00${offset}`;
+}
+
 /** Pulls the first integer out of a cell like "נותרו 2 ניפוקים". */
 export function parseInteger(value: string | null | undefined): number | null {
   const text = normalizeText(value);

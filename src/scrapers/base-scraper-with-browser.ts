@@ -69,8 +69,12 @@ export interface LoginOptions {
    * insert an interim "how do you want to verify" screen between submit and the OTP
    * field; this is where a scraper clicks past it. A no-op when the screen never
    * appears is expected — not every account or fund shows one.
+   *
+   * Takes the credentials because that screen is also where a fund may branch on
+   * "verify by SMS" vs "log in with a password" — a decision that depends on what the
+   * caller actually supplied, not just what's on the page.
    */
-  afterSubmit?: (page: Page) => Promise<void>;
+  afterSubmit?: (page: Page, credentials: ScraperCredentials) => Promise<void>;
   /** Runs after a successful login, e.g. dismissing an interstitial. */
   postLogin?: (page: Page) => Promise<void>;
 }
@@ -218,7 +222,7 @@ export abstract class BaseScraperWithBrowser extends BaseScraper {
       throw new SelectorDriftError('the login submit button', diagnostics);
     }
 
-    await loginOptions.afterSubmit?.(page);
+    await loginOptions.afterSubmit?.(page, credentials);
 
     let result = await this.awaitLoginResult(loginOptions);
 

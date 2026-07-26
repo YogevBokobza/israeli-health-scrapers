@@ -168,7 +168,9 @@ pinned one is not installed.
 
 ## Roadmap
 
-Appointments, messages, commitment forms (טופס 17), and the remaining funds.
+Maccabi appointments are scaffolded but uncalibrated (need a live account pass, same as
+medications originally did — see `src/scrapers/maccabi.ts`). Still open: messages,
+commitment forms (טופס 17), and the remaining funds.
 
 Longer term: Israel's Medical Data Portability Law (2024) requires the funds to expose
 certified FHIR R4 APIs, on a programme running to 2029. When one lands it joins as

@@ -1,7 +1,12 @@
 import { describe, expect, it } from 'vitest';
 
-import { prescriptionRowToMedication, type ScrapedPrescriptionRow } from '../../src/scrapers/maccabi.js';
-import { medicationSchema } from '../../src/definitions.js';
+import {
+  appointmentRowToAppointment,
+  prescriptionRowToMedication,
+  type ScrapedAppointmentRow,
+  type ScrapedPrescriptionRow,
+} from '../../src/scrapers/maccabi.js';
+import { appointmentSchema, medicationSchema } from '../../src/definitions.js';
 
 const NOW = new Date('2026-07-26T12:00:00Z');
 
@@ -59,5 +64,73 @@ describe('prescriptionRowToMedication', () => {
     expect(medication.form).toBeNull();
     expect(medication.lastDispensed).toBeNull();
     expect(medication.refillsRemaining).toBeNull();
+  });
+});
+
+const appointmentRow: ScrapedAppointmentRow = {
+  date: '09/08/26',
+  // Real markup prefixes the time with the word "שעה" ("hour"), not a bare HH:mm.
+  time: 'שעה 14:30',
+  doctorName: 'דר כהן רונית',
+  specialty: 'עור | ביקור רגיל',
+  // Maccabi's future-appointments list exposes no clinic/location column at all.
+  clinic: null,
+  instructions: [],
+};
+
+describe('appointmentRowToAppointment', () => {
+  it('produces a value matching the shared schema', () => {
+    const appointment = appointmentRowToAppointment(appointmentRow);
+    expect(() => appointmentSchema.parse(appointment)).not.toThrow();
+  });
+
+  it('combines the date and time into Israel local time with its offset, ignoring the "שעה" prefix', () => {
+    const appointment = appointmentRowToAppointment(appointmentRow)!;
+    // Israel is UTC+3 in August (DST) — same wall-clock time, explicit offset attached.
+    expect(appointment.start).toBe('2026-08-09T14:30:00+03:00');
+  });
+
+  it('uses the winter offset for a date outside DST', () => {
+    const appointment = appointmentRowToAppointment({
+      ...appointmentRow,
+      date: '09/01/26',
+      time: 'שעה 14:30',
+    })!;
+    expect(appointment.start).toBe('2026-01-09T14:30:00+02:00');
+  });
+
+  it('carries doctor and specialty through, and leaves clinic null', () => {
+    const appointment = appointmentRowToAppointment(appointmentRow)!;
+    expect(appointment.doctorName).toBe('דר כהן רונית');
+    expect(appointment.specialty).toBe('עור | ביקור רגיל');
+    expect(appointment.clinic).toBeNull();
+  });
+
+  it('derives a stable id from the same booking, and a different one for another', () => {
+    const first = appointmentRowToAppointment(appointmentRow)!;
+    const again = appointmentRowToAppointment({ ...appointmentRow })!;
+    const other = appointmentRowToAppointment({ ...appointmentRow, time: '09:00' })!;
+
+    expect(again.id).toBe(first.id);
+    expect(other.id).not.toBe(first.id);
+  });
+
+  it('drops a row with no parseable date or time', () => {
+    expect(appointmentRowToAppointment({ ...appointmentRow, time: null })).toBeNull();
+    expect(appointmentRowToAppointment({ ...appointmentRow, date: null })).toBeNull();
+  });
+
+  it('tags every row with the fund it came from', () => {
+    expect(appointmentRowToAppointment(appointmentRow)?.provider).toBe('maccabi');
+  });
+
+  it('leaves raw unset when there are no instructions', () => {
+    expect(appointmentRowToAppointment(appointmentRow)?.raw).toBeUndefined();
+  });
+
+  it('carries pre-visit instructions through as raw.instructions', () => {
+    const instructions = ['הביקור כרוך בהשתתפות עצמית', 'תעריפים אפשר לקבל בקישור הבא'];
+    const appointment = appointmentRowToAppointment({ ...appointmentRow, instructions })!;
+    expect(appointment.raw).toEqual({ instructions });
   });
 });

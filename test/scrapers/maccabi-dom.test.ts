@@ -4,7 +4,13 @@ import { fileURLToPath } from 'node:url';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import type { Browser, Page } from 'playwright';
 
-import { prescriptionRowToMedication, scrapePrescriptionRows } from '../../src/scrapers/maccabi.js';
+import {
+  appointmentRowToAppointment,
+  prescriptionRowToMedication,
+  scrapeAppointmentDetail,
+  scrapeAppointmentRows,
+  scrapePrescriptionRows,
+} from '../../src/scrapers/maccabi.js';
 import { browserAvailable, launchTestBrowser } from '../browser.js';
 
 /**
@@ -17,10 +23,10 @@ import { browserAvailable, launchTestBrowser } from '../browser.js';
  * into tests that return early and pass while asserting nothing.
  */
 
-const fixture = fs.readFileSync(
-  path.join(path.dirname(fileURLToPath(import.meta.url)), '../fixtures/maccabi/medications.html'),
-  'utf8',
-);
+const fixturesDir = path.join(path.dirname(fileURLToPath(import.meta.url)), '../fixtures/maccabi');
+const fixture = fs.readFileSync(path.join(fixturesDir, 'medications.html'), 'utf8');
+const appointmentsFixture = fs.readFileSync(path.join(fixturesDir, 'appointments.html'), 'utf8');
+const appointmentDetailFixture = fs.readFileSync(path.join(fixturesDir, 'appointment-detail.html'), 'utf8');
 
 const NOW = new Date('2026-07-26T12:00:00Z');
 
@@ -80,5 +86,67 @@ describe.skipIf(!browserAvailable)('maccabi DOM extraction', () => {
       .filter((medication) => medication !== null);
 
     expect(medications.some((medication) => medication!.name.includes('TESTOPRIL'))).toBe(false);
+  });
+});
+
+describe.skipIf(!browserAvailable)('maccabi appointment extraction', () => {
+  let browser: Browser;
+  let page: Page;
+
+  beforeAll(async () => {
+    const launched = await launchTestBrowser();
+    if (!launched) throw new Error('A browser binary was found but would not launch.');
+
+    browser = launched;
+    page = await browser.newPage();
+    await page.setContent(appointmentsFixture);
+  });
+
+  afterAll(async () => {
+    await browser?.close().catch(() => {});
+  });
+
+  it('reads every appointment-row card off the page', async () => {
+    const rows = await scrapeAppointmentRows(page);
+    expect(rows.length).toBe(3);
+  });
+
+  it('parses the fixture end to end into appointments, dropping the incomplete row', async () => {
+    const rows = await scrapeAppointmentRows(page);
+    const appointments = rows.map((row) => appointmentRowToAppointment(row)).filter((a) => a !== null);
+
+    expect(appointments).toHaveLength(2);
+    expect(appointments.map((a) => a!.doctorName)).toContain('דר לוי אבי');
+  });
+});
+
+describe.skipIf(!browserAvailable)('maccabi appointment detail extraction', () => {
+  let browser: Browser;
+  let page: Page;
+
+  beforeAll(async () => {
+    const launched = await launchTestBrowser();
+    if (!launched) throw new Error('A browser binary was found but would not launch.');
+
+    browser = launched;
+    page = await browser.newPage();
+    await page.setContent(appointmentDetailFixture);
+  });
+
+  afterAll(async () => {
+    await browser?.close().catch(() => {});
+  });
+
+  it('matches the address by its title, not the first shared-class value (phone)', async () => {
+    const detail = await scrapeAppointmentDetail(page);
+    expect(detail.clinic).toBe('רחוב הדוגמה 1, עיר בדיונית');
+  });
+
+  it('reads every pre-visit instruction line', async () => {
+    const detail = await scrapeAppointmentDetail(page);
+    expect(detail.instructions).toEqual([
+      'הביקור כרוך בהשתתפות עצמית, הנגבית באמצעות הוראת קבע.',
+      'בהיעדר הוראת קבע, הבא את הסכום המדויק במזומן.',
+    ]);
   });
 });
