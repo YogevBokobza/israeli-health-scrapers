@@ -1,0 +1,40 @@
+services:
+  # The MCP server, spoken to over stdio. `stdin_open` and `tty: false` are what let an
+  # MCP client attach to it; without stdin the process has no transport at all.
+  mcp:
+    build: .
+    image: israeli-health-scrapers
+    stdin_open: true
+    tty: false
+    env_file:
+      - .env
+    environment:
+      # Read-only by default. Override per-deployment, deliberately.
+      IHS_MODE: ${IHS_MODE:-readonly}
+      IHS_FUNDS: ${IHS_FUNDS:-maccabi}
+      IHS_PROFILE: ${IHS_PROFILE:-readonly}
+      IHS_POLICY_FILE: /app/health.policy.json
+      IHS_DATA_DIR: /data
+    volumes:
+      - ./data:/data
+      - ./health.policy.json:/app/health.policy.json:ro
+    restart: "no"
+
+  # One-time interactive login: `docker compose run --rm login maccabi`.
+  #
+  # Runs headless because a container has no display. If the fund shows a CAPTCHA this
+  # will not get through it — run `npm run login` on a desktop instead and copy the
+  # resulting data/sessions file in.
+  login:
+    build: .
+    image: israeli-health-scrapers
+    stdin_open: true
+    tty: true
+    entrypoint: ["node", "dist/cli/login.js"]
+    command: ["maccabi", "--headless"]
+    env_file:
+      - .env
+    environment:
+      IHS_DATA_DIR: /data
+    volumes:
+      - ./data:/data

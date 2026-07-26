@@ -1,0 +1,17 @@
+node_modules/
+dist/
+
+# Credentials.
+.env
+.env.*
+!.env.example
+
+# Sessions, audit log and diagnostics dumps. The diagnostics dumps in particular
+# contain page HTML from a logged-in medical account — they must never be committed.
+data/
+
+# The live policy; the example is committed instead.
+health.policy.json
+
+*.log
+.DS_Store
