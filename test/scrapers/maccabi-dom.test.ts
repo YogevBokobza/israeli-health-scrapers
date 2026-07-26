@@ -56,7 +56,7 @@ describe.skipIf(!browserAvailable)('maccabi DOM extraction', () => {
     // Two standing rows have both a badge and a name; the one-off and the nameless
     // row must not survive.
     expect(medications).toHaveLength(2);
-    expect(medications.map((medication) => medication!.name)).toContain('אלטרוקסין 100 מק"ג');
+    expect(medications.map((medication) => medication!.name)).toContain('SAMPLEXIN 250MG CAP');
   });
 
   it('derives expiry across the fixture rows', async () => {
@@ -68,9 +68,9 @@ describe.skipIf(!browserAvailable)('maccabi DOM extraction', () => {
         .map((medication) => [medication!.name, medication!]),
     );
 
-    expect(byName.get('DIOVAN FCT TAB 40MG (28)')?.status).toBe('expiring_soon');
-    expect(byName.get('אלטרוקסין 100 מק"ג')?.status).toBe('active');
-    expect(byName.get('אלטרוקסין 100 מק"ג')?.validUntil).toBe('2027-01-03');
+    expect(byName.get('FICTAMOL 500MG TAB (20)')?.status).toBe('expiring_soon');
+    expect(byName.get('SAMPLEXIN 250MG CAP')?.status).toBe('active');
+    expect(byName.get('SAMPLEXIN 250MG CAP')?.validUntil).toBe('2027-01-03');
   });
 
   it('excludes the one-off prescription with no standing badge', async () => {
@@ -79,6 +79,6 @@ describe.skipIf(!browserAvailable)('maccabi DOM extraction', () => {
       .map((row) => prescriptionRowToMedication(row, NOW))
       .filter((medication) => medication !== null);
 
-    expect(medications.some((medication) => medication!.name.includes('PEN RAFA'))).toBe(false);
+    expect(medications.some((medication) => medication!.name.includes('TESTOPRIL'))).toBe(false);
   });
 });

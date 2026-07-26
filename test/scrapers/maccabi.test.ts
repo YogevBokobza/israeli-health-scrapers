@@ -6,9 +6,9 @@ import { medicationSchema } from '../../src/definitions.js';
 const NOW = new Date('2026-07-26T12:00:00Z');
 
 const standingRow: ScrapedPrescriptionRow = {
-  name: 'DIOVAN FCT TAB 40MG (28)',
+  name: 'FICTAMOL 500MG TAB (20)',
   date: '09/08/26',
-  prescribedBy: 'דר טטיאנה ברוניפולסקי, משפחה, פנימית וכללית',
+  prescribedBy: 'דר ישראלי דנה, רפואת משפחה',
   isStanding: true,
 };
 
@@ -20,7 +20,7 @@ describe('prescriptionRowToMedication', () => {
 
   it('normalizes the date and derives the expiry fields', () => {
     const medication = prescriptionRowToMedication(standingRow, NOW)!;
-    expect(medication.name).toBe('DIOVAN FCT TAB 40MG (28)');
+    expect(medication.name).toBe('FICTAMOL 500MG TAB (20)');
     expect(medication.validUntil).toBe('2026-08-09');
     expect(medication.daysUntilExpiry).toBe(14);
     expect(medication.status).toBe('expiring_soon');
@@ -28,7 +28,7 @@ describe('prescriptionRowToMedication', () => {
 
   it('handles a two-digit year and a later expiry', () => {
     const medication = prescriptionRowToMedication(
-      { ...standingRow, name: 'אלטרוקסין 100 מק"ג', date: '03/01/27' },
+      { ...standingRow, name: 'SAMPLEXIN 250MG CAP', date: '03/01/27' },
       NOW,
     )!;
     expect(medication.validUntil).toBe('2027-01-03');
