@@ -4,19 +4,14 @@ import { fileURLToPath } from 'node:url';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import type { Browser, Page } from 'playwright';
 
-import {
-  chooseTable,
-  rowToMedication,
-  scrapeTables,
-  tableToRawRows,
-} from '../../src/scrapers/maccabi.js';
+import { prescriptionRowToMedication, scrapePrescriptionRows } from '../../src/scrapers/maccabi.js';
 import { browserAvailable, launchTestBrowser } from '../browser.js';
 
 /**
  * Exercises the DOM traversal against the saved fixture, in a real browser.
  *
  * The pure parser tests cover interpretation; this covers the part only a DOM can
- * exercise — which table elements are found, and how a missing <thead> is handled.
+ * exercise — which elements are found inside each prescription-row card.
  *
  * The suite is skipped, visibly, when no browser binary exists. It must never degrade
  * into tests that return early and pass while asserting nothing.
@@ -46,56 +41,44 @@ describe.skipIf(!browserAvailable)('maccabi DOM extraction', () => {
     await browser?.close().catch(() => {});
   });
 
-  it('reads every table off the page', async () => {
-    const tables = await scrapeTables(page);
-    // The fixture deliberately has an unrelated table above the prescriptions one.
-    expect(tables.length).toBeGreaterThanOrEqual(2);
+  it('reads every prescription-row card off the page', async () => {
+    const rows = await scrapePrescriptionRows(page);
+    // The fixture has a standing row, a one-off row, and a row missing its name.
+    expect(rows.length).toBe(4);
   });
 
   it('parses the fixture end to end into medications', async () => {
-    const chosen = chooseTable(await scrapeTables(page));
-    expect(chosen).not.toBeNull();
-
-    const medications = tableToRawRows(chosen!.table, chosen!.mapping)
-      .map((row) => rowToMedication(row, NOW))
+    const rows = await scrapePrescriptionRows(page);
+    const medications = rows
+      .map((row) => prescriptionRowToMedication(row, NOW))
       .filter((medication) => medication !== null);
 
-    expect(medications).toHaveLength(3);
-    expect(medications.map((medication) => medication!.name)).toContain('אלטרוקסין 100 מק"ג');
-
-    // The totals row carries no drug name and must not survive parsing.
-    expect(medications.every((medication) => medication!.name.length > 0)).toBe(true);
+    // Two standing rows have both a badge and a name; the one-off and the nameless
+    // row must not survive.
+    expect(medications).toHaveLength(2);
+    expect(medications.map((medication) => medication!.name)).toContain('SAMPLEXIN 250MG CAP');
   });
 
   it('derives expiry across the fixture rows', async () => {
-    const chosen = chooseTable(await scrapeTables(page));
+    const rows = await scrapePrescriptionRows(page);
     const byName = new Map(
-      tableToRawRows(chosen!.table, chosen!.mapping)
-        .map((row) => rowToMedication(row, NOW))
+      rows
+        .map((row) => prescriptionRowToMedication(row, NOW))
         .filter((medication) => medication !== null)
         .map((medication) => [medication!.name, medication!]),
     );
 
-    expect(byName.get('ונטולין')?.status).toBe('expired');
-    expect(byName.get('אלטרוקסין 100 מק"ג')?.status).toBe('active');
-    expect(byName.get('אלטרוקסין 100 מק"ג')?.validUntil).toBe('2027-01-03');
+    expect(byName.get('FICTAMOL 500MG TAB (20)')?.status).toBe('expiring_soon');
+    expect(byName.get('SAMPLEXIN 250MG CAP')?.status).toBe('active');
+    expect(byName.get('SAMPLEXIN 250MG CAP')?.validUntil).toBe('2027-01-03');
   });
 
-  it('handles a table with no thead by treating the first row as headers', async () => {
-    const other = await browser.newPage();
-    try {
-      await other.setContent(`
-        <table>
-          <tr><td>שם התרופה</td><td>בתוקף עד</td></tr>
-          <tr><td>אקמול</td><td>01/09/2026</td></tr>
-        </table>
-      `);
+  it('excludes the one-off prescription with no standing badge', async () => {
+    const rows = await scrapePrescriptionRows(page);
+    const medications = rows
+      .map((row) => prescriptionRowToMedication(row, NOW))
+      .filter((medication) => medication !== null);
 
-      const chosen = chooseTable(await scrapeTables(other));
-      expect(chosen?.table.rows).toHaveLength(1);
-      expect(chosen?.table.rows[0]?.[0]).toBe('אקמול');
-    } finally {
-      await other.close();
-    }
+    expect(medications.some((medication) => medication!.name.includes('TESTOPRIL'))).toBe(false);
   });
 });
