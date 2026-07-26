@@ -1,7 +1,12 @@
 import { describe, expect, it } from 'vitest';
 
-import { prescriptionRowToMedication, type ScrapedPrescriptionRow } from '../../src/scrapers/maccabi.js';
-import { medicationSchema } from '../../src/definitions.js';
+import {
+  appointmentRowToAppointment,
+  prescriptionRowToMedication,
+  type ScrapedAppointmentRow,
+  type ScrapedPrescriptionRow,
+} from '../../src/scrapers/maccabi.js';
+import { appointmentSchema, medicationSchema } from '../../src/definitions.js';
 
 const NOW = new Date('2026-07-26T12:00:00Z');
 
@@ -59,5 +64,51 @@ describe('prescriptionRowToMedication', () => {
     expect(medication.form).toBeNull();
     expect(medication.lastDispensed).toBeNull();
     expect(medication.refillsRemaining).toBeNull();
+  });
+});
+
+const appointmentRow: ScrapedAppointmentRow = {
+  date: '09/08/26',
+  time: '14:30',
+  doctorName: 'דר כהן רונית',
+  specialty: 'עור',
+  clinic: 'סניף רעננה',
+};
+
+describe('appointmentRowToAppointment', () => {
+  it('produces a value matching the shared schema', () => {
+    const appointment = appointmentRowToAppointment(appointmentRow);
+    expect(() => appointmentSchema.parse(appointment)).not.toThrow();
+  });
+
+  it('combines the date and time into an ISO instant', () => {
+    const appointment = appointmentRowToAppointment(appointmentRow)!;
+    // Israel is UTC+3 in August (DST), so 14:30 local is 11:30 UTC.
+    expect(appointment.start).toBe('2026-08-09T11:30:00.000Z');
+  });
+
+  it('carries doctor, specialty and clinic through', () => {
+    const appointment = appointmentRowToAppointment(appointmentRow)!;
+    expect(appointment.doctorName).toBe('דר כהן רונית');
+    expect(appointment.specialty).toBe('עור');
+    expect(appointment.clinic).toBe('סניף רעננה');
+  });
+
+  it('derives a stable id from the same booking, and a different one for another', () => {
+    const first = appointmentRowToAppointment(appointmentRow)!;
+    const again = appointmentRowToAppointment({ ...appointmentRow })!;
+    const other = appointmentRowToAppointment({ ...appointmentRow, time: '09:00' })!;
+
+    expect(again.id).toBe(first.id);
+    expect(other.id).not.toBe(first.id);
+  });
+
+  it('drops a row with no parseable date or time', () => {
+    expect(appointmentRowToAppointment({ ...appointmentRow, time: null })).toBeNull();
+    expect(appointmentRowToAppointment({ ...appointmentRow, date: null })).toBeNull();
+  });
+
+  it('tags every row with the fund it came from', () => {
+    expect(appointmentRowToAppointment(appointmentRow)?.provider).toBe('maccabi');
   });
 });

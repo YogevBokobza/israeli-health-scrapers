@@ -1,7 +1,9 @@
+import { createHash } from 'node:crypto';
 import type { Page } from 'playwright';
 
 import {
   HealthFundTypes,
+  type Appointment,
   type HealthAccount,
   type Medication,
   type ScraperCredentials,
@@ -13,7 +15,7 @@ import {
   type LoginField,
 } from './base-scraper-with-browser.js';
 import { SelectorDriftError } from './errors.js';
-import { deriveExpiry, parseIsraeliDate, textOrNull } from '../helpers/dates.js';
+import { deriveExpiry, parseIsraeliDate, parseIsraeliDateTime, textOrNull } from '../helpers/dates.js';
 import { clickFirst, elementExists, waitUntil } from '../helpers/elements.js';
 import { captureDiagnostics } from '../helpers/debug.js';
 
@@ -23,8 +25,10 @@ import { captureDiagnostics } from '../helpers/debug.js';
  * Every Maccabi-specific URL and selector lives in this file. The site will change —
  * that is a certainty, not a risk — and when it does this is the only file to edit.
  *
- * NOTE: these selectors have not been calibrated against a live logged-in session,
- * which needs a real member account. Treat the first run as a calibration pass: on
+ * NOTE: login and medications selectors are calibrated against a live account (see git
+ * history). Appointments is not — that URL and every `selectors.appointment*` entry is
+ * an uncalibrated guess, same starting state medications was in before its first live
+ * run. Treat the first `fetch: ['appointments']` run as that calibration pass: on
  * failure the scraper writes an HTML dump under data/diagnostics, and the fix belongs
  * in the constants below.
  */
@@ -37,6 +41,9 @@ const urls = {
   // time it was picked up. ValidPrescriptions is the deduplicated, currently-standing
   // view this scraper models: one row per drug with its next refill deadline.
   medications: `${BASE_URL}/sonline/medicalfile/medications/ValidPrescriptions/`,
+  // Uncalibrated guess — mirrors the medicalfile/<domain>/ shape the medications URL
+  // turned out to have, but the real path has not been confirmed against a live account.
+  appointments: `${BASE_URL}/sonline/medicalfile/appointments/MyAppointments/`,
 } as const;
 
 const selectors = {
@@ -55,6 +62,9 @@ const selectors = {
   invalidCredentials: ['[class*="error" i]', '[role="alert"]'],
   blocked: ['[class*="blocked" i]', '[class*="חסום"]'],
   prescriptionRow: ['[data-testid="prescription-row"]'],
+  // Uncalibrated guess, following the same data-testid convention prescriptionRow
+  // turned out to use.
+  appointmentRow: ['[data-testid="appointment-row"]'],
 } as const;
 
 /* -------------------------------------------------------------------------- */
@@ -120,6 +130,65 @@ export async function scrapePrescriptionRows(page: Page): Promise<ScrapedPrescri
   }, selectors.prescriptionRow[0]);
 }
 
+/** One appointment row as read straight from the DOM, before interpretation. */
+export interface ScrapedAppointmentRow {
+  date: string | null;
+  time: string | null;
+  doctorName: string | null;
+  specialty: string | null;
+  clinic: string | null;
+}
+
+/**
+ * Turns one scraped row into an `Appointment`.
+ *
+ * Returns null when the row carries no parseable date/time — the schema's `start` is
+ * required, so a row we cannot place on a timeline is not an appointment we can report.
+ */
+export function appointmentRowToAppointment(row: ScrapedAppointmentRow): Appointment | null {
+  const start = parseIsraeliDateTime(row.date, row.time);
+  if (!start) return null;
+
+  const doctorName = textOrNull(row.doctorName);
+  const specialty = textOrNull(row.specialty);
+  const clinic = textOrNull(row.clinic);
+
+  // No stable id is exposed by the page, so one is derived from the fields that
+  // together identify a single booking — stable across re-fetches of the same
+  // appointment, distinct from any other row on the list.
+  const id = createHash('sha1')
+    .update([start, doctorName, specialty, clinic].join('|'))
+    .digest('hex')
+    .slice(0, 16);
+
+  return {
+    id,
+    start,
+    doctorName,
+    specialty,
+    clinic,
+    provider: HealthFundTypes.maccabi,
+  };
+}
+
+/** Reads every appointment row off the page as plain strings. */
+export async function scrapeAppointmentRows(page: Page): Promise<ScrapedAppointmentRow[]> {
+  return page.evaluate((rowSelector) => {
+    const text = (el: Element | null) => {
+      const value = (el?.textContent ?? '').replace(/\s+/g, ' ').trim();
+      return value.length > 0 ? value : null;
+    };
+
+    return Array.from(document.querySelectorAll(rowSelector)).map((row) => ({
+      date: text(row.querySelector('[data-hook="AppointmentDate"]')),
+      time: text(row.querySelector('[data-hook="AppointmentTime"]')),
+      doctorName: text(row.querySelector('[data-hook="AppointmentDoctor"]')),
+      specialty: text(row.querySelector('[data-hook="AppointmentSpecialty"]')),
+      clinic: text(row.querySelector('[data-hook="AppointmentClinic"]')),
+    }));
+  }, selectors.appointmentRow[0]);
+}
+
 export class MaccabiScraper extends BaseScraperWithBrowser {
   protected getLoginOptions(): LoginOptions {
     return {
@@ -175,6 +244,10 @@ export class MaccabiScraper extends BaseScraperWithBrowser {
       account.medications = await this.fetchMedications();
     }
 
+    if (targets.includes('appointments')) {
+      account.appointments = await this.fetchAppointments();
+    }
+
     return [account];
   }
 
@@ -211,5 +284,33 @@ export class MaccabiScraper extends BaseScraperWithBrowser {
     medications.sort((a, b) => (a.daysUntilExpiry ?? Infinity) - (b.daysUntilExpiry ?? Infinity));
 
     return medications;
+  }
+
+  /** Reads upcoming appointments, soonest first. */
+  private async fetchAppointments(): Promise<Appointment[]> {
+    const page = this.activePage;
+    await page.goto(urls.appointments, { waitUntil: 'domcontentloaded' });
+
+    if (await elementExists(page, selectors.passwordInput)) {
+      const diagnostics = await captureDiagnostics(page, this.options.companyId, 'appointments-logged-out');
+      throw new SelectorDriftError('a logged-in appointments page', diagnostics);
+    }
+
+    await waitUntil(async () => elementExists(page, selectors.appointmentRow), 8_000);
+
+    const appointments = (await scrapeAppointmentRows(page))
+      .map((row) => appointmentRowToAppointment(row))
+      .filter((appointment): appointment is Appointment => appointment !== null);
+
+    if (appointments.length === 0) {
+      // Same reasoning as fetchMedications: an empty list and a page we failed to read
+      // look identical, so a dump is kept without treating "none" as an error.
+      const diagnostics = await captureDiagnostics(page, this.options.companyId, 'appointments-empty');
+      this.log('no appointment rows found', { diagnostics });
+    }
+
+    appointments.sort((a, b) => Date.parse(a.start) - Date.parse(b.start));
+
+    return appointments;
   }
 }

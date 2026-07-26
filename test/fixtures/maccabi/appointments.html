@@ -1,0 +1,34 @@
+<!--
+  Guessed shape of Maccabi's appointments page — UNCALIBRATED. Unlike medications.html,
+  this has not been checked against a live logged-in session. It follows the same
+  data-testid/data-hook convention prescription-row turned out to use, as a starting
+  point for the first live calibration pass (see maccabi.ts's header comment).
+
+  Fully invented data: no real doctor names, clinics, or dates. Includes a row missing
+  its time, which must be dropped (the schema's `start` is required).
+-->
+<div role="list" data-hook="LazyLoading">
+  <div role="listitem" data-testid="appointment-row">
+    <div data-hook="AppointmentDate">09/08/26</div>
+    <div data-hook="AppointmentTime">14:30</div>
+    <div data-hook="AppointmentDoctor">דר כהן רונית</div>
+    <div data-hook="AppointmentSpecialty">עור</div>
+    <div data-hook="AppointmentClinic">סניף רעננה</div>
+  </div>
+
+  <div role="listitem" data-testid="appointment-row">
+    <div data-hook="AppointmentDate">15/09/26</div>
+    <div data-hook="AppointmentTime">09:00</div>
+    <div data-hook="AppointmentDoctor">דר לוי אבי</div>
+    <div data-hook="AppointmentSpecialty">אורתופדיה</div>
+    <div data-hook="AppointmentClinic">סניף חדרה</div>
+  </div>
+
+  <div role="listitem" data-testid="appointment-row">
+    <!-- No AppointmentTime: an incomplete booking. Must be dropped. -->
+    <div data-hook="AppointmentDate">01/10/26</div>
+    <div data-hook="AppointmentDoctor">דר גל שירה</div>
+    <div data-hook="AppointmentSpecialty">רפואת משפחה</div>
+    <div data-hook="AppointmentClinic">סניף נתניה</div>
+  </div>
+</div>

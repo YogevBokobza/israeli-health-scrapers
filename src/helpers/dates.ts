@@ -61,6 +61,56 @@ export function parseIsraeliDate(value: string | null | undefined): string | nul
   return `${String(year).padStart(4, '0')}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
 }
 
+/**
+ * Reads the UTC offset (in minutes) Jerusalem observes at a given instant.
+ *
+ * Used instead of a hard-coded +2/+3 so a date crossing a DST boundary still lands on
+ * the right day — Node ships full tz data, so this is a stdlib lookup, not a guess.
+ */
+function jerusalemOffsetMinutes(instant: Date): number {
+  const part = new Intl.DateTimeFormat('en-US', {
+    timeZone: 'Asia/Jerusalem',
+    timeZoneName: 'shortOffset',
+  })
+    .formatToParts(instant)
+    .find((p) => p.type === 'timeZoneName')?.value;
+
+  const match = part?.match(/GMT([+-]\d+)/);
+  return match ? Number(match[1]) * 60 : 120;
+}
+
+/**
+ * Combines a day-first date and an "HH:mm" time, both rendered in Israel local time,
+ * into an ISO instant.
+ *
+ * ponytail: the offset is resolved once from a same-day UTC guess rather than
+ * iterated to convergence — wrong only in the ambiguous hour around a DST switch,
+ * which does not matter for an appointment reminder.
+ */
+export function parseIsraeliDateTime(
+  dateValue: string | null | undefined,
+  timeValue: string | null | undefined,
+): string | null {
+  const date = parseIsraeliDate(dateValue);
+  const time = normalizeText(timeValue);
+  const match = time.match(/^(\d{1,2}):(\d{2})$/);
+  if (!date || !match) return null;
+
+  const [, hourRaw, minuteRaw] = match;
+  const [yearRaw, monthRaw, dayRaw] = date.split('-');
+  const year = Number(yearRaw);
+  const month = Number(monthRaw);
+  const day = Number(dayRaw);
+  const hour = Number(hourRaw);
+  const minute = Number(minuteRaw);
+
+  const guessUtcMs = Date.UTC(year, month - 1, day, hour, minute);
+  const offsetMinutes = jerusalemOffsetMinutes(new Date(guessUtcMs));
+  const instant = new Date(guessUtcMs - offsetMinutes * 60_000);
+
+  return instant.toISOString();
+}
+
 /** Pulls the first integer out of a cell like "נותרו 2 ניפוקים". */
 export function parseInteger(value: string | null | undefined): number | null {
   const text = normalizeText(value);
