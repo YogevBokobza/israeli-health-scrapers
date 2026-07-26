@@ -69,6 +69,18 @@ const selectors = {
   // No data-testid on this page — matched by the component's own class instead,
   // same convention as invalidCredentials/blocked above.
   appointmentRow: ['[class*="TimeLineItem-module__item"]'],
+  /**
+   * The list view carries no clinic/location at all — only the per-appointment detail
+   * page (AppointmentInfo) does, reached by clicking a row (it has no href; navigation
+   * is a client-side route change). Address, phone, and fax all share the providerInfo
+   * class, so the one we want is matched by its sibling title text ("כתובת:"), not by
+   * being first.
+   */
+  appointmentAddressItem: ['[class*="ProviderDetails__PipeItemWrap"]'],
+  appointmentAddressTitle: ['[class*="ProviderDetails__title"]'],
+  appointmentAddressValue: ['[class*="ProviderDetails__providerInfo"]'],
+  /** "הנחיות לפני ביקור" (pre-visit instructions), also only on the detail page. */
+  appointmentInstructionItem: ['[class*="VisitInstructions__instructionItem"]'],
 } as const;
 
 /* -------------------------------------------------------------------------- */
@@ -140,7 +152,10 @@ export interface ScrapedAppointmentRow {
   time: string | null;
   doctorName: string | null;
   specialty: string | null;
+  /** Only ever populated from the detail page — the list view has no clinic column. */
   clinic: string | null;
+  /** Pre-visit instructions ("הנחיות לפני ביקור"), also only on the detail page. */
+  instructions: string[];
 }
 
 /**
@@ -172,6 +187,7 @@ export function appointmentRowToAppointment(row: ScrapedAppointmentRow): Appoint
     specialty,
     clinic,
     provider: HealthFundTypes.maccabi,
+    ...(row.instructions.length > 0 ? { raw: { instructions: row.instructions } } : {}),
   };
 }
 
@@ -197,12 +213,45 @@ export async function scrapeAppointmentRows(page: Page): Promise<ScrapedAppointm
         // Specialty and visit type render as one combined string ("אף אוזן וגרון | ביקור
         // רגיל"); the schema has no separate slot for visit type, so it stays combined.
         specialty: text(row.querySelector('[class*="providerServiceType"]')),
-        // This list view exposes no clinic/location column at all — only a detail page
-        // (linked per-row, not fetched) might have one.
+        // Neither exists on the list view — only the detail page has them (see
+        // scrapeAppointmentDetail), merged in by fetchAppointments after this runs.
         clinic: null,
+        instructions: [] as string[],
       };
     });
   }, selectors.appointmentRow[0]);
+}
+
+/** Reads the clinic address and pre-visit instructions off an appointment's detail page. */
+export async function scrapeAppointmentDetail(
+  page: Page,
+): Promise<{ clinic: string | null; instructions: string[] }> {
+  return page.evaluate(
+    ({ addressItem, addressTitle, addressValue, instructionItem }) => {
+      const text = (el: Element | null) => {
+        const value = (el?.textContent ?? '').replace(/\s+/g, ' ').trim();
+        return value.length > 0 ? value : null;
+      };
+
+      // Address, phone, and fax all share the same value class — the one we want is
+      // matched by its sibling title text, not by being first.
+      const address = Array.from(document.querySelectorAll(addressItem)).find((item) =>
+        (item.querySelector(addressTitle)?.textContent ?? '').includes('כתובת'),
+      );
+
+      const instructions = Array.from(document.querySelectorAll(instructionItem))
+        .map((item) => text(item))
+        .filter((item): item is string => item !== null);
+
+      return { clinic: text(address?.querySelector(addressValue) ?? null), instructions };
+    },
+    {
+      addressItem: selectors.appointmentAddressItem[0],
+      addressTitle: selectors.appointmentAddressTitle[0],
+      addressValue: selectors.appointmentAddressValue[0],
+      instructionItem: selectors.appointmentInstructionItem[0],
+    },
+  );
 }
 
 export class MaccabiScraper extends BaseScraperWithBrowser {
@@ -335,7 +384,19 @@ export class MaccabiScraper extends BaseScraperWithBrowser {
 
     await waitUntil(async () => elementExists(page, selectors.appointmentRow), 8_000);
 
-    const appointments = (await scrapeAppointmentRows(page))
+    const rows = await scrapeAppointmentRows(page);
+
+    // The list view carries no clinic/location or instructions — only each row's detail
+    // page does, and getting there is a click, not a URL. Fetched one at a time and
+    // merged back in; the list re-renders after each goBack, so this must run before
+    // mapping to Appointment rather than in the same pass as scrapeAppointmentRows.
+    for (const [i, row] of rows.entries()) {
+      const detail = await this.fetchAppointmentDetail(page, i);
+      row.clinic = detail.clinic;
+      row.instructions = detail.instructions;
+    }
+
+    const appointments = rows
       .map((row) => appointmentRowToAppointment(row))
       .filter((appointment): appointment is Appointment => appointment !== null);
 
@@ -349,5 +410,50 @@ export class MaccabiScraper extends BaseScraperWithBrowser {
     appointments.sort((a, b) => Date.parse(a.start) - Date.parse(b.start));
 
     return appointments;
+  }
+
+  /**
+   * Clicks into one appointment's detail page for its clinic/address and pre-visit
+   * instructions, then returns to the list. Best-effort: a missing address is logged
+   * with diagnostics rather than failing the whole fetch over fields the list view
+   * never had to begin with.
+   */
+  private async fetchAppointmentDetail(
+    page: Page,
+    index: number,
+  ): Promise<{ clinic: string | null; instructions: string[] }> {
+    await page.locator(selectors.appointmentRow[0]).nth(index).click();
+
+    const reachedDetail = await waitUntil(async () => page.url().includes('AppointmentInfo'), 8_000);
+    if (!reachedDetail) {
+      const diagnostics = await captureDiagnostics(
+        page,
+        this.options.companyId,
+        'appointment-detail-unreached',
+      );
+      this.log('appointment detail page did not open', { index, diagnostics });
+      return { clinic: null, instructions: [] };
+    }
+
+    // The URL changes the instant the client-side route does, well before the detail
+    // page's own data fetch resolves — reading immediately here is the same race the
+    // OTP submit button had. Wait for the address itself rather than a fixed delay, but
+    // proceed either way: a genuinely missing selector should still get diagnosed.
+    await waitUntil(async () => elementExists(page, selectors.appointmentAddressValue), 5_000);
+
+    const detail = await scrapeAppointmentDetail(page);
+    if (!detail.clinic) {
+      const diagnostics = await captureDiagnostics(
+        page,
+        this.options.companyId,
+        'appointment-clinic-missing',
+      );
+      this.log('no clinic address found on appointment detail page', { index, diagnostics });
+    }
+
+    await page.goBack({ waitUntil: 'domcontentloaded' });
+    await waitUntil(async () => elementExists(page, selectors.appointmentRow), 8_000);
+
+    return detail;
   }
 }

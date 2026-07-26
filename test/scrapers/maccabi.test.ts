@@ -75,6 +75,7 @@ const appointmentRow: ScrapedAppointmentRow = {
   specialty: 'עור | ביקור רגיל',
   // Maccabi's future-appointments list exposes no clinic/location column at all.
   clinic: null,
+  instructions: [],
 };
 
 describe('appointmentRowToAppointment', () => {
@@ -112,5 +113,15 @@ describe('appointmentRowToAppointment', () => {
 
   it('tags every row with the fund it came from', () => {
     expect(appointmentRowToAppointment(appointmentRow)?.provider).toBe('maccabi');
+  });
+
+  it('leaves raw unset when there are no instructions', () => {
+    expect(appointmentRowToAppointment(appointmentRow)?.raw).toBeUndefined();
+  });
+
+  it('carries pre-visit instructions through as raw.instructions', () => {
+    const instructions = ['הביקור כרוך בהשתתפות עצמית', 'תעריפים אפשר לקבל בקישור הבא'];
+    const appointment = appointmentRowToAppointment({ ...appointmentRow, instructions })!;
+    expect(appointment.raw).toEqual({ instructions });
   });
 });
