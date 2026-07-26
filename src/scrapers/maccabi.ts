@@ -16,7 +16,7 @@ import {
 } from './base-scraper-with-browser.js';
 import { SelectorDriftError } from './errors.js';
 import { deriveExpiry, parseIsraeliDate, parseIsraeliDateTime, textOrNull } from '../helpers/dates.js';
-import { clickFirst, elementExists, waitUntil } from '../helpers/elements.js';
+import { clickFirst, elementExists, fillFirst, waitUntil } from '../helpers/elements.js';
 import { captureDiagnostics } from '../helpers/debug.js';
 
 /**
@@ -47,7 +47,10 @@ const urls = {
 } as const;
 
 const selectors = {
-  idInput: ['input#idNumber', 'input[name="idNumber"]'],
+  // The id-only screen and the id+password screen render two different id fields
+  // (idNumber vs idNumber2/citizenId) rather than reusing one — both are listed so
+  // fillFirst finds whichever is actually on the page.
+  idInput: ['input#idNumber', 'input[name="idNumber"]', 'input#idNumber2', 'input[name="citizenId"]'],
   passwordInput: ['input[autocomplete="current-password"]', 'input[type="password"]'],
   submitButton: ['button[type="submit"]', 'input[type="submit"]'],
   otpInput: [
@@ -58,6 +61,12 @@ const selectors = {
   ],
   /** The interim "how do you want to verify" screen shown before the OTP field. */
   otpMethodSms: ['#otpCodebySMS'],
+  /**
+   * On that same interim screen, "כניסה עם סיסמה" (log in with a password) — the only
+   * way to a password field. It sits on a separate screen from the id field, not next
+   * to it, so a password login is id-submit, then this link, then id+password again.
+   */
+  passwordLoginLink: ['a:has-text("כניסה עם סיסמה")'],
   loggedInMarker: ['a[data-hook="Button__logout"]', 'a[href*="Logout" i]', 'a[href*="signout" i]'],
   invalidCredentials: ['[class*="error" i]', '[role="alert"]'],
   blocked: ['[class*="blocked" i]', '[class*="חסום"]'],
@@ -194,29 +203,50 @@ export class MaccabiScraper extends BaseScraperWithBrowser {
     return {
       loginUrl: urls.login,
 
-      fields: (credentials: ScraperCredentials) => {
-        const fields: LoginField[] = [{ selectors: selectors.idInput, value: credentials.id }];
-        // The password is optional: an OTP-only account never shows the field, and
-        // demanding one would block exactly the members this fund is configured for.
-        if (credentials.password) {
-          fields.push({ selectors: selectors.passwordInput, value: credentials.password });
-        }
-        return fields;
-      },
+      // The first screen only ever asks for the id — password, when there is one, lives
+      // on a screen reached by a link on the verification picker (see afterSubmit).
+      fields: (credentials: ScraperCredentials) => [
+        { selectors: selectors.idInput, value: credentials.id },
+      ],
 
       submitButtonSelectors: selectors.submitButton,
       otpFieldSelectors: selectors.otpInput,
       // #sendOtp carries no type="submit" attribute, so it never matches submitButton.
       otpSubmitSelectors: ['#sendOtp', '#sendOtpMobile'],
 
-      // Only some accounts see the verification-method picker between submit and the
-      // OTP field; waitUntil returns false and this is a no-op when it never shows.
-      afterSubmit: async (page) => {
-        await waitUntil(async () => {
-          if (!(await elementExists(page, selectors.otpMethodSms))) return false;
-          await clickFirst(page, selectors.otpMethodSms);
-          return true;
-        }, 5_000);
+      // The verification picker appears between the id submit and the OTP field. Most
+      // accounts want SMS; a caller that supplied a password instead wants the
+      // password link, which leads to its own id+password screen and its own submit.
+      afterSubmit: async (page, credentials) => {
+        const reachedPicker = await waitUntil(
+          async () =>
+            (await elementExists(page, selectors.otpMethodSms)) ||
+            (await elementExists(page, selectors.passwordLoginLink)),
+          5_000,
+        );
+        if (!reachedPicker) return;
+
+        if (credentials.password && (await elementExists(page, selectors.passwordLoginLink))) {
+          await clickFirst(page, selectors.passwordLoginLink);
+          await waitUntil(async () => elementExists(page, selectors.passwordInput), 5_000);
+
+          const idFilled = await fillFirst(page, selectors.idInput, credentials.id);
+          const passwordFilled = await fillFirst(page, selectors.passwordInput, credentials.password);
+          if (!idFilled || !passwordFilled) {
+            const diagnostics = await captureDiagnostics(
+              page,
+              HealthFundTypes.maccabi,
+              'password-screen-field-missing',
+            );
+            const missing = [!idFilled && 'id', !passwordFilled && 'password'].filter(Boolean).join(' and ');
+            throw new SelectorDriftError(`the ${missing} field on the password login screen`, diagnostics);
+          }
+
+          await clickFirst(page, selectors.submitButton);
+          return;
+        }
+
+        await clickFirst(page, selectors.otpMethodSms);
       },
 
       // Order matters: the specific failure states are checked before Success, so a

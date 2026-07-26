@@ -58,8 +58,9 @@ to read a text message; the fund ties the OTP to the browser session that reques
 and the medications parser. That file's header comment explains the current
 calibration state; read it before touching selectors. Two load-bearing details learned
 from calibrating against a live account (see git history / open PRs for the full list):
-the login flow is a multi-screen SPA (ID → optional "how do you want to verify" screen →
-OTP), and the medications data lives at `ValidPrescriptions` as a
+the login flow is a multi-screen SPA — ID → a verification picker (SMS / phone call /
+"כניסה עם סיסמה" link) → OTP, *or*, only if that link is clicked, a separate id+password
+screen — and the medications data lives at `ValidPrescriptions` as a
 `[data-testid="prescription-row"]` card list, not a `<table>` — `Lobby` (the "all
 medications" tab) is a dispense *history* where the same drug reappears per purchase
 event, which is the wrong model for "standing prescriptions + expiry".
