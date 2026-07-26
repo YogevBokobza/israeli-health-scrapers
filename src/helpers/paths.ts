@@ -3,8 +3,11 @@ import fs from 'node:fs/promises';
 import type { HealthFundId } from '../definitions.js';
 
 /**
- * Everything mutable lives under one data root so a container only needs a single
- * volume mount, and so nothing sensitive is ever written next to the source.
+ * Where the library keeps the little state it owns: stored login sessions, and
+ * diagnostics dumps written when parsing fails.
+ *
+ * A consumer with its own storage — a database, an audit log — picks its own
+ * locations. This root covers only what the scrapers themselves need.
  */
 export function dataRoot(): string {
   return process.env.IHS_DATA_DIR ?? path.resolve(process.cwd(), 'data');
@@ -12,10 +15,6 @@ export function dataRoot(): string {
 
 export function sessionPath(companyId: HealthFundId): string {
   return path.join(dataRoot(), 'sessions', `${companyId}.json`);
-}
-
-export function auditPath(): string {
-  return path.join(dataRoot(), 'audit.jsonl');
 }
 
 export function diagnosticsDir(): string {

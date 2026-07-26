@@ -2,7 +2,6 @@ import { describe, expect, it } from 'vitest';
 
 import { createScraper, SCRAPERS, IMPLEMENTED_FUNDS } from '../../src/scrapers/factory.js';
 import { HealthFundTypes, healthAccountSchema } from '../../src/definitions.js';
-import { operationsFor } from '../../src/operations.js';
 
 /**
  * The contract every fund must satisfy.
@@ -63,11 +62,24 @@ describe('scraper contract', () => {
     expect(seen.at(-1)).toBe('END_SCRAPING');
   });
 
-  it('exposes operations whose scope names the fund they belong to', () => {
+  it('constructs a scraper for every implemented fund', () => {
     for (const fund of [...IMPLEMENTED_FUNDS, HealthFundTypes.mock]) {
-      for (const operation of operationsFor(fund)) {
-        expect(operation.scope.startsWith(`${fund}:`)).toBe(true);
-        expect(operation.companyId).toBe(fund);
+      const scraper = createScraper({ companyId: fund });
+      expect(typeof scraper.scrape).toBe('function');
+      expect(typeof scraper.login).toBe('function');
+      expect(typeof scraper.terminate).toBe('function');
+    }
+  });
+
+  it('tags every scraped record with the fund it came from', async () => {
+    // A consumer merging several funds into one store needs this to be reliable.
+    const scraper = createScraper({ companyId: HealthFundTypes.mock });
+    const result = await scraper.scrape({ id: '000000000' });
+
+    for (const account of result.accounts!) {
+      expect(account.provider).toBe(HealthFundTypes.mock);
+      for (const medication of account.medications) {
+        expect(medication.provider).toBe(HealthFundTypes.mock);
       }
     }
   });

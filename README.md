@@ -1,40 +1,27 @@
 # israeli-health-scrapers
 
-Typed, permission-scoped access to Israeli health fund (kupat holim) personal accounts —
-as a library, and as an MCP server for AI agents.
+Scrapers for Israeli health funds (kupot holim). Read your own medical account data
+through one uniform, typed API.
 
-Modelled directly on [israeli-bank-scrapers](https://github.com/eshaham/israeli-bank-scrapers):
-one `createScraper` factory, one uniform result shape, one folder per fund.
+Built in the shape of [israeli-bank-scrapers](https://github.com/eshaham/israeli-bank-scrapers):
+a `createScraper` factory per fund, one result shape, one folder per fund.
 
-**Status:** early. Maccabi is implemented for standing prescriptions (read-only). The
-other funds are declared but not yet built. See [Calibration](#calibration) before the
-first real run.
+This is **a library**. It knows how to talk to a fund and nothing else — storage,
+permissions, agent protocols and CLIs belong to whatever consumes it. The MCP server
+for AI agents lives in [health-mcp](https://github.com/YogevBokobza/health-mcp), the
+same way `moneyman` and `asher-mcp` sit on top of the bank scrapers.
 
-## Why
-
-An AI agent asked to check when a prescription expires will otherwise be handed a
-browser and left to navigate a medical account on its own. This gives it a small, named
-set of operations instead — each one declaring whether it reads or writes, each one
-refusable — so what the agent can do is a decision you make once, in a config file,
-rather than something you discover afterwards from a log.
+**Status:** early. Maccabi is implemented for standing prescriptions. The other funds
+are declared but not yet built. See [Calibration](#calibration) before the first real run.
 
 ## Install
 
 ```bash
-npm install
-npx playwright install chromium   # skip if your image already ships one
-cp .env.example .env              # fill in your ID
-cp health.policy.example.json health.policy.json
+npm install israeli-health-scrapers
+npx playwright install chromium
 ```
 
-Generate a session key so a login can be reused instead of triggering a fresh SMS each
-run:
-
-```bash
-openssl rand -base64 32   # put it in IHS_SESSION_KEY
-```
-
-## Use as a library
+## Use
 
 ```ts
 import { createScraper, HealthFundTypes } from 'israeli-health-scrapers';
@@ -87,8 +74,33 @@ does not abort because one is down.
 ```
 
 `daysUntilExpiry` and `status` are computed in shared code rather than per fund, so
-every fund answers "is this about to run out" identically and no caller parses a Hebrew
-date.
+every fund answers "is this about to run out" identically and no caller has to parse a
+Hebrew date.
+
+### Options
+
+| Option | Meaning |
+| --- | --- |
+| `companyId` | Which fund. Required. |
+| `showBrowser` | Run headed. Needed to solve a CAPTCHA or an unexpected consent screen. |
+| `storeSession` | Persist and reuse the login (default on). Without it, an OTP account sends an SMS every run. |
+| `otpCodeRetriever` | `() => Promise<string>`, called only when the fund asks for a code. |
+| `fetch` | Which collections to read. Defaults to `['medications']`. |
+| `onProgress` | Lifecycle events (`START_SCRAPING`, `LOGIN_SUCCESS`, …). |
+| `browser` / `browserContext` | Reuse an existing Playwright instance. |
+| `timeout`, `executablePath`, `args`, `verbose` | As you'd expect. |
+
+### Two-step login
+
+A caller that cannot block while someone reads an SMS — an agent protocol, an HTTP
+handler — can split the login:
+
+```ts
+await scraper.triggerTwoFactorAuth(credentials);  // sends the SMS, keeps the browser open
+await scraper.getLongTermTwoFactorToken(code);    // redeems it, stores the session
+```
+
+The browser must stay alive between the two: the fund ties the code to that session.
 
 ### Fund metadata
 
@@ -97,136 +109,37 @@ import { SCRAPERS } from 'israeli-health-scrapers';
 // { maccabi: { name: 'מכבי שירותי בריאות', loginFields: ['id','password'], loginMethods: ['otp','password'] }, ... }
 ```
 
-## Use as an MCP server
+### Sessions
+
+With `storeSession`, the Playwright storage state is written to
+`data/sessions/<fund>.json`, encrypted with AES-256-GCM using `IHS_SESSION_KEY`, mode
+`0600`. Without that key nothing is persisted — cookies to a medical account are not
+written in the clear. Override the location with `IHS_DATA_DIR`.
 
 ```bash
-npm run login -- maccabi     # once, interactively — stores the session
-npm run mcp                  # stdio MCP server
+openssl rand -base64 32   # IHS_SESSION_KEY
 ```
-
-Client config:
-
-```json
-{
-  "mcpServers": {
-    "israeli-health": {
-      "command": "node",
-      "args": ["/path/to/israeli-health-scrapers/dist/mcp/server.js"],
-      "env": {
-        "IHS_MACCABI_ID": "000000000",
-        "IHS_SESSION_KEY": "...",
-        "IHS_MODE": "readonly",
-        "IHS_PROFILE": "readonly"
-      }
-    }
-  }
-}
-```
-
-The agent never sees a credential: you log in once with the CLI, and it works off the
-stored session.
-
-### Tools
-
-| Tool | Capability | Scope |
-| --- | --- | --- |
-| `auth_start` | — | always available |
-| `auth_complete` | — | always available |
-| `medications_list` | read | `maccabi:medications:read` |
-
-`auth_start` / `auth_complete` are always listed regardless of policy: logging in is the
-precondition for everything else, and an agent that cannot see how to re-authenticate
-has no way to recover from an expired session except by failing repeatedly.
-
-With more than one fund enabled, tool names gain a prefix (`maccabi_medications_list`).
-The input schema is unchanged, so a prompt written against one fund keeps working.
-
-## Permissions
-
-Scopes are `fund:resource:capability`, e.g. `maccabi:medications:read`. Wildcards apply
-to whole segments only (`*:*:write`), never partial ones.
-
-`health.policy.json`:
-
-```jsonc
-{
-  "defaultProfile": "readonly",
-  "profiles": {
-    "readonly": { "scopes": ["*:*:read"] },
-    "assistant": {
-      "scopes": ["maccabi:medications:read", "maccabi:messages:write"],
-      "requireConfirmation": ["*:*:write"],
-      "rateLimits": { "*:*:write": { "perHour": 5 } }
-    }
-  }
-}
-```
-
-Enforcement happens at two points:
-
-1. **Discovery** — an agent is never shown a tool it may not call, so it cannot report a
-   capability you did not grant.
-2. **Execution** — re-checked on every call. The tool list an agent holds is not
-   evidence of anything.
-
-Both matter. Filtering alone is presentation that a hand-written call walks straight
-past; checking alone leaks the shape of everything that exists.
-
-**Write confirmation.** A write matching `requireConfirmation` does not execute on the
-first call. It returns a human-readable preview and a one-shot token; only a second call
-carrying that token runs. The token is bound to the exact operation *and* input it was
-issued for — otherwise you could approve a preview of one message and have the token
-redeemed against another.
-
-**Kill switch.** `IHS_MODE=readonly` blocks every write regardless of the policy file.
-It is the default in Docker, and no policy edit can escalate past it.
-
-**Audit.** Every attempt, including refusals, is appended to `data/audit.jsonl` with a
-hash of the input — no names, no message bodies, no medical content.
-
-## CLI
-
-```bash
-npm run login  -- maccabi                                  # interactive login
-npm run action -- maccabi medications.list                 # run one operation
-npm run action -- maccabi medications.list '{"expiringWithinDays":30}'
-```
-
-The CLI goes through the same permission engine as the MCP server, so a policy that
-refuses an agent refuses you identically — and you can test a policy without an agent.
-
-## Docker
-
-```bash
-docker compose run --rm login   # one-time login, writes ./data
-docker compose run --rm mcp     # stdio MCP server
-```
-
-`./data` holds the session, the audit log and diagnostics dumps. It is the only thing
-worth persisting, and it must not be committed.
-
-A container has no display, so a fund that shows a CAPTCHA cannot be logged into from
-one. Run `npm run login` on a desktop and copy `data/sessions/<fund>.json` across.
 
 ## Calibration
 
 The Maccabi selectors were written against the site's expected structure but **have not
-been verified against a live logged-in account** — that needs a real member login.
-Treat your first run as a calibration pass.
+been verified against a live logged-in account** — that needs a real member login. Treat
+your first run as a calibration pass.
 
 On a parsing failure the scraper writes the page HTML and a screenshot to
 `data/diagnostics/`, and every Maccabi URL and selector lives at the top of
 `src/scrapers/maccabi.ts`. That is the only file to edit when the site changes.
 
-The parser tests run off `test/fixtures/`, so improving a fixture with a real (redacted)
-dump strengthens the tests without touching them.
+Parser tests run off `test/fixtures/`, so replacing a fixture with a real redacted dump
+strengthens them without touching test code.
 
 ## Adding a fund
 
 1. `src/scrapers/<fund>.ts` extending `BaseScraperWithBrowser`.
-2. Implement `getLoginOptions()` (URL, field selectors, and the `possibleResults` map
-   from page conditions to `LoginResults`) and `fetchAccounts()`.
-3. Map the fund's output onto the shared types in `src/definitions.ts`.
+2. Implement `getLoginOptions()` — the login URL, field selectors, and a
+   `possibleResults` map from page conditions to `LoginResults`. Adding a fund is a
+   selector list, not new control flow.
+3. Implement `fetchAccounts()`, mapping onto the shared types in `src/definitions.ts`.
 4. Register it in `src/scrapers/factory.ts` and add it to `IMPLEMENTED_FUNDS`.
 5. Add fixtures under `test/fixtures/<fund>/` and make `test/contract/` pass.
 
@@ -249,21 +162,18 @@ pinned one is not installed.
 
 - For **your own account**, with your own credentials. Not a multi-tenant service.
 - Subject to your fund's terms of use.
-- It reports what the fund shows. It does not interpret anything medically, and neither
-  should an agent built on it.
-- Sessions, audit log and diagnostics stay on local disk. Diagnostics dumps contain
-  page HTML from a logged-in medical account — treat that directory accordingly.
+- It reports what the fund shows. It does not interpret anything medically.
+- Sessions and diagnostics stay on local disk. Diagnostics dumps contain page HTML from
+  a logged-in medical account — treat that directory accordingly.
 
 ## Roadmap
 
-Appointments (list, search slots, book), messages to a doctor, commitment forms
-(טופס 17), background monitoring for expiring prescriptions, and the remaining funds.
+Appointments, messages, commitment forms (טופס 17), and the remaining funds.
 
 Longer term: Israel's Medical Data Portability Law (2024) requires the funds to expose
-certified FHIR R4 APIs on a programme running to 2029. When one lands, it joins as
-another scraper behind the same interface — same operations, same schemas, same
-permission model, no change for callers. That is the main reason the fund abstraction
-exists this early.
+certified FHIR R4 APIs, on a programme running to 2029. When one lands it joins as
+another scraper behind the same interface — same schemas, no change for callers. That is
+the main reason the fund abstraction exists this early.
 
 ## License
 

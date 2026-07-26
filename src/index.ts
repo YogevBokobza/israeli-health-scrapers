@@ -1,11 +1,10 @@
 /**
- * israeli-health-scrapers — typed, permission-scoped access to Israeli health fund
- * (kupat holim) personal accounts.
+ * israeli-health-scrapers — scrapers for Israeli health funds (kupot holim).
  *
- * Modelled on israeli-bank-scrapers: a `createScraper` factory per fund behind one
- * uniform result shape. The MCP server under `src/mcp` is a consumer of this library,
- * not the other way round, so the same code serves a personal script, a cron job that
- * warns about an expiring prescription, and an AI agent.
+ * A library, in the shape of israeli-bank-scrapers: one `createScraper` factory per
+ * fund, one uniform result shape, one folder per fund. It knows how to talk to a fund
+ * and nothing else — storage, permissions, agent protocols and CLIs belong to the
+ * consumer (see health-mcp).
  */
 
 export { createScraper, SCRAPERS, IMPLEMENTED_FUNDS, enabledFunds } from './scrapers/factory.js';
@@ -19,6 +18,7 @@ export {
 } from './scrapers/base-scraper-with-browser.js';
 export type {
   LoginOptions,
+  LoginField,
   LoginCondition,
   PossibleLoginResults,
 } from './scrapers/base-scraper-with-browser.js';
@@ -61,20 +61,6 @@ export type {
 
 export { EXPIRING_SOON_DAYS } from './constants.js';
 
-export { allOperations, operationsFor, findOperation } from './operations.js';
-export type { Operation, OperationContext, ListMedicationsInput } from './operations.js';
-
-export {
-  PermissionEngine,
-  PermissionDeniedError,
-  ConfirmationRequiredError,
-  RateLimitedError,
-} from './permissions/engine.js';
-export { loadPolicyFile, resolvePolicy, DEFAULT_POLICY } from './permissions/config.js';
-export type { PolicyFile, PolicyProfile, ResolvedPolicy } from './permissions/config.js';
-export { scope, scopeMatches, anyScopeMatches } from './permissions/scopes.js';
-export type { Scope, Resource, Capability } from './permissions/scopes.js';
-
 export { deriveExpiry, parseIsraeliDate, parseInteger, normalizeText } from './helpers/dates.js';
-export { credentialsFromEnv } from './helpers/credentials.js';
 export { loadSession, saveSession, clearSession } from './helpers/session.js';
+export { dataRoot, sessionPath, diagnosticsDir } from './helpers/paths.js';
