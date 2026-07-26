@@ -93,7 +93,8 @@ export function parseIsraeliDateTime(
 ): string | null {
   const date = parseIsraeliDate(dateValue);
   const time = normalizeText(timeValue);
-  const match = time.match(/^(\d{1,2}):(\d{2})$/);
+  // Not anchored: Maccabi renders this as "שעה 09:55", not a bare "09:55".
+  const match = time.match(/(\d{1,2}):(\d{2})/);
   if (!date || !match) return null;
 
   const [, hourRaw, minuteRaw] = match;

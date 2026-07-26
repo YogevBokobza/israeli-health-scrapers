@@ -69,10 +69,12 @@ describe('prescriptionRowToMedication', () => {
 
 const appointmentRow: ScrapedAppointmentRow = {
   date: '09/08/26',
-  time: '14:30',
+  // Real markup prefixes the time with the word "שעה" ("hour"), not a bare HH:mm.
+  time: 'שעה 14:30',
   doctorName: 'דר כהן רונית',
-  specialty: 'עור',
-  clinic: 'סניף רעננה',
+  specialty: 'עור | ביקור רגיל',
+  // Maccabi's future-appointments list exposes no clinic/location column at all.
+  clinic: null,
 };
 
 describe('appointmentRowToAppointment', () => {
@@ -81,17 +83,17 @@ describe('appointmentRowToAppointment', () => {
     expect(() => appointmentSchema.parse(appointment)).not.toThrow();
   });
 
-  it('combines the date and time into an ISO instant', () => {
+  it('combines the date and time into an ISO instant, ignoring the "שעה" prefix', () => {
     const appointment = appointmentRowToAppointment(appointmentRow)!;
     // Israel is UTC+3 in August (DST), so 14:30 local is 11:30 UTC.
     expect(appointment.start).toBe('2026-08-09T11:30:00.000Z');
   });
 
-  it('carries doctor, specialty and clinic through', () => {
+  it('carries doctor and specialty through, and leaves clinic null', () => {
     const appointment = appointmentRowToAppointment(appointmentRow)!;
     expect(appointment.doctorName).toBe('דר כהן רונית');
-    expect(appointment.specialty).toBe('עור');
-    expect(appointment.clinic).toBe('סניף רעננה');
+    expect(appointment.specialty).toBe('עור | ביקור רגיל');
+    expect(appointment.clinic).toBeNull();
   });
 
   it('derives a stable id from the same booking, and a different one for another', () => {

@@ -25,12 +25,9 @@ import { captureDiagnostics } from '../helpers/debug.js';
  * Every Maccabi-specific URL and selector lives in this file. The site will change —
  * that is a certainty, not a risk — and when it does this is the only file to edit.
  *
- * NOTE: login and medications selectors are calibrated against a live account (see git
- * history). Appointments is not — that URL and every `selectors.appointment*` entry is
- * an uncalibrated guess, same starting state medications was in before its first live
- * run. Treat the first `fetch: ['appointments']` run as that calibration pass: on
- * failure the scraper writes an HTML dump under data/diagnostics, and the fix belongs
- * in the constants below.
+ * NOTE: login, medications, and appointments selectors are all calibrated against a
+ * live account (see git history). On failure the scraper writes an HTML dump under
+ * data/diagnostics, and the fix belongs in the constants below.
  */
 
 const BASE_URL = 'https://online.maccabi4u.co.il';
@@ -41,9 +38,7 @@ const urls = {
   // time it was picked up. ValidPrescriptions is the deduplicated, currently-standing
   // view this scraper models: one row per drug with its next refill deadline.
   medications: `${BASE_URL}/sonline/medicalfile/medications/ValidPrescriptions/`,
-  // Uncalibrated guess — mirrors the medicalfile/<domain>/ shape the medications URL
-  // turned out to have, but the real path has not been confirmed against a live account.
-  appointments: `${BASE_URL}/sonline/medicalfile/appointments/MyAppointments/`,
+  appointments: `${BASE_URL}/sonline/appointmentOrder/FutureAppointments/Lobby/`,
 } as const;
 
 const selectors = {
@@ -71,9 +66,9 @@ const selectors = {
   invalidCredentials: ['[class*="error" i]', '[role="alert"]'],
   blocked: ['[class*="blocked" i]', '[class*="חסום"]'],
   prescriptionRow: ['[data-testid="prescription-row"]'],
-  // Uncalibrated guess, following the same data-testid convention prescriptionRow
-  // turned out to use.
-  appointmentRow: ['[data-testid="appointment-row"]'],
+  // No data-testid on this page — matched by the component's own class instead,
+  // same convention as invalidCredentials/blocked above.
+  appointmentRow: ['[class*="TimeLineItem-module__item"]'],
 } as const;
 
 /* -------------------------------------------------------------------------- */
@@ -188,13 +183,25 @@ export async function scrapeAppointmentRows(page: Page): Promise<ScrapedAppointm
       return value.length > 0 ? value : null;
     };
 
-    return Array.from(document.querySelectorAll(rowSelector)).map((row) => ({
-      date: text(row.querySelector('[data-hook="AppointmentDate"]')),
-      time: text(row.querySelector('[data-hook="AppointmentTime"]')),
-      doctorName: text(row.querySelector('[data-hook="AppointmentDoctor"]')),
-      specialty: text(row.querySelector('[data-hook="AppointmentSpecialty"]')),
-      clinic: text(row.querySelector('[data-hook="AppointmentClinic"]')),
-    }));
+    return Array.from(document.querySelectorAll(rowSelector)).map((row) => {
+      // The date and its time render as two sibling divs under the same TimeLineDate
+      // wrapper — the time one prefixed with the word "שעה" ("hour"), not bare HH:mm.
+      const dateTimeDivs = Array.from(
+        row.querySelector('[data-hook="TimeLineDate"]')?.querySelectorAll(':scope > div') ?? [],
+      );
+
+      return {
+        date: text(dateTimeDivs[0] ?? null),
+        time: text(dateTimeDivs[1] ?? null),
+        doctorName: text(row.querySelector('[class*="providerName"]')),
+        // Specialty and visit type render as one combined string ("אף אוזן וגרון | ביקור
+        // רגיל"); the schema has no separate slot for visit type, so it stays combined.
+        specialty: text(row.querySelector('[class*="providerServiceType"]')),
+        // This list view exposes no clinic/location column at all — only a detail page
+        // (linked per-row, not fetched) might have one.
+        clinic: null,
+      };
+    });
   }, selectors.appointmentRow[0]);
 }
 
