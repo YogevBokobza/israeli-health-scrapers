@@ -1,0 +1,27 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [master]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      # Real Chromium so the DOM-parsing suite (test/scrapers/maccabi-dom.test.ts)
+      # actually runs instead of skipping — that's the coverage that matters most here.
+      - run: npx playwright install --with-deps chromium
+
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
