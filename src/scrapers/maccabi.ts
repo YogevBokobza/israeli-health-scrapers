@@ -7,6 +7,7 @@ import {
   type HealthAccount,
   type Medication,
   type ScraperCredentials,
+  type TestResult,
 } from '../definitions.js';
 import {
   BaseScraperWithBrowser,
@@ -26,8 +27,11 @@ import { captureDiagnostics } from '../helpers/debug.js';
  * that is a certainty, not a risk — and when it does this is the only file to edit.
  *
  * NOTE: login, medications, and appointments selectors are all calibrated against a
- * live account (see git history). On failure the scraper writes an HTML dump under
- * data/diagnostics, and the fix belongs in the constants below.
+ * live account (see git history). testResults selectors are UNCALIBRATED guesses —
+ * they follow the same data-testid/data-hook conventions the other views turned out to
+ * use, but the page has not been seen yet; treat a first run against them as a
+ * calibration pass and fix from the diagnostics dump. On failure the scraper writes an
+ * HTML dump under data/diagnostics, and the fix belongs in the constants below.
  */
 
 const BASE_URL = 'https://online.maccabi4u.co.il';
@@ -39,6 +43,9 @@ const urls = {
   // view this scraper models: one row per drug with its next refill deadline.
   medications: `${BASE_URL}/sonline/medicalfile/medications/ValidPrescriptions/`,
   appointments: `${BASE_URL}/sonline/appointmentOrder/FutureAppointments/Lobby/`,
+  // Uncalibrated — path from health-mcp/docs/roadmap.md. The site renders "lobby" lower
+  // case in the appointments path; TestsResults may differ. Fix from a diagnostics dump.
+  testResults: `${BASE_URL}/sonline/medicalfile/TestsResults/lobby/`,
 } as const;
 
 const selectors = {
@@ -81,6 +88,11 @@ const selectors = {
   appointmentAddressValue: ['[class*="ProviderDetails__providerInfo"]'],
   /** "הנחיות לפני ביקור" (pre-visit instructions), also only on the detail page. */
   appointmentInstructionItem: ['[class*="VisitInstructions__instructionItem"]'],
+  // Uncalibrated — guess following the data-testid convention medications turned out to
+  // use, with the TimeLineItem-module__item class appointments fell back to as the second.
+  // The page has not been seen; both the row selector and the inner ones below are bets
+  // to be corrected from the first diagnostics dump.
+  testResultRow: ['[data-testid="test-result-row"]', '[class*="TimeLineItem-module__item"]'],
 } as const;
 
 /* -------------------------------------------------------------------------- */
@@ -254,6 +266,63 @@ export async function scrapeAppointmentDetail(
   );
 }
 
+/** One test-result row as read straight from the DOM, before interpretation. */
+export interface ScrapedTestResultRow {
+  testName: string | null;
+  /** The performance date shown on the row (e.g. "09/08/26"). */
+  date: string | null;
+  orderingDoctor: string | null;
+}
+
+/**
+ * Turns one scraped row into a `TestResult`.
+ *
+ * Returns null when the row carries no parseable name or date — `testName` and
+ * `performedOn` are the two fields that locate a result on a timeline, so a row we
+ * cannot place is not one we can report.
+ */
+export function testResultRowToTestResult(row: ScrapedTestResultRow): TestResult | null {
+  const testName = textOrNull(row.testName);
+  const performedOn = parseIsraeliDate(row.date);
+  if (!testName || !performedOn) return null;
+
+  const orderingDoctor = textOrNull(row.orderingDoctor);
+
+  // No stable id is exposed by the page, so one is derived from the fields that together
+  // identify a single result — stable across re-fetches, distinct from any other row.
+  const id = createHash('sha1')
+    .update([performedOn, testName, orderingDoctor].join('|'))
+    .digest('hex')
+    .slice(0, 16);
+
+  return {
+    id,
+    testName,
+    performedOn,
+    orderingDoctor,
+    provider: HealthFundTypes.maccabi,
+  };
+}
+
+/** Reads every test-result row off the page as plain strings. */
+export async function scrapeTestResultRows(page: Page): Promise<ScrapedTestResultRow[]> {
+  return page.evaluate((rowSelector) => {
+    const text = (el: Element | null) => {
+      const value = (el?.textContent ?? '').replace(/\s+/g, ' ').trim();
+      return value.length > 0 ? value : null;
+    };
+
+    return Array.from(document.querySelectorAll(rowSelector)).map((row) => ({
+      // Inner selectors mirror the conventions medications/appointments read off their
+      // rows — the TimeLineItem header carries the title and a sibling holds the date.
+      // All uncalibrated; correct from the first diagnostics dump.
+      testName: text(row.querySelector('[class*="TimeLineItem-module__header"]')),
+      date: text(row.querySelector('[data-hook="TimeLineDate"]')),
+      orderingDoctor: text(row.querySelector('[class*="specializationRow"] p')),
+    }));
+  }, selectors.testResultRow[0]);
+}
+
 export class MaccabiScraper extends BaseScraperWithBrowser {
   protected getLoginOptions(): LoginOptions {
     return {
@@ -334,6 +403,10 @@ export class MaccabiScraper extends BaseScraperWithBrowser {
       account.appointments = await this.fetchAppointments();
     }
 
+    if (targets.includes('testResults')) {
+      account.testResults = await this.fetchTestResults();
+    }
+
     return [account];
   }
 
@@ -410,6 +483,38 @@ export class MaccabiScraper extends BaseScraperWithBrowser {
     appointments.sort((a, b) => Date.parse(a.start) - Date.parse(b.start));
 
     return appointments;
+  }
+
+  /** Reads past test results, newest first. */
+  private async fetchTestResults(): Promise<TestResult[]> {
+    const page = this.activePage;
+    await page.goto(urls.testResults, { waitUntil: 'domcontentloaded' });
+
+    if (await elementExists(page, selectors.passwordInput)) {
+      const diagnostics = await captureDiagnostics(page, this.options.companyId, 'testresults-logged-out');
+      throw new SelectorDriftError('a logged-in test results page', diagnostics);
+    }
+
+    // This SPA route renders its rows client-side after the data request resolves;
+    // domcontentloaded fires before that — same race fetchMedications waits out.
+    await waitUntil(async () => elementExists(page, selectors.testResultRow), 8_000);
+
+    const testResults = (await scrapeTestResultRows(page))
+      .map((row) => testResultRowToTestResult(row))
+      .filter((testResult): testResult is TestResult => testResult !== null);
+
+    if (testResults.length === 0) {
+      // Same reasoning as fetchMedications: an empty list and a page we failed to read
+      // look identical, so a dump is kept without treating "none" as an error.
+      const diagnostics = await captureDiagnostics(page, this.options.companyId, 'testresults-empty');
+      this.log('no test result rows found', { diagnostics });
+    }
+
+    // Newest first — that is the order the question is actually asked in. Unknown dates
+    // sort last rather than masquerading as recent.
+    testResults.sort((a, b) => (b.performedOn ?? '').localeCompare(a.performedOn ?? ''));
+
+    return testResults;
   }
 
   /**

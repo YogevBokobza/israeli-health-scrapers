@@ -10,6 +10,8 @@ import {
   scrapeAppointmentDetail,
   scrapeAppointmentRows,
   scrapePrescriptionRows,
+  scrapeTestResultRows,
+  testResultRowToTestResult,
 } from '../../src/scrapers/maccabi.js';
 import { browserAvailable, launchTestBrowser } from '../browser.js';
 
@@ -27,6 +29,7 @@ const fixturesDir = path.join(path.dirname(fileURLToPath(import.meta.url)), '../
 const fixture = fs.readFileSync(path.join(fixturesDir, 'medications.html'), 'utf8');
 const appointmentsFixture = fs.readFileSync(path.join(fixturesDir, 'appointments.html'), 'utf8');
 const appointmentDetailFixture = fs.readFileSync(path.join(fixturesDir, 'appointment-detail.html'), 'utf8');
+const testResultsFixture = fs.readFileSync(path.join(fixturesDir, 'testResults.html'), 'utf8');
 
 const NOW = new Date('2026-07-26T12:00:00Z');
 
@@ -148,5 +151,52 @@ describe.skipIf(!browserAvailable)('maccabi appointment detail extraction', () =
       'הביקור כרוך בהשתתפות עצמית, הנגבית באמצעות הוראת קבע.',
       'בהיעדר הוראת קבע, הבא את הסכום המדויק במזומן.',
     ]);
+  });
+});
+
+describe.skipIf(!browserAvailable)('maccabi test-result extraction', () => {
+  let browser: Browser;
+  let page: Page;
+
+  beforeAll(async () => {
+    const launched = await launchTestBrowser();
+    if (!launched) throw new Error('A browser binary was found but would not launch.');
+
+    browser = launched;
+    page = await browser.newPage();
+    await page.setContent(testResultsFixture);
+  });
+
+  afterAll(async () => {
+    await browser?.close().catch(() => {});
+  });
+
+  it('reads every test-result-row card off the page', async () => {
+    const rows = await scrapeTestResultRows(page);
+    // The fixture has five rows: three complete, one missing its name, one with an
+    // unparseable date.
+    expect(rows.length).toBe(5);
+  });
+
+  it('parses the fixture end to end into test results, dropping the two incomplete rows', async () => {
+    const rows = await scrapeTestResultRows(page);
+    const testResults = rows
+      .map((row) => testResultRowToTestResult(row))
+      .filter((testResult) => testResult !== null);
+
+    expect(testResults).toHaveLength(3);
+    expect(testResults.map((t) => t!.testName)).toContain('צילום חזה');
+  });
+
+  it('normalizes the date to ISO form on a known row', async () => {
+    const rows = await scrapeTestResultRows(page);
+    const byName = new Map(
+      rows
+        .map((row) => testResultRowToTestResult(row))
+        .filter((testResult) => testResult !== null)
+        .map((testResult) => [testResult!.testName, testResult!]),
+    );
+
+    expect(byName.get('צילום חזה')?.performedOn).toBe('2026-04-03');
   });
 });

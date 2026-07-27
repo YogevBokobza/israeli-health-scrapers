@@ -87,7 +87,7 @@ export interface ScraperOptions {
   onProgress?: (companyId: HealthFundId, type: ScraperProgressTypes) => void;
 }
 
-export type FetchTarget = 'medications' | 'appointments' | 'messages';
+export type FetchTarget = 'medications' | 'appointments' | 'messages' | 'testResults';
 
 /* -------------------------------------------------------------------------- */
 /* The unified data model                                                      */
@@ -149,6 +149,24 @@ export const messageSchema = z.object({
 export type Message = z.infer<typeof messageSchema>;
 
 /**
+ * A lab/imaging test result. A dated event, not a standing record with an expiry — no
+ * status enum, unlike medications. Anything the page shows that this schema doesn't model
+ * (result value, units, reference range, normal/abnormal) is carried in `raw` so a
+ * calibration pass can promote the real columns to first-class fields without a breaking
+ * change to the field list.
+ */
+export const testResultSchema = z.object({
+  id: z.string(),
+  testName: z.string().min(1),
+  /** ISO date (YYYY-MM-DD) the test was performed. */
+  performedOn: isoDateSchema.nullable(),
+  orderingDoctor: z.string().nullable(),
+  provider: providerIdSchema,
+  raw: z.record(z.unknown()).optional(),
+});
+export type TestResult = z.infer<typeof testResultSchema>;
+
+/**
  * One member's account at one fund — the analogue of an `account` in the bank
  * scrapers, holding the collections we know how to read.
  */
@@ -157,6 +175,7 @@ export const healthAccountSchema = z.object({
   medications: z.array(medicationSchema),
   appointments: z.array(appointmentSchema).optional(),
   messages: z.array(messageSchema).optional(),
+  testResults: z.array(testResultSchema).optional(),
 });
 export type HealthAccount = z.infer<typeof healthAccountSchema>;
 

@@ -3,10 +3,12 @@ import { describe, expect, it } from 'vitest';
 import {
   appointmentRowToAppointment,
   prescriptionRowToMedication,
+  testResultRowToTestResult,
   type ScrapedAppointmentRow,
   type ScrapedPrescriptionRow,
+  type ScrapedTestResultRow,
 } from '../../src/scrapers/maccabi.js';
-import { appointmentSchema, medicationSchema } from '../../src/definitions.js';
+import { appointmentSchema, medicationSchema, testResultSchema } from '../../src/definitions.js';
 
 const NOW = new Date('2026-07-26T12:00:00Z');
 
@@ -132,5 +134,57 @@ describe('appointmentRowToAppointment', () => {
     const instructions = ['הביקור כרוך בהשתתפות עצמית', 'תעריפים אפשר לקבל בקישור הבא'];
     const appointment = appointmentRowToAppointment({ ...appointmentRow, instructions })!;
     expect(appointment.raw).toEqual({ instructions });
+  });
+});
+
+const testResultRow: ScrapedTestResultRow = {
+  testName: 'בדיקת דם כללית',
+  date: '12/06/26',
+  orderingDoctor: 'דר ישראלי דנה, רפואת משפחה',
+};
+
+describe('testResultRowToTestResult', () => {
+  it('produces a value matching the shared schema', () => {
+    const testResult = testResultRowToTestResult(testResultRow);
+    expect(() => testResultSchema.parse(testResult)).not.toThrow();
+  });
+
+  it('normalizes the date to ISO form, accepting both two- and four-digit years', () => {
+    expect(testResultRowToTestResult(testResultRow)?.performedOn).toBe('2026-06-12');
+    expect(testResultRowToTestResult({ ...testResultRow, date: '03/04/2026' })?.performedOn).toBe(
+      '2026-04-03',
+    );
+  });
+
+  it('drops a row with no test name', () => {
+    expect(testResultRowToTestResult({ ...testResultRow, testName: null })).toBeNull();
+  });
+
+  it('drops a row with an unparseable date', () => {
+    expect(testResultRowToTestResult({ ...testResultRow, date: 'ממתין לתוצאות' })).toBeNull();
+    expect(testResultRowToTestResult({ ...testResultRow, date: null })).toBeNull();
+  });
+
+  it('keeps a row whose only missing field is the ordering doctor', () => {
+    const testResult = testResultRowToTestResult({ ...testResultRow, orderingDoctor: null })!;
+    expect(testResult.orderingDoctor).toBeNull();
+    expect(testResult.testName).toBe('בדיקת דם כללית');
+  });
+
+  it('tags every row with the fund it came from', () => {
+    expect(testResultRowToTestResult(testResultRow)?.provider).toBe('maccabi');
+  });
+
+  it('derives a stable id from the same result, and a different one for another', () => {
+    const first = testResultRowToTestResult(testResultRow)!;
+    const again = testResultRowToTestResult({ ...testResultRow })!;
+    const other = testResultRowToTestResult({ ...testResultRow, date: '13/06/26' })!;
+
+    expect(again.id).toBe(first.id);
+    expect(other.id).not.toBe(first.id);
+  });
+
+  it('does not set raw — the scaffold maps nothing extra yet', () => {
+    expect(testResultRowToTestResult(testResultRow)?.raw).toBeUndefined();
   });
 });
