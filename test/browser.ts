@@ -9,9 +9,11 @@ import { chromium, type Browser } from 'playwright';
  * will not look in. PLAYWRIGHT_CHROMIUM_PATH points at it explicitly.
  */
 export function chromiumExecutablePath(): string | undefined {
+  const bundled = chromium.executablePath();
   const candidates = [
     process.env.PLAYWRIGHT_CHROMIUM_PATH,
     process.env.IHS_CHROMIUM_PATH,
+    bundled,
     '/opt/pw-browsers/chromium',
   ].filter((p): p is string => Boolean(p));
 

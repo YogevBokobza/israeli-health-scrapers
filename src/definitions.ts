@@ -149,11 +149,9 @@ export const messageSchema = z.object({
 export type Message = z.infer<typeof messageSchema>;
 
 /**
- * A lab/imaging test result. A dated event, not a standing record with an expiry — no
- * status enum, unlike medications. Anything the page shows that this schema doesn't model
- * (result value, units, reference range, normal/abnormal) is carried in `raw` so a
- * calibration pass can promote the real columns to first-class fields without a breaking
- * change to the field list.
+ * One dated entry on a fund's test-results timeline. It may represent a laboratory batch,
+ * imaging report, or another category rather than an individual laboratory analyte.
+ * Detail-page fields such as values, units, and reference ranges are outside this model.
  */
 export const testResultSchema = z.object({
   id: z.string(),

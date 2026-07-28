@@ -1,50 +1,40 @@
 <!--
-  Uncalibrated scaffold of Maccabi's TestsResults/lobby page. The real page has not been
-  seen yet — the row selector and the inner class/data-hook names are GUESSES following the
-  conventions medications turned out to use, and will be corrected from the first
-  diagnostics dump on a live run. Structure only; all names and dates below invented.
+  Sanitized shape of Maccabi's test-results timeline. The selectors and nesting mirror
+  a live page, but every person, date, category subtype, and medical detail is invented.
 
-  Rows are modelled as `[data-testid="test-result-row"]` cards (the primary guess), inside
-  the same `[data-hook="LazyLoading"]` container medications uses, with the same flat
-  sibling layout: a `TimeLineItem-module__header` leaf carrying the name, a
-  `[data-hook="TimeLineDate"]` sibling carrying the date, and a `.specializationRow p`
-  sibling carrying the ordering doctor. All subject to correction.
-
-  Includes a row with no name (dropped — testName is required) and a row with an
-  unparseable date string (dropped — performedOn is the field that locates a result on a
-  timeline).
+  The fixture covers a laboratory result whose timeline and execution dates differ, a
+  cardiology result with a subtype, and an imaging result without TestExecuteDate.
 -->
 <div role="list" data-hook="LazyLoading">
-  <div role="listitem" data-testid="test-result-row">
-    <div class="TimeLineItem-module__header___gW2KR">בדיקת דם כללית</div>
-    <div data-hook="TimeLineDate">12/06/26</div>
-    <div class="TestResultsTimelineRow__specializationRow___xY1aB">
-      <p class="m-0">דר ישראלי דנה, רפואת משפחה</p>
-    </div>
+  <div role="listitem" data-hook="TimeLineItem">
+    <div data-hook="TimeLineDate">21/12/24</div>
+    <div data-hook="HeaderTimeLineItem">מעבדה</div>
+    <ul role="presentation">
+      <li data-hook="TestExecuteDate"><span>תאריך הבדיקה: 20/12/24</span></li>
+      <li><span>‏רופא מפנה: דר דוגמה רונית</span></li>
+    </ul>
   </div>
 
-  <div role="listitem" data-testid="test-result-row">
-    <div class="TimeLineItem-module__header___gW2KR">צילום חזה</div>
-    <div data-hook="TimeLineDate">03/04/2026</div>
-    <div class="TestResultsTimelineRow__specializationRow___xY1aB">
-      <p class="m-0">דר כהן רנית, רדיולוגיה</p>
-    </div>
+  <div role="listitem" data-hook="TimeLineItem">
+    <div data-hook="TimeLineDate">17/10/24</div>
+    <div data-hook="HeaderTimeLineItem">קרדיולוגיה</div>
+    <ul data-hook="CategoryList">
+      <li><span data-hook="CategoryList_item">תוצאת בדיקה לדוגמה</span></li>
+    </ul>
+    <ul role="presentation">
+      <li data-hook="TestExecuteDate"><span>תאריך הבדיקה: 16/10/24</span></li>
+      <li><span>רופא מפנה: דר בדוי אורי</span></li>
+    </ul>
   </div>
 
-  <div role="listitem" data-testid="test-result-row">
-    <div class="TimeLineItem-module__header___gW2KR">אק"ג במאמץ</div>
-    <div data-hook="TimeLineDate">18/02/26</div>
-    <!-- No specializationRow: an ordering-doctor cell blank is allowed (nullable), kept. -->
-  </div>
-
-  <div role="listitem" data-testid="test-result-row">
-    <!-- No header element: a layout artifact with no name. Must be dropped. -->
-    <div data-hook="TimeLineDate">01/01/26</div>
-  </div>
-
-  <div role="listitem" data-testid="test-result-row">
-    <div class="TimeLineItem-module__header___gW2KR">בדיקת שתן</div>
-    <!-- An unparseable date string: cannot be placed on a timeline, must be dropped. -->
-    <div data-hook="TimeLineDate">ממתין לתוצאות</div>
+  <div role="listitem" data-hook="TimeLineItem">
+    <div data-hook="TimeLineDate">08/06/24</div>
+    <div data-hook="HeaderTimeLineItem"><span>פיענוח </span>הדמיה</div>
+    <ul data-hook="CategoryList">
+      <li><span data-hook="CategoryList_item">צילום אזור לדוגמה</span></li>
+    </ul>
+    <ul role="presentation">
+      <li><span>רופא מפנה: דר משל תמר</span></li>
+    </ul>
   </div>
 </div>

@@ -138,9 +138,10 @@ describe('appointmentRowToAppointment', () => {
 });
 
 const testResultRow: ScrapedTestResultRow = {
-  testName: 'בדיקת דם כללית',
-  date: '12/06/26',
-  orderingDoctor: 'דר ישראלי דנה, רפואת משפחה',
+  testName: 'קרדיולוגיה | תוצאת בדיקה לדוגמה',
+  date: '20/12/24',
+  timelineDate: '21/12/24',
+  orderingDoctor: 'דר דוגמה רונית',
 };
 
 describe('testResultRowToTestResult', () => {
@@ -150,10 +151,16 @@ describe('testResultRowToTestResult', () => {
   });
 
   it('normalizes the date to ISO form, accepting both two- and four-digit years', () => {
-    expect(testResultRowToTestResult(testResultRow)?.performedOn).toBe('2026-06-12');
-    expect(testResultRowToTestResult({ ...testResultRow, date: '03/04/2026' })?.performedOn).toBe(
-      '2026-04-03',
+    expect(testResultRowToTestResult(testResultRow)?.performedOn).toBe('2024-12-20');
+    expect(testResultRowToTestResult({ ...testResultRow, date: '16/10/2024' })?.performedOn).toBe(
+      '2024-10-16',
     );
+  });
+
+  it('extracts a date from the label used by the timeline', () => {
+    expect(
+      testResultRowToTestResult({ ...testResultRow, date: 'תאריך הבדיקה: 20/12/24' })?.performedOn,
+    ).toBe('2024-12-20');
   });
 
   it('drops a row with no test name', () => {
@@ -168,7 +175,7 @@ describe('testResultRowToTestResult', () => {
   it('keeps a row whose only missing field is the ordering doctor', () => {
     const testResult = testResultRowToTestResult({ ...testResultRow, orderingDoctor: null })!;
     expect(testResult.orderingDoctor).toBeNull();
-    expect(testResult.testName).toBe('בדיקת דם כללית');
+    expect(testResult.testName).toBe('קרדיולוגיה | תוצאת בדיקה לדוגמה');
   });
 
   it('tags every row with the fund it came from', () => {
@@ -178,13 +185,20 @@ describe('testResultRowToTestResult', () => {
   it('derives a stable id from the same result, and a different one for another', () => {
     const first = testResultRowToTestResult(testResultRow)!;
     const again = testResultRowToTestResult({ ...testResultRow })!;
-    const other = testResultRowToTestResult({ ...testResultRow, date: '13/06/26' })!;
+    const other = testResultRowToTestResult({ ...testResultRow, date: '21/12/24' })!;
 
     expect(again.id).toBe(first.id);
     expect(other.id).not.toBe(first.id);
   });
 
-  it('does not set raw — the scaffold maps nothing extra yet', () => {
+  it('keeps entries with different stable timeline dates distinct', () => {
+    const first = testResultRowToTestResult(testResultRow)!;
+    const second = testResultRowToTestResult({ ...testResultRow, timelineDate: '22/12/24' })!;
+
+    expect(second.id).not.toBe(first.id);
+  });
+
+  it('does not set raw because the timeline maps no extra fields', () => {
     expect(testResultRowToTestResult(testResultRow)?.raw).toBeUndefined();
   });
 });

@@ -171,32 +171,31 @@ describe.skipIf(!browserAvailable)('maccabi test-result extraction', () => {
     await browser?.close().catch(() => {});
   });
 
-  it('reads every test-result-row card off the page', async () => {
+  it('reads every timeline entry off the page', async () => {
     const rows = await scrapeTestResultRows(page);
-    // The fixture has five rows: three complete, one missing its name, one with an
-    // unparseable date.
-    expect(rows.length).toBe(5);
+    expect(rows).toHaveLength(3);
   });
 
-  it('parses the fixture end to end into test results, dropping the two incomplete rows', async () => {
+  it('extracts the laboratory category, execution date, and referring doctor', async () => {
     const rows = await scrapeTestResultRows(page);
-    const testResults = rows
-      .map((row) => testResultRowToTestResult(row))
-      .filter((testResult) => testResult !== null);
-
-    expect(testResults).toHaveLength(3);
-    expect(testResults.map((t) => t!.testName)).toContain('צילום חזה');
+    expect(rows[0]).toEqual({
+      testName: 'מעבדה',
+      date: 'תאריך הבדיקה: 20/12/24',
+      timelineDate: '21/12/24',
+      orderingDoctor: 'דר דוגמה רונית',
+    });
   });
 
-  it('normalizes the date to ISO form on a known row', async () => {
+  it('combines a category and subtype into the timeline result name', async () => {
     const rows = await scrapeTestResultRows(page);
-    const byName = new Map(
-      rows
-        .map((row) => testResultRowToTestResult(row))
-        .filter((testResult) => testResult !== null)
-        .map((testResult) => [testResult!.testName, testResult!]),
-    );
+    expect(rows[1]?.testName).toBe('קרדיולוגיה | תוצאת בדיקה לדוגמה');
+  });
 
-    expect(byName.get('צילום חזה')?.performedOn).toBe('2026-04-03');
+  it('prefers the execution date and falls back to the timeline date', async () => {
+    const rows = await scrapeTestResultRows(page);
+    const testResults = rows.map((row) => testResultRowToTestResult(row));
+
+    expect(testResults[0]?.performedOn).toBe('2024-12-20');
+    expect(testResults[2]?.performedOn).toBe('2024-06-08');
   });
 });

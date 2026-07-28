@@ -26,12 +26,9 @@ import { captureDiagnostics } from '../helpers/debug.js';
  * Every Maccabi-specific URL and selector lives in this file. The site will change —
  * that is a certainty, not a risk — and when it does this is the only file to edit.
  *
- * NOTE: login, medications, and appointments selectors are all calibrated against a
- * live account (see git history). testResults selectors are UNCALIBRATED guesses —
- * they follow the same data-testid/data-hook conventions the other views turned out to
- * use, but the page has not been seen yet; treat a first run against them as a
- * calibration pass and fix from the diagnostics dump. On failure the scraper writes an
- * HTML dump under data/diagnostics, and the fix belongs in the constants below.
+ * NOTE: login, medications, appointments, and test-results selectors are calibrated
+ * against a live account (see git history). On failure the scraper writes an HTML dump
+ * under data/diagnostics, and the fix belongs in the constants below.
  */
 
 const BASE_URL = 'https://online.maccabi4u.co.il';
@@ -43,9 +40,7 @@ const urls = {
   // view this scraper models: one row per drug with its next refill deadline.
   medications: `${BASE_URL}/sonline/medicalfile/medications/ValidPrescriptions/`,
   appointments: `${BASE_URL}/sonline/appointmentOrder/FutureAppointments/Lobby/`,
-  // Uncalibrated — path from health-mcp/docs/roadmap.md. The site renders "lobby" lower
-  // case in the appointments path; TestsResults may differ. Fix from a diagnostics dump.
-  testResults: `${BASE_URL}/sonline/medicalfile/TestsResults/lobby/`,
+  testResults: `${BASE_URL}/sonline/testsResults/TestsResults/lobby/`,
 } as const;
 
 const selectors = {
@@ -88,11 +83,7 @@ const selectors = {
   appointmentAddressValue: ['[class*="ProviderDetails__providerInfo"]'],
   /** "הנחיות לפני ביקור" (pre-visit instructions), also only on the detail page. */
   appointmentInstructionItem: ['[class*="VisitInstructions__instructionItem"]'],
-  // Uncalibrated — guess following the data-testid convention medications turned out to
-  // use, with the TimeLineItem-module__item class appointments fell back to as the second.
-  // The page has not been seen; both the row selector and the inner ones below are bets
-  // to be corrected from the first diagnostics dump.
-  testResultRow: ['[data-testid="test-result-row"]', '[class*="TimeLineItem-module__item"]'],
+  testResultRow: ['[data-hook="TimeLineItem"]'],
 } as const;
 
 /* -------------------------------------------------------------------------- */
@@ -271,6 +262,8 @@ export interface ScrapedTestResultRow {
   testName: string | null;
   /** The performance date shown on the row (e.g. "09/08/26"). */
   date: string | null;
+  /** The date of the timeline entry, which can differ from the performance date. */
+  timelineDate: string | null;
   orderingDoctor: string | null;
 }
 
@@ -291,7 +284,7 @@ export function testResultRowToTestResult(row: ScrapedTestResultRow): TestResult
   // No stable id is exposed by the page, so one is derived from the fields that together
   // identify a single result — stable across re-fetches, distinct from any other row.
   const id = createHash('sha1')
-    .update([performedOn, testName, orderingDoctor].join('|'))
+    .update([performedOn, parseIsraeliDate(row.timelineDate), testName, orderingDoctor].join('|'))
     .digest('hex')
     .slice(0, 16);
 
@@ -308,18 +301,31 @@ export function testResultRowToTestResult(row: ScrapedTestResultRow): TestResult
 export async function scrapeTestResultRows(page: Page): Promise<ScrapedTestResultRow[]> {
   return page.evaluate((rowSelector) => {
     const text = (el: Element | null) => {
-      const value = (el?.textContent ?? '').replace(/\s+/g, ' ').trim();
+      const value = (el?.textContent ?? '')
+        .replace(/[‎‏‪-‮⁦-⁩]/g, '')
+        .replace(/\s+/g, ' ')
+        .trim();
       return value.length > 0 ? value : null;
     };
 
-    return Array.from(document.querySelectorAll(rowSelector)).map((row) => ({
-      // Inner selectors mirror the conventions medications/appointments read off their
-      // rows — the TimeLineItem header carries the title and a sibling holds the date.
-      // All uncalibrated; correct from the first diagnostics dump.
-      testName: text(row.querySelector('[class*="TimeLineItem-module__header"]')),
-      date: text(row.querySelector('[data-hook="TimeLineDate"]')),
-      orderingDoctor: text(row.querySelector('[class*="specializationRow"] p')),
-    }));
+    return Array.from(document.querySelectorAll(rowSelector)).map((row) => {
+      const titleParts = [
+        text(row.querySelector('[data-hook="HeaderTimeLineItem"]')),
+        ...Array.from(row.querySelectorAll('[data-hook="CategoryList_item"]')).map(text),
+      ].filter((part): part is string => part !== null);
+      const referringDoctor = Array.from(row.querySelectorAll('li, span'))
+        .map(text)
+        .find((value) => value?.startsWith('רופא מפנה:'));
+
+      return {
+        testName: titleParts.length > 0 ? titleParts.join(' | ') : null,
+        date:
+          text(row.querySelector('[data-hook="TestExecuteDate"]')) ??
+          text(row.querySelector('[data-hook="TimeLineDate"]')),
+        timelineDate: text(row.querySelector('[data-hook="TimeLineDate"]')),
+        orderingDoctor: referringDoctor?.replace(/^רופא מפנה:\s*/, '') ?? null,
+      };
+    });
   }, selectors.testResultRow[0]);
 }
 
