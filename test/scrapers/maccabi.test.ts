@@ -3,10 +3,12 @@ import { describe, expect, it } from 'vitest';
 import {
   appointmentRowToAppointment,
   prescriptionRowToMedication,
+  testResultRowToTestResult,
   type ScrapedAppointmentRow,
   type ScrapedPrescriptionRow,
+  type ScrapedTestResultRow,
 } from '../../src/scrapers/maccabi.js';
-import { appointmentSchema, medicationSchema } from '../../src/definitions.js';
+import { appointmentSchema, medicationSchema, testResultSchema } from '../../src/definitions.js';
 
 const NOW = new Date('2026-07-26T12:00:00Z');
 
@@ -132,5 +134,71 @@ describe('appointmentRowToAppointment', () => {
     const instructions = ['הביקור כרוך בהשתתפות עצמית', 'תעריפים אפשר לקבל בקישור הבא'];
     const appointment = appointmentRowToAppointment({ ...appointmentRow, instructions })!;
     expect(appointment.raw).toEqual({ instructions });
+  });
+});
+
+const testResultRow: ScrapedTestResultRow = {
+  testName: 'קרדיולוגיה | תוצאת בדיקה לדוגמה',
+  date: '20/12/24',
+  timelineDate: '21/12/24',
+  orderingDoctor: 'דר דוגמה רונית',
+};
+
+describe('testResultRowToTestResult', () => {
+  it('produces a value matching the shared schema', () => {
+    const testResult = testResultRowToTestResult(testResultRow);
+    expect(() => testResultSchema.parse(testResult)).not.toThrow();
+  });
+
+  it('normalizes the date to ISO form, accepting both two- and four-digit years', () => {
+    expect(testResultRowToTestResult(testResultRow)?.performedOn).toBe('2024-12-20');
+    expect(testResultRowToTestResult({ ...testResultRow, date: '16/10/2024' })?.performedOn).toBe(
+      '2024-10-16',
+    );
+  });
+
+  it('extracts a date from the label used by the timeline', () => {
+    expect(
+      testResultRowToTestResult({ ...testResultRow, date: 'תאריך הבדיקה: 20/12/24' })?.performedOn,
+    ).toBe('2024-12-20');
+  });
+
+  it('drops a row with no test name', () => {
+    expect(testResultRowToTestResult({ ...testResultRow, testName: null })).toBeNull();
+  });
+
+  it('drops a row with an unparseable date', () => {
+    expect(testResultRowToTestResult({ ...testResultRow, date: 'ממתין לתוצאות' })).toBeNull();
+    expect(testResultRowToTestResult({ ...testResultRow, date: null })).toBeNull();
+  });
+
+  it('keeps a row whose only missing field is the ordering doctor', () => {
+    const testResult = testResultRowToTestResult({ ...testResultRow, orderingDoctor: null })!;
+    expect(testResult.orderingDoctor).toBeNull();
+    expect(testResult.testName).toBe('קרדיולוגיה | תוצאת בדיקה לדוגמה');
+  });
+
+  it('tags every row with the fund it came from', () => {
+    expect(testResultRowToTestResult(testResultRow)?.provider).toBe('maccabi');
+  });
+
+  it('derives a stable id from the same result, and a different one for another', () => {
+    const first = testResultRowToTestResult(testResultRow)!;
+    const again = testResultRowToTestResult({ ...testResultRow })!;
+    const other = testResultRowToTestResult({ ...testResultRow, date: '21/12/24' })!;
+
+    expect(again.id).toBe(first.id);
+    expect(other.id).not.toBe(first.id);
+  });
+
+  it('keeps entries with different stable timeline dates distinct', () => {
+    const first = testResultRowToTestResult(testResultRow)!;
+    const second = testResultRowToTestResult({ ...testResultRow, timelineDate: '22/12/24' })!;
+
+    expect(second.id).not.toBe(first.id);
+  });
+
+  it('does not set raw because the timeline maps no extra fields', () => {
+    expect(testResultRowToTestResult(testResultRow)?.raw).toBeUndefined();
   });
 });

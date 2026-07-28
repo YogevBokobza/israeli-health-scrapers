@@ -87,7 +87,7 @@ export interface ScraperOptions {
   onProgress?: (companyId: HealthFundId, type: ScraperProgressTypes) => void;
 }
 
-export type FetchTarget = 'medications' | 'appointments' | 'messages';
+export type FetchTarget = 'medications' | 'appointments' | 'messages' | 'testResults';
 
 /* -------------------------------------------------------------------------- */
 /* The unified data model                                                      */
@@ -149,6 +149,22 @@ export const messageSchema = z.object({
 export type Message = z.infer<typeof messageSchema>;
 
 /**
+ * One dated entry on a fund's test-results timeline. It may represent a laboratory batch,
+ * imaging report, or another category rather than an individual laboratory analyte.
+ * Detail-page fields such as values, units, and reference ranges are outside this model.
+ */
+export const testResultSchema = z.object({
+  id: z.string(),
+  testName: z.string().min(1),
+  /** ISO date (YYYY-MM-DD) the test was performed. */
+  performedOn: isoDateSchema.nullable(),
+  orderingDoctor: z.string().nullable(),
+  provider: providerIdSchema,
+  raw: z.record(z.unknown()).optional(),
+});
+export type TestResult = z.infer<typeof testResultSchema>;
+
+/**
  * One member's account at one fund — the analogue of an `account` in the bank
  * scrapers, holding the collections we know how to read.
  */
@@ -157,6 +173,7 @@ export const healthAccountSchema = z.object({
   medications: z.array(medicationSchema),
   appointments: z.array(appointmentSchema).optional(),
   messages: z.array(messageSchema).optional(),
+  testResults: z.array(testResultSchema).optional(),
 });
 export type HealthAccount = z.infer<typeof healthAccountSchema>;
 

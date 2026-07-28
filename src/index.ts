@@ -40,6 +40,7 @@ export {
   medicationSchema,
   appointmentSchema,
   messageSchema,
+  testResultSchema,
   healthAccountSchema,
   providerIdSchema,
 } from './definitions.js';
@@ -55,6 +56,7 @@ export type {
   MedicationStatus,
   Appointment,
   Message,
+  TestResult,
   FetchTarget,
   LoginMethod,
 } from './definitions.js';

@@ -9,7 +9,10 @@ import {
   prescriptionRowToMedication,
   scrapeAppointmentDetail,
   scrapeAppointmentRows,
+  loadAllTestResultRows,
   scrapePrescriptionRows,
+  scrapeTestResultRows,
+  testResultRowToTestResult,
 } from '../../src/scrapers/maccabi.js';
 import { browserAvailable, launchTestBrowser } from '../browser.js';
 
@@ -27,6 +30,7 @@ const fixturesDir = path.join(path.dirname(fileURLToPath(import.meta.url)), '../
 const fixture = fs.readFileSync(path.join(fixturesDir, 'medications.html'), 'utf8');
 const appointmentsFixture = fs.readFileSync(path.join(fixturesDir, 'appointments.html'), 'utf8');
 const appointmentDetailFixture = fs.readFileSync(path.join(fixturesDir, 'appointment-detail.html'), 'utf8');
+const testResultsFixture = fs.readFileSync(path.join(fixturesDir, 'testResults.html'), 'utf8');
 
 const NOW = new Date('2026-07-26T12:00:00Z');
 
@@ -148,5 +152,82 @@ describe.skipIf(!browserAvailable)('maccabi appointment detail extraction', () =
       'הביקור כרוך בהשתתפות עצמית, הנגבית באמצעות הוראת קבע.',
       'בהיעדר הוראת קבע, הבא את הסכום המדויק במזומן.',
     ]);
+  });
+});
+
+describe.skipIf(!browserAvailable)('maccabi test-result extraction', () => {
+  let browser: Browser;
+  let page: Page;
+
+  beforeAll(async () => {
+    const launched = await launchTestBrowser();
+    if (!launched) throw new Error('A browser binary was found but would not launch.');
+
+    browser = launched;
+    page = await browser.newPage();
+    await page.setContent(testResultsFixture);
+  });
+
+  afterAll(async () => {
+    await browser?.close().catch(() => {});
+  });
+
+  it('reads every timeline entry off the page', async () => {
+    const rows = await scrapeTestResultRows(page);
+    expect(rows).toHaveLength(3);
+  });
+
+  it('extracts the laboratory category, execution date, and referring doctor', async () => {
+    const rows = await scrapeTestResultRows(page);
+    expect(rows[0]).toEqual({
+      testName: 'מעבדה',
+      date: 'תאריך הבדיקה: 20/12/24',
+      timelineDate: '21/12/24',
+      orderingDoctor: 'דר דוגמה רונית',
+    });
+  });
+
+  it('combines a category and subtype into the timeline result name', async () => {
+    const rows = await scrapeTestResultRows(page);
+    expect(rows[1]?.testName).toBe('קרדיולוגיה | תוצאת בדיקה לדוגמה');
+  });
+
+  it('prefers the execution date and falls back to the timeline date', async () => {
+    const rows = await scrapeTestResultRows(page);
+    const testResults = rows.map((row) => testResultRowToTestResult(row));
+
+    expect(testResults[0]?.performedOn).toBe('2024-12-20');
+    expect(testResults[2]?.performedOn).toBe('2024-06-08');
+  });
+
+  it('loads every lazy timeline batch before extraction', async () => {
+    await page.setContent(`
+      <div data-hook="LazyLoading">
+        <div data-hook="TimeLineItem">first</div>
+        <div id="sentinel"></div>
+      </div>
+      <script>
+        let batch = 1;
+        let loading = false;
+        window.scrollTo = () => {
+          if (loading || batch > 2) return;
+          loading = true;
+          setTimeout(() => {
+            const row = document.createElement('div');
+            row.dataset.hook = 'TimeLineItem';
+            row.textContent = String(++batch);
+            document.querySelector('[data-hook="LazyLoading"]').insertBefore(
+              row,
+              document.querySelector('#sentinel'),
+            );
+            setTimeout(() => { loading = false; }, 20);
+          }, 20);
+        };
+      </script>
+    `);
+
+    await loadAllTestResultRows(page, 30, 1_000);
+
+    expect(await page.locator('[data-hook="TimeLineItem"]').count()).toBe(3);
   });
 });
