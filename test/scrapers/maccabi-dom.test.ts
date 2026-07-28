@@ -9,6 +9,7 @@ import {
   prescriptionRowToMedication,
   scrapeAppointmentDetail,
   scrapeAppointmentRows,
+  loadAllTestResultRows,
   scrapePrescriptionRows,
   scrapeTestResultRows,
   testResultRowToTestResult,
@@ -197,5 +198,36 @@ describe.skipIf(!browserAvailable)('maccabi test-result extraction', () => {
 
     expect(testResults[0]?.performedOn).toBe('2024-12-20');
     expect(testResults[2]?.performedOn).toBe('2024-06-08');
+  });
+
+  it('loads every lazy timeline batch before extraction', async () => {
+    await page.setContent(`
+      <div data-hook="LazyLoading">
+        <div data-hook="TimeLineItem">first</div>
+        <div id="sentinel"></div>
+      </div>
+      <script>
+        let batch = 1;
+        let loading = false;
+        window.scrollTo = () => {
+          if (loading || batch > 2) return;
+          loading = true;
+          setTimeout(() => {
+            const row = document.createElement('div');
+            row.dataset.hook = 'TimeLineItem';
+            row.textContent = String(++batch);
+            document.querySelector('[data-hook="LazyLoading"]').insertBefore(
+              row,
+              document.querySelector('#sentinel'),
+            );
+            setTimeout(() => { loading = false; }, 20);
+          }, 20);
+        };
+      </script>
+    `);
+
+    await loadAllTestResultRows(page, 30, 1_000);
+
+    expect(await page.locator('[data-hook="TimeLineItem"]').count()).toBe(3);
   });
 });

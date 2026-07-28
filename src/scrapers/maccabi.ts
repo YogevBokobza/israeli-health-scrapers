@@ -329,6 +329,31 @@ export async function scrapeTestResultRows(page: Page): Promise<ScrapedTestResul
   }, selectors.testResultRow[0]);
 }
 
+/** Scrolls the lazy timeline until another scroll no longer appends rows. */
+export async function loadAllTestResultRows(
+  page: Page,
+  quietMs = 2_000,
+  timeoutMs = 30_000,
+): Promise<void> {
+  const rows = page.locator(selectors.testResultRow[0]);
+  const deadline = Date.now() + timeoutMs;
+  let count = await rows.count();
+  let lastGrowth = Date.now();
+
+  while (count > 0 && Date.now() < deadline) {
+    await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
+    await new Promise((resolve) => setTimeout(resolve, 100));
+
+    const nextCount = await rows.count();
+    if (nextCount > count) {
+      count = nextCount;
+      lastGrowth = Date.now();
+    } else if (Date.now() - lastGrowth >= quietMs) {
+      return;
+    }
+  }
+}
+
 export class MaccabiScraper extends BaseScraperWithBrowser {
   protected getLoginOptions(): LoginOptions {
     return {
@@ -504,6 +529,7 @@ export class MaccabiScraper extends BaseScraperWithBrowser {
     // This SPA route renders its rows client-side after the data request resolves;
     // domcontentloaded fires before that — same race fetchMedications waits out.
     await waitUntil(async () => elementExists(page, selectors.testResultRow), 8_000);
+    await loadAllTestResultRows(page);
 
     const testResults = (await scrapeTestResultRows(page))
       .map((row) => testResultRowToTestResult(row))
