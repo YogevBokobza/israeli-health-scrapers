@@ -83,7 +83,9 @@ const selectors = {
   appointmentAddressValue: ['[class*="ProviderDetails__providerInfo"]'],
   /** "הנחיות לפני ביקור" (pre-visit instructions), also only on the detail page. */
   appointmentInstructionItem: ['[class*="VisitInstructions__instructionItem"]'],
-  testResultRow: ['[data-hook="TimeLineItem"]'],
+  // The component can render a TimeLineItem wrapper around the actual list item. Match
+  // only semantic list entries so one visible result is not extracted twice.
+  testResultRow: ['[role="listitem"][data-hook="TimeLineItem"]'],
 } as const;
 
 /* -------------------------------------------------------------------------- */
@@ -411,7 +413,10 @@ export class MaccabiScraper extends BaseScraperWithBrowser {
       possibleResults: {
         [LoginResults.AccountBlocked]: [(page) => elementExists(page, selectors.blocked)],
         [LoginResults.TwoFactorRequired]: [(page) => elementExists(page, selectors.otpInput)],
-        [LoginResults.Success]: [(page) => elementExists(page, selectors.loggedInMarker)],
+        [LoginResults.Success]: [
+          /\/sonline\/homepage\//i,
+          (page) => elementExists(page, selectors.loggedInMarker),
+        ],
         [LoginResults.InvalidPassword]: [
           (page) => elementExists(page, selectors.invalidCredentials),
         ],

@@ -1,6 +1,8 @@
+import type { Page } from 'playwright';
 import { describe, expect, it } from 'vitest';
 
 import {
+  MaccabiScraper,
   appointmentRowToAppointment,
   prescriptionRowToMedication,
   testResultRowToTestResult,
@@ -8,9 +10,40 @@ import {
   type ScrapedPrescriptionRow,
   type ScrapedTestResultRow,
 } from '../../src/scrapers/maccabi.js';
-import { appointmentSchema, medicationSchema, testResultSchema } from '../../src/definitions.js';
+import {
+  LoginResults,
+  matchLoginResult,
+  type LoginOptions,
+} from '../../src/scrapers/base-scraper-with-browser.js';
+import {
+  HealthFundTypes,
+  appointmentSchema,
+  medicationSchema,
+  testResultSchema,
+} from '../../src/definitions.js';
 
 const NOW = new Date('2026-07-26T12:00:00Z');
+
+class TestableMaccabiScraper extends MaccabiScraper {
+  loginOptions(): LoginOptions {
+    return this.getLoginOptions();
+  }
+}
+
+describe('Maccabi login conditions', () => {
+  it('recognizes the redirected homepage URL before the SPA logout marker hydrates', async () => {
+    const scraper = new TestableMaccabiScraper({ companyId: HealthFundTypes.maccabi });
+    const page = {
+      url: () =>
+        'https://online.maccabi4u.co.il/sonline/homepage/NotificationAndUpdates/',
+      locator: () => ({ count: async () => 0 }),
+    } as unknown as Page;
+
+    await expect(matchLoginResult(scraper.loginOptions().possibleResults, page)).resolves.toBe(
+      LoginResults.Success,
+    );
+  });
+});
 
 const standingRow: ScrapedPrescriptionRow = {
   name: 'FICTAMOL 500MG TAB (20)',

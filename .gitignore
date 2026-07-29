@@ -9,6 +9,7 @@ dist/
 data/
 
 *.log
+*.tgz
 .DS_Store
 
 # Graphify local state
