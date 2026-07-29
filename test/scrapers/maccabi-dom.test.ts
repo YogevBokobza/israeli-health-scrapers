@@ -203,7 +203,7 @@ describe.skipIf(!browserAvailable)('maccabi test-result extraction', () => {
   it('loads every lazy timeline batch before extraction', async () => {
     await page.setContent(`
       <div data-hook="LazyLoading">
-        <div data-hook="TimeLineItem">first</div>
+        <div role="listitem" data-hook="TimeLineItem">first</div>
         <div id="sentinel"></div>
       </div>
       <script>
@@ -214,6 +214,7 @@ describe.skipIf(!browserAvailable)('maccabi test-result extraction', () => {
           loading = true;
           setTimeout(() => {
             const row = document.createElement('div');
+            row.role = 'listitem';
             row.dataset.hook = 'TimeLineItem';
             row.textContent = String(++batch);
             document.querySelector('[data-hook="LazyLoading"]').insertBefore(
@@ -228,6 +229,25 @@ describe.skipIf(!browserAvailable)('maccabi test-result extraction', () => {
 
     await loadAllTestResultRows(page, 30, 1_000);
 
-    expect(await page.locator('[data-hook="TimeLineItem"]').count()).toBe(3);
+    expect(await page.locator('[role="listitem"][data-hook="TimeLineItem"]').count()).toBe(3);
+  });
+
+  it('ignores a matching component wrapper around a real timeline list item', async () => {
+    await page.setContent(`
+      <div role="list" data-hook="LazyLoading">
+        <div data-hook="TimeLineItem">
+          <div role="listitem" data-hook="TimeLineItem">
+            <div data-hook="TimeLineDate">21/12/24</div>
+            <div data-hook="HeaderTimeLineItem">קטגוריה לדוגמה</div>
+            <ul role="presentation">
+              <li data-hook="TestExecuteDate"><span>תאריך הבדיקה: 20/12/24</span></li>
+              <li><span>רופא מפנה: דר דוגמה רונית</span></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    `);
+
+    await expect(scrapeTestResultRows(page)).resolves.toHaveLength(1);
   });
 });

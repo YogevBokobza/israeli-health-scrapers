@@ -107,6 +107,42 @@ export async function matchLoginResult(
   return null;
 }
 
+/**
+ * Waits until the initial navigation has rendered either a restored logged-in session
+ * or the actual login form. A slow SPA can spend several seconds showing only a loading
+ * shell; treating that third state as "logged out" makes the caller look for fields on
+ * a page that has not rendered anything yet.
+ */
+export async function waitForInitialLoginState(
+  possibleResults: PossibleLoginResults,
+  fields: readonly LoginField[],
+  page: Page,
+  timeoutMs: number,
+): Promise<'logged-in' | 'login-form' | null> {
+  let state: 'logged-in' | 'login-form' | null = null;
+
+  await waitUntil(async () => {
+    const successConditions = possibleResults[LoginResults.Success] ?? [];
+    for (const condition of successConditions) {
+      if (await conditionMatches(condition, page)) {
+        state = 'logged-in';
+        return true;
+      }
+    }
+
+    for (const field of fields) {
+      if (await elementExists(page, field.selectors)) {
+        state = 'login-form';
+        return true;
+      }
+    }
+
+    return false;
+  }, timeoutMs);
+
+  return state;
+}
+
 const LOGIN_RESULT_ERRORS: Partial<Record<LoginResults, ScraperErrorTypes>> = {
   [LoginResults.InvalidPassword]: ScraperErrorTypes.InvalidPassword,
   [LoginResults.ChangePassword]: ScraperErrorTypes.ChangePassword,
@@ -169,34 +205,22 @@ export abstract class BaseScraperWithBrowser extends BaseScraper {
     this.page = await this.context.newPage();
   }
 
-  /**
-   * Checks whether the session we restored is still good, by loading the login URL and
-   * seeing whether the fund lets us straight through.
-   */
-  private async alreadyLoggedIn(loginOptions: LoginOptions): Promise<boolean> {
-    const successConditions = loginOptions.possibleResults[LoginResults.Success];
-    if (!successConditions) return false;
-
-    // A restored session redirects straight to the logged-in SPA, but its markers
-    // only exist post-hydration — a single check right after domcontentloaded would
-    // catch it mid-render and wrongly fall through to a login form that isn't there.
-    return waitUntil(async () => {
-      for (const condition of successConditions) {
-        if (await conditionMatches(condition, this.activePage)) return true;
-      }
-      return false;
-    }, 5_000);
-  }
-
   override async login(credentials: ScraperCredentials): Promise<ScraperLoginResult> {
     if (!this.page) await this.initialize();
 
     const loginOptions = this.getLoginOptions();
     const page = this.activePage;
+    const fields = loginOptions.fields(credentials);
 
     await page.goto(loginOptions.loginUrl, { waitUntil: 'domcontentloaded' });
 
-    if (await this.alreadyLoggedIn(loginOptions)) {
+    const initialState = await waitForInitialLoginState(
+      loginOptions.possibleResults,
+      fields,
+      page,
+      this.options.timeout ?? DEFAULT_TIMEOUT_MS,
+    );
+    if (initialState === 'logged-in') {
       this.log('reused stored session');
       await loginOptions.postLogin?.(page);
       // Some funds rotate the session token on each use; re-saving keeps the stored
@@ -207,7 +231,7 @@ export abstract class BaseScraperWithBrowser extends BaseScraper {
 
     await loginOptions.checkReadiness?.(page);
 
-    for (const field of loginOptions.fields(credentials)) {
+    for (const field of fields) {
       if (!(await fillFirst(page, field.selectors, field.value))) {
         const diagnostics = await captureDiagnostics(page, this.options.companyId, 'login-field-missing');
         throw new SelectorDriftError(
