@@ -1,0 +1,157 @@
+{
+  "package.json": {
+    "mtime": 1785057711.4372683,
+    "ast_hash": "53a1aa78e2060187df30868e9b74acd5",
+    "semantic_hash": "53a1aa78e2060187df30868e9b74acd5"
+  },
+  "src/constants.ts": {
+    "mtime": 1785057711.43827,
+    "ast_hash": "b3d32b519a7e28e1f4d478138a987445",
+    "semantic_hash": "b3d32b519a7e28e1f4d478138a987445"
+  },
+  "src/definitions.ts": {
+    "mtime": 1785257774.8999693,
+    "ast_hash": "8448fc719e6e59d8dbda8f494ff511be",
+    "semantic_hash": "8448fc719e6e59d8dbda8f494ff511be"
+  },
+  "src/helpers/dates.ts": {
+    "mtime": 1785074426.7315605,
+    "ast_hash": "41d5108f5c3f59103fca96dc12418298",
+    "semantic_hash": "41d5108f5c3f59103fca96dc12418298"
+  },
+  "src/helpers/debug.ts": {
+    "mtime": 1785057711.4392715,
+    "ast_hash": "2a23883e6cab4fdacaf594ec475d6157",
+    "semantic_hash": "2a23883e6cab4fdacaf594ec475d6157"
+  },
+  "src/helpers/elements.ts": {
+    "mtime": 1785069782.4582875,
+    "ast_hash": "81339b6814e509f0328f4c9c2df90a32",
+    "semantic_hash": "81339b6814e509f0328f4c9c2df90a32"
+  },
+  "src/helpers/paths.ts": {
+    "mtime": 1785057711.4397695,
+    "ast_hash": "b0323b3cea086b876f90de9a1ddf1002",
+    "semantic_hash": "b0323b3cea086b876f90de9a1ddf1002"
+  },
+  "src/helpers/session.ts": {
+    "mtime": 1785057711.4397695,
+    "ast_hash": "4aa93f07d061b4e7fc3125e86f80a5cb",
+    "semantic_hash": "4aa93f07d061b4e7fc3125e86f80a5cb"
+  },
+  "src/index.ts": {
+    "mtime": 1785257774.900469,
+    "ast_hash": "4a67c1942a6dcd4f7ae2f1fc2c864358",
+    "semantic_hash": "4a67c1942a6dcd4f7ae2f1fc2c864358"
+  },
+  "src/scrapers/base-scraper-with-browser.ts": {
+    "mtime": 1785074426.7320602,
+    "ast_hash": "0a2ee5ef732a9d85efff2eca90abdac7",
+    "semantic_hash": "0a2ee5ef732a9d85efff2eca90abdac7"
+  },
+  "src/scrapers/base-scraper.ts": {
+    "mtime": 1785057711.4412687,
+    "ast_hash": "f0127f1113ff25685a9829b8ab9b4c6a",
+    "semantic_hash": "f0127f1113ff25685a9829b8ab9b4c6a"
+  },
+  "src/scrapers/errors.ts": {
+    "mtime": 1785057711.4412687,
+    "ast_hash": "b316da651b66fd7c41adc93dfe5ba7f4",
+    "semantic_hash": "b316da651b66fd7c41adc93dfe5ba7f4"
+  },
+  "src/scrapers/factory.ts": {
+    "mtime": 1785057711.4417691,
+    "ast_hash": "b04a719bc4aff3be63e8e8dc0318127d",
+    "semantic_hash": "b04a719bc4aff3be63e8e8dc0318127d"
+  },
+  "src/scrapers/interface.ts": {
+    "mtime": 1785057711.4417691,
+    "ast_hash": "56216c69adc8f3c560ae823fdf0eb970",
+    "semantic_hash": "56216c69adc8f3c560ae823fdf0eb970"
+  },
+  "src/scrapers/maccabi.ts": {
+    "mtime": 1785257774.9009695,
+    "ast_hash": "cd3b6bea3dff3709f8d832a283fd5783",
+    "semantic_hash": "cd3b6bea3dff3709f8d832a283fd5783"
+  },
+  "src/scrapers/mock.ts": {
+    "mtime": 1785057711.4422686,
+    "ast_hash": "9242bf6a6708e7ec55a1f360ff8dc965",
+    "semantic_hash": "9242bf6a6708e7ec55a1f360ff8dc965"
+  },
+  "test/browser.ts": {
+    "mtime": 1785257774.9014685,
+    "ast_hash": "6891e78f808ff720887469a5fc61116c",
+    "semantic_hash": "6891e78f808ff720887469a5fc61116c"
+  },
+  "test/contract/scrapers.test.ts": {
+    "mtime": 1785057711.4432688,
+    "ast_hash": "c1b52e8974a125992772de42e0c49876",
+    "semantic_hash": "c1b52e8974a125992772de42e0c49876"
+  },
+  "test/helpers/dates.test.ts": {
+    "mtime": 1785057711.4437687,
+    "ast_hash": "882dbf6583cc1cb242eec84e0ae72adb",
+    "semantic_hash": "882dbf6583cc1cb242eec84e0ae72adb"
+  },
+  "test/scrapers/maccabi-dom.test.ts": {
+    "mtime": 1785257774.9019687,
+    "ast_hash": "c79710c3a8929b11c88263fe8ab789ae",
+    "semantic_hash": "c79710c3a8929b11c88263fe8ab789ae"
+  },
+  "test/scrapers/maccabi.test.ts": {
+    "mtime": 1785257774.9029682,
+    "ast_hash": "8d957e1b8657f35799cfbd781f1ae91c",
+    "semantic_hash": "8d957e1b8657f35799cfbd781f1ae91c"
+  },
+  "tsconfig.json": {
+    "mtime": 1785057711.444769,
+    "ast_hash": "23b5c047b366a27e6875108f8714cfc4",
+    "semantic_hash": "23b5c047b366a27e6875108f8714cfc4"
+  },
+  "vitest.config.ts": {
+    "mtime": 1785057711.444769,
+    "ast_hash": "f158a549902d27c1daf76c5a5152afa2",
+    "semantic_hash": "f158a549902d27c1daf76c5a5152afa2"
+  },
+  ".github/workflows/ci.yml": {
+    "mtime": 1785057711.4362698,
+    "ast_hash": "5116b5b4a6015d7ea781e5574152ddc9",
+    "semantic_hash": "5116b5b4a6015d7ea781e5574152ddc9"
+  },
+  "AGENTS.md": {
+    "mtime": 1785185904.077012,
+    "ast_hash": "a5f815909cea6c039dd6c08ed35c34b3",
+    "semantic_hash": "a5f815909cea6c039dd6c08ed35c34b3"
+  },
+  "CLAUDE.md": {
+    "mtime": 1785185904.0780158,
+    "ast_hash": "771faa62feb60b7de901a397aebb29b0",
+    "semantic_hash": "771faa62feb60b7de901a397aebb29b0"
+  },
+  "README.md": {
+    "mtime": 1785074426.7310584,
+    "ast_hash": "7e0bc095fd8ddc1f482e47c0b5af2f68",
+    "semantic_hash": "7e0bc095fd8ddc1f482e47c0b5af2f68"
+  },
+  "test/fixtures/maccabi/appointment-detail.html": {
+    "mtime": 1785074426.7330601,
+    "ast_hash": "d35900bd70d9d21ef7274be56bd1fe3f",
+    "semantic_hash": "d35900bd70d9d21ef7274be56bd1fe3f"
+  },
+  "test/fixtures/maccabi/appointments.html": {
+    "mtime": 1785074426.7330601,
+    "ast_hash": "72a84e1977b0afcd7621457ce4c42b65",
+    "semantic_hash": "72a84e1977b0afcd7621457ce4c42b65"
+  },
+  "test/fixtures/maccabi/medications.html": {
+    "mtime": 1785069782.4602947,
+    "ast_hash": "d44c8493ffbb511ea9293453c4bec68e",
+    "semantic_hash": "d44c8493ffbb511ea9293453c4bec68e"
+  },
+  "test/fixtures/maccabi/testResults.html": {
+    "mtime": 1785257774.9019687,
+    "ast_hash": "6989c58ac4813aae2310c2188e522578",
+    "semantic_hash": "6989c58ac4813aae2310c2188e522578"
+  }
+}

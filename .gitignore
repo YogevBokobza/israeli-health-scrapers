@@ -10,3 +10,10 @@ data/
 
 *.log
 .DS_Store
+
+# Graphify local state
+graphify-out/.graphify_python
+graphify-out/.graphify_root
+graphify-out/.graphify_labels.json
+graphify-out/cost.json
+graphify-out/cache/
