@@ -6,9 +6,11 @@ import {
   appointmentRowToAppointment,
   prescriptionRowToMedication,
   testResultRowToTestResult,
+  vaccinationRowToVaccination,
   type ScrapedAppointmentRow,
   type ScrapedPrescriptionRow,
   type ScrapedTestResultRow,
+  type ScrapedVaccinationRow,
 } from '../../src/scrapers/maccabi.js';
 import {
   LoginResults,
@@ -20,6 +22,7 @@ import {
   appointmentSchema,
   medicationSchema,
   testResultSchema,
+  vaccinationSchema,
 } from '../../src/definitions.js';
 
 const NOW = new Date('2026-07-26T12:00:00Z');
@@ -233,5 +236,41 @@ describe('testResultRowToTestResult', () => {
 
   it('does not set raw because the timeline maps no extra fields', () => {
     expect(testResultRowToTestResult(testResultRow)?.raw).toBeUndefined();
+  });
+});
+
+
+describe('vaccinationRowToVaccination', () => {
+  const vaccinationRow: ScrapedVaccinationRow = {
+    vaccineName: 'חיסון דוגמה',
+    administeredOn: '14/03/2025',
+    dose: 'מנה 1',
+    location: 'מרפאת דוגמה',
+  };
+
+  it('produces a value matching the shared schema', () => {
+    expect(() => vaccinationSchema.parse(vaccinationRowToVaccination(vaccinationRow))).not.toThrow();
+  });
+
+  it('normalizes the date and preserves list fields', () => {
+    expect(vaccinationRowToVaccination(vaccinationRow)).toMatchObject({
+      vaccineName: 'חיסון דוגמה',
+      administeredOn: '2025-03-14',
+      dose: 'מנה 1',
+      location: 'מרפאת דוגמה',
+      provider: HealthFundTypes.maccabi,
+    });
+  });
+
+  it('drops rows without a vaccine name or date', () => {
+    expect(vaccinationRowToVaccination({ ...vaccinationRow, vaccineName: null })).toBeNull();
+    expect(vaccinationRowToVaccination({ ...vaccinationRow, administeredOn: null })).toBeNull();
+  });
+
+  it('derives a stable identity from the vaccination fields', () => {
+    const first = vaccinationRowToVaccination(vaccinationRow)!;
+    expect(vaccinationRowToVaccination({ ...vaccinationRow })).toEqual(first);
+    expect(vaccinationRowToVaccination({ ...vaccinationRow, dose: 'מנה 2' })?.id).not.toBe(first.id);
+    expect(vaccinationRowToVaccination({ ...vaccinationRow, location: 'מרפאה אחרת' })?.id).toBe(first.id);
   });
 });

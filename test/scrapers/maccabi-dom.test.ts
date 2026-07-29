@@ -13,6 +13,8 @@ import {
   scrapePrescriptionRows,
   scrapeTestResultRows,
   testResultRowToTestResult,
+  scrapeVaccinationRows,
+  vaccinationRowToVaccination,
 } from '../../src/scrapers/maccabi.js';
 import { browserAvailable, launchTestBrowser } from '../browser.js';
 
@@ -31,6 +33,7 @@ const fixture = fs.readFileSync(path.join(fixturesDir, 'medications.html'), 'utf
 const appointmentsFixture = fs.readFileSync(path.join(fixturesDir, 'appointments.html'), 'utf8');
 const appointmentDetailFixture = fs.readFileSync(path.join(fixturesDir, 'appointment-detail.html'), 'utf8');
 const testResultsFixture = fs.readFileSync(path.join(fixturesDir, 'testResults.html'), 'utf8');
+const vaccinationsFixture = fs.readFileSync(path.join(fixturesDir, 'vaccinations.html'), 'utf8');
 
 const NOW = new Date('2026-07-26T12:00:00Z');
 
@@ -172,7 +175,31 @@ describe.skipIf(!browserAvailable)('maccabi test-result extraction', () => {
     await browser?.close().catch(() => {});
   });
 
+  it('reads vaccination fixture rows with optional fields and normalized text', async () => {
+    await page.setContent(vaccinationsFixture);
+    const rows = await scrapeVaccinationRows(page);
+    expect(rows).toHaveLength(4);
+    expect(rows[0]).toEqual({
+      vaccineName: 'חיסון דוגמה',
+      administeredOn: '14/03/2025',
+      dose: 'מנה 1',
+      location: 'מרפאת דוגמה',
+    });
+    expect(rows[1]?.dose).toBeNull();
+    expect(rows[2]?.vaccineName).toBeNull();
+    expect(rows[3]?.administeredOn).toBe('not-a-date');
+    expect(rows.map(vaccinationRowToVaccination).filter(Boolean)).toHaveLength(2);
+  });
+
+  it('does not cross selector boundaries into unrelated markup', async () => {
+    await page.setContent(`${vaccinationsFixture}<div data-hook="VaccineName">outside</div>`);
+    const rows = await scrapeVaccinationRows(page);
+    expect(rows).toHaveLength(4);
+    expect(rows[0]?.vaccineName).toBe('חיסון דוגמה');
+  });
+
   it('reads every timeline entry off the page', async () => {
+    await page.setContent(testResultsFixture);
     const rows = await scrapeTestResultRows(page);
     expect(rows).toHaveLength(3);
   });

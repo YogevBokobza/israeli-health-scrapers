@@ -41,6 +41,7 @@ export {
   appointmentSchema,
   messageSchema,
   testResultSchema,
+  vaccinationSchema,
   healthAccountSchema,
   providerIdSchema,
 } from './definitions.js';
@@ -57,6 +58,7 @@ export type {
   Appointment,
   Message,
   TestResult,
+  Vaccination,
   FetchTarget,
   LoginMethod,
 } from './definitions.js';

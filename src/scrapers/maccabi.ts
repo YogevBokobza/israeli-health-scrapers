@@ -8,6 +8,7 @@ import {
   type Medication,
   type ScraperCredentials,
   type TestResult,
+  type Vaccination,
 } from '../definitions.js';
 import {
   BaseScraperWithBrowser,
@@ -41,6 +42,7 @@ const urls = {
   medications: `${BASE_URL}/sonline/medicalfile/medications/ValidPrescriptions/`,
   appointments: `${BASE_URL}/sonline/appointmentOrder/FutureAppointments/Lobby/`,
   testResults: `${BASE_URL}/sonline/testsResults/TestsResults/lobby/`,
+  vaccinations: `${BASE_URL}/sonline/medicalfile/vaccinations/Lobby/`,
 } as const;
 
 const selectors = {
@@ -86,6 +88,7 @@ const selectors = {
   // The component can render a TimeLineItem wrapper around the actual list item. Match
   // only semantic list entries so one visible result is not extracted twice.
   testResultRow: ['[role="listitem"][data-hook="TimeLineItem"]'],
+  vaccinationRow: ['[data-testid="vaccination-row"]'],
 } as const;
 
 /* -------------------------------------------------------------------------- */
@@ -138,7 +141,11 @@ export function prescriptionRowToMedication(
 export async function scrapePrescriptionRows(page: Page): Promise<ScrapedPrescriptionRow[]> {
   return page.evaluate((rowSelector) => {
     const text = (el: Element | null) => {
-      const value = (el?.textContent ?? '').replace(/\s+/g, ' ').trim();
+      const value = (el?.textContent ?? '')
+        .replace(/[‎‏‪-‮⁦-⁩]/g, '')
+        .replace(/ /g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
       return value.length > 0 ? value : null;
     };
 
@@ -149,6 +156,47 @@ export async function scrapePrescriptionRows(page: Page): Promise<ScrapedPrescri
       isStanding: row.querySelector('[data-hook="Badge"]') !== null,
     }));
   }, selectors.prescriptionRow[0]);
+}
+
+export interface ScrapedVaccinationRow {
+  vaccineName: string | null;
+  administeredOn: string | null;
+  dose: string | null;
+  location: string | null;
+}
+
+export function vaccinationRowToVaccination(row: ScrapedVaccinationRow): Vaccination | null {
+  const vaccineName = textOrNull(row.vaccineName);
+  const administeredOn = parseIsraeliDate(row.administeredOn);
+  if (!vaccineName || !administeredOn) return null;
+  const dose = textOrNull(row.dose);
+  const location = textOrNull(row.location);
+  const id = createHash('sha1')
+    // Before live calibration, only name/date/dose are defensible identity inputs;
+    // location may change between visits or be corrected later.
+    .update([vaccineName, administeredOn, dose].join('|'))
+    .digest('hex')
+    .slice(0, 16);
+  return { id, vaccineName, administeredOn, dose, location, provider: HealthFundTypes.maccabi };
+}
+
+export async function scrapeVaccinationRows(page: Page): Promise<ScrapedVaccinationRow[]> {
+  return page.evaluate((rowSelector) => {
+    const text = (el: Element | null) => {
+      const value = (el?.textContent ?? '')
+        .replace(/[‎‏‪-‮⁦-⁩]/g, '')
+        .replace(/ /g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+      return value.length > 0 ? value : null;
+    };
+    return Array.from(document.querySelectorAll(rowSelector)).map((row) => ({
+      vaccineName: text(row.querySelector('[data-hook="VaccineName"], [class*="name" i]')),
+      administeredOn: text(row.querySelector('[data-hook="VaccinationDate"], [class*="date" i]')),
+      dose: text(row.querySelector('[data-hook="Dose"], [class*="dose" i]')),
+      location: text(row.querySelector('[data-hook="Location"], [class*="location" i]')),
+    }));
+  }, selectors.vaccinationRow[0]);
 }
 
 /** One appointment row as read straight from the DOM, before interpretation. */
@@ -200,7 +248,11 @@ export function appointmentRowToAppointment(row: ScrapedAppointmentRow): Appoint
 export async function scrapeAppointmentRows(page: Page): Promise<ScrapedAppointmentRow[]> {
   return page.evaluate((rowSelector) => {
     const text = (el: Element | null) => {
-      const value = (el?.textContent ?? '').replace(/\s+/g, ' ').trim();
+      const value = (el?.textContent ?? '')
+        .replace(/[‎‏‪-‮⁦-⁩]/g, '')
+        .replace(/ /g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
       return value.length > 0 ? value : null;
     };
 
@@ -234,7 +286,11 @@ export async function scrapeAppointmentDetail(
   return page.evaluate(
     ({ addressItem, addressTitle, addressValue, instructionItem }) => {
       const text = (el: Element | null) => {
-        const value = (el?.textContent ?? '').replace(/\s+/g, ' ').trim();
+        const value = (el?.textContent ?? '')
+        .replace(/[‎‏‪-‮⁦-⁩]/g, '')
+        .replace(/ /g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
         return value.length > 0 ? value : null;
       };
 
@@ -443,6 +499,10 @@ export class MaccabiScraper extends BaseScraperWithBrowser {
       account.testResults = await this.fetchTestResults();
     }
 
+    if (targets.includes('vaccinations')) {
+      account.vaccinations = await this.fetchVaccinations();
+    }
+
     return [account];
   }
 
@@ -519,6 +579,25 @@ export class MaccabiScraper extends BaseScraperWithBrowser {
     appointments.sort((a, b) => Date.parse(a.start) - Date.parse(b.start));
 
     return appointments;
+  }
+
+  private async fetchVaccinations(): Promise<Vaccination[]> {
+    const page = this.activePage;
+    await page.goto(urls.vaccinations, { waitUntil: 'domcontentloaded' });
+    if (await elementExists(page, selectors.passwordInput)) {
+      const diagnostics = await captureDiagnostics(page, this.options.companyId, 'vaccinations-logged-out');
+      throw new SelectorDriftError('a logged-in vaccinations page', diagnostics);
+    }
+    await waitUntil(async () => elementExists(page, selectors.vaccinationRow), 8_000);
+    const vaccinations = (await scrapeVaccinationRows(page))
+      .map((row) => vaccinationRowToVaccination(row))
+      .filter((vaccination): vaccination is Vaccination => vaccination !== null)
+      .sort((a, b) => b.administeredOn.localeCompare(a.administeredOn));
+    if (vaccinations.length === 0) {
+      const diagnostics = await captureDiagnostics(page, this.options.companyId, 'vaccinations-empty');
+      this.log('no vaccination rows found', { diagnostics });
+    }
+    return vaccinations;
   }
 
   /** Reads past test results, newest first. */
