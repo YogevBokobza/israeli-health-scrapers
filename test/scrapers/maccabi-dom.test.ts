@@ -6,6 +6,7 @@ import type { Browser, Page } from 'playwright';
 
 import {
   appointmentRowToAppointment,
+  expandVaccinationDetails,
   prescriptionRowToMedication,
   scrapeAppointmentDetail,
   scrapeAppointmentRows,
@@ -178,24 +179,110 @@ describe.skipIf(!browserAvailable)('maccabi test-result extraction', () => {
   it('reads vaccination fixture rows with optional fields and normalized text', async () => {
     await page.setContent(vaccinationsFixture);
     const rows = await scrapeVaccinationRows(page);
-    expect(rows).toHaveLength(4);
+    expect(rows).toHaveLength(7);
     expect(rows[0]).toEqual({
       vaccineName: 'חיסון דוגמה',
       administeredOn: '14/03/2025',
       dose: 'מנה 1',
       location: 'מרפאת דוגמה',
+      ageAtAdministration: null,
     });
     expect(rows[1]?.dose).toBeNull();
     expect(rows[2]?.vaccineName).toBeNull();
     expect(rows[3]?.administeredOn).toBe('not-a-date');
-    expect(rows.map(vaccinationRowToVaccination).filter(Boolean)).toHaveLength(2);
+    expect(rows.map(vaccinationRowToVaccination).filter(Boolean)).toHaveLength(5);
   });
 
   it('does not cross selector boundaries into unrelated markup', async () => {
     await page.setContent(`${vaccinationsFixture}<div data-hook="VaccineName">outside</div>`);
     const rows = await scrapeVaccinationRows(page);
-    expect(rows).toHaveLength(4);
+    expect(rows).toHaveLength(7);
     expect(rows[0]?.vaccineName).toBe('חיסון דוגמה');
+  });
+
+  it('reads the vaccine timeline value rather than the member display name', async () => {
+    await page.setContent(vaccinationsFixture);
+    const rows = await scrapeVaccinationRows(page);
+    const liveShapeRows = rows.slice(-3);
+
+    expect(liveShapeRows).toEqual([
+      expect.objectContaining({
+        vaccineName: 'Fictional Vaccine',
+        administeredOn: '09/09/2021',
+        ageAtAdministration: '21.4',
+      }),
+      expect.objectContaining({
+        vaccineName: 'Fictional Vaccine',
+        administeredOn: '10/08/2020',
+        ageAtAdministration: '20.3',
+      }),
+      expect.objectContaining({
+        vaccineName: 'Fictional Vaccine',
+        administeredOn: '11/07/2019',
+        ageAtAdministration: '19',
+      }),
+    ]);
+    expect(liveShapeRows.every((row) => row.vaccineName !== 'Fictional Member')).toBe(true);
+  });
+
+  it('opens every collapsed vaccination timeline row before extraction', async () => {
+    await page.setContent(`
+      <div data-testid="vaccination-row">
+        <button role="button" aria-expanded="false" onclick="this.setAttribute('aria-expanded', 'true'); this.nextElementSibling.classList.add('show')">
+          <span style="display:block;width:10px;height:10px" class="src-components-VaccinationsList-TimelineRow-TimelineRow__timlinearrow___one"></span>
+        </button>
+        <div class="collapse"><div class="src-components-VaccinationsList-ExpandedItem-ExpandedItem__wrapExpandedItem___one"></div></div>
+      </div>
+      <div data-testid="vaccination-row">
+        <button role="button" aria-expanded="false" onclick="this.setAttribute('aria-expanded', 'true'); this.nextElementSibling.classList.add('show')">
+          <span style="display:block;width:10px;height:10px" class="src-components-VaccinationsList-TimelineRow-TimelineRow__timlinearrow___two"></span>
+        </button>
+        <div class="collapse"><div class="src-components-VaccinationsList-ExpandedItem-ExpandedItem__wrapExpandedItem___two"></div></div>
+      </div>
+    `);
+
+    await expandVaccinationDetails(page);
+
+    expect(await page.locator('[role="button"][aria-expanded="true"]').count()).toBe(2);
+  });
+
+  it('waits for asynchronously rendered administrations, not only aria-expanded', async () => {
+    await page.setContent(`
+      <div data-testid="vaccination-row" id="delayed-vaccination">
+        <span data-hook="VaccineName">Fictional Delayed Vaccine</span>
+        <span data-hook="VaccinationDate">09/09/2021</span>
+        <button
+          role="button"
+          aria-expanded="false"
+          onclick="
+            this.setAttribute('aria-expanded', 'true');
+            setTimeout(() => {
+              document.querySelector('#delayed-vaccination').insertAdjacentHTML('beforeend', \`
+                <div class='collapse show'>
+                  <div class='d-md-block d-none'>
+                    <div class='src-components-VaccinationsList-ExpandedItem-ExpandedItem__wrapExpandedItem___one'>
+                      <div class='src-components-VaccinationsList-ExpandedItem-ExpandedItem__vaccineDetailBlue___one'>30.2</div>
+                    </div>
+                    <div class='src-components-VaccinationsList-ExpandedItem-ExpandedItem__wrapExpandedItem___two'>
+                      <span>08/08/2020</span>
+                      <div class='src-components-VaccinationsList-ExpandedItem-ExpandedItem__vaccineDetailBlue___two'>29.1</div>
+                    </div>
+                  </div>
+                </div>
+              \`);
+            }, 500);
+          "
+        >
+          <span style="display:block;width:10px;height:10px" class="src-components-VaccinationsList-TimelineRow-TimelineRow__timlinearrow___delayed"></span>
+        </button>
+      </div>
+    `);
+
+    await expandVaccinationDetails(page);
+    const rows = await scrapeVaccinationRows(page);
+
+    expect(rows).toHaveLength(2);
+    expect(rows.map((row) => row.administeredOn)).toEqual(['09/09/2021', '08/08/2020']);
   });
 
   it('reads every timeline entry off the page', async () => {

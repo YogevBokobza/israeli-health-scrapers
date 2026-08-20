@@ -246,6 +246,7 @@ describe('vaccinationRowToVaccination', () => {
     administeredOn: '14/03/2025',
     dose: 'מנה 1',
     location: 'מרפאת דוגמה',
+    ageAtAdministration: '42.5',
   };
 
   it('produces a value matching the shared schema', () => {
@@ -258,6 +259,7 @@ describe('vaccinationRowToVaccination', () => {
       administeredOn: '2025-03-14',
       dose: 'מנה 1',
       location: 'מרפאת דוגמה',
+      ageAtAdministration: 42.5,
       provider: HealthFundTypes.maccabi,
     });
   });

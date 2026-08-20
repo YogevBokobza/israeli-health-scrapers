@@ -10,9 +10,9 @@
     "semantic_hash": "b3d32b519a7e28e1f4d478138a987445"
   },
   "src/definitions.ts": {
-    "mtime": 1787233988.0808818,
-    "ast_hash": "8448fc719e6e59d8dbda8f494ff511be",
-    "semantic_hash": "8448fc719e6e59d8dbda8f494ff511be"
+    "mtime": 1787238221.1410873,
+    "ast_hash": "c0f0527e12198f166ccbe341a1f9643d",
+    "semantic_hash": ""
   },
   "src/helpers/dates.ts": {
     "mtime": 1785074426.7315605,
@@ -40,9 +40,9 @@
     "semantic_hash": "4aa93f07d061b4e7fc3125e86f80a5cb"
   },
   "src/index.ts": {
-    "mtime": 1787233988.084241,
-    "ast_hash": "4a67c1942a6dcd4f7ae2f1fc2c864358",
-    "semantic_hash": "4a67c1942a6dcd4f7ae2f1fc2c864358"
+    "mtime": 1787235688.52959,
+    "ast_hash": "ed70f1636c30c5f076ecdd1836a80e78",
+    "semantic_hash": ""
   },
   "src/scrapers/base-scraper-with-browser.ts": {
     "mtime": 1785322484.8898025,
@@ -70,9 +70,9 @@
     "semantic_hash": "56216c69adc8f3c560ae823fdf0eb970"
   },
   "src/scrapers/maccabi.ts": {
-    "mtime": 1787233988.0895073,
-    "ast_hash": "8ed6d8a3f4100d7ddb8e25760a911ddc",
-    "semantic_hash": "8ed6d8a3f4100d7ddb8e25760a911ddc"
+    "mtime": 1787238985.548203,
+    "ast_hash": "bc7fd1635616464777aa5548f827e38c",
+    "semantic_hash": ""
   },
   "src/scrapers/mock.ts": {
     "mtime": 1785057711.4422686,
@@ -95,14 +95,14 @@
     "semantic_hash": "882dbf6583cc1cb242eec84e0ae72adb"
   },
   "test/scrapers/maccabi-dom.test.ts": {
-    "mtime": 1787233988.0940561,
-    "ast_hash": "cca9e5e0ede8fc8dd0fcd0d2995dab94",
-    "semantic_hash": "cca9e5e0ede8fc8dd0fcd0d2995dab94"
+    "mtime": 1787238992.2295914,
+    "ast_hash": "2f88d5cf13cd4be1e113219eee73a88f",
+    "semantic_hash": ""
   },
   "test/scrapers/maccabi.test.ts": {
-    "mtime": 1787233988.0979934,
-    "ast_hash": "a2def372d3f748fafabe3a30a667ded3",
-    "semantic_hash": "a2def372d3f748fafabe3a30a667ded3"
+    "mtime": 1787238145.6531007,
+    "ast_hash": "063f3cc1f92786357a8693597c8ecc00",
+    "semantic_hash": ""
   },
   "tsconfig.json": {
     "mtime": 1785057711.444769,
@@ -120,9 +120,9 @@
     "semantic_hash": "5116b5b4a6015d7ea781e5574152ddc9"
   },
   "AGENTS.md": {
-    "mtime": 1785185904.077012,
-    "ast_hash": "a5f815909cea6c039dd6c08ed35c34b3",
-    "semantic_hash": "a5f815909cea6c039dd6c08ed35c34b3"
+    "mtime": 1787235755.3530984,
+    "ast_hash": "d1a89078873f4942e444d645eece8cc7",
+    "semantic_hash": ""
   },
   "CLAUDE.md": {
     "mtime": 1785185904.0780158,
@@ -158,5 +158,15 @@
     "mtime": 1785322484.8903067,
     "ast_hash": "e4f4213d90ae1f37cc7a11307e42ebe7",
     "semantic_hash": "e4f4213d90ae1f37cc7a11307e42ebe7"
+  },
+  ".claude/CLAUDE.md": {
+    "mtime": 1787235755.3515859,
+    "ast_hash": "abdcea7ef842cab575539ab3a0e5cf44",
+    "semantic_hash": ""
+  },
+  "test/fixtures/maccabi/vaccinations.html": {
+    "mtime": 1787238131.8998766,
+    "ast_hash": "190d15e11099bf0f8833767499662f17",
+    "semantic_hash": ""
   }
 }

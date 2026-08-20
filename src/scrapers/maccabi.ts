@@ -1,5 +1,5 @@
 import { createHash } from 'node:crypto';
-import type { Page } from 'playwright';
+import type { Locator, Page } from 'playwright';
 
 import {
   HealthFundTypes,
@@ -161,6 +161,7 @@ export async function scrapePrescriptionRows(page: Page): Promise<ScrapedPrescri
 export interface ScrapedVaccinationRow {
   vaccineName: string | null;
   administeredOn: string | null;
+  ageAtAdministration: string | null;
   dose: string | null;
   location: string | null;
 }
@@ -171,13 +172,23 @@ export function vaccinationRowToVaccination(row: ScrapedVaccinationRow): Vaccina
   if (!vaccineName || !administeredOn) return null;
   const dose = textOrNull(row.dose);
   const location = textOrNull(row.location);
+  const ageText = textOrNull(row.ageAtAdministration)?.replace(',', '.') ?? null;
+  const ageAtAdministration = ageText && /^\d+(?:\.\d+)?$/.test(ageText) ? Number(ageText) : null;
   const id = createHash('sha1')
     // Before live calibration, only name/date/dose are defensible identity inputs;
     // location may change between visits or be corrected later.
     .update([vaccineName, administeredOn, dose].join('|'))
     .digest('hex')
     .slice(0, 16);
-  return { id, vaccineName, administeredOn, dose, location, provider: HealthFundTypes.maccabi };
+  return {
+    id,
+    vaccineName,
+    administeredOn,
+    ageAtAdministration,
+    dose,
+    location,
+    provider: HealthFundTypes.maccabi,
+  };
 }
 
 export async function scrapeVaccinationRows(page: Page): Promise<ScrapedVaccinationRow[]> {
@@ -190,13 +201,94 @@ export async function scrapeVaccinationRows(page: Page): Promise<ScrapedVaccinat
         .trim();
       return value.length > 0 ? value : null;
     };
-    return Array.from(document.querySelectorAll(rowSelector)).map((row) => ({
-      vaccineName: text(row.querySelector('[data-hook="VaccineName"], [class*="name" i]')),
-      administeredOn: text(row.querySelector('[data-hook="VaccinationDate"], [class*="date" i]')),
-      dose: text(row.querySelector('[data-hook="Dose"], [class*="dose" i]')),
-      location: text(row.querySelector('[data-hook="Location"], [class*="location" i]')),
-    }));
+    return Array.from(document.querySelectorAll(rowSelector)).flatMap((row) => {
+      // The live timeline has no VaccineName hook. Its displayName is the member's
+      // name, so a generic class*=name fallback silently stores the wrong person-facing
+      // value. The vaccine itself is rendered under this CSS-module class.
+      const vaccineName = text(
+        row.querySelector(
+          '[data-hook="VaccineName"], [class*="VaccinationsList-TimelineRow-TimelineRow__timlinearrowRow"] > div > div',
+        ),
+      );
+      const administeredOn = text(
+        row.querySelector(
+          '[data-hook="VaccinationDate"], [data-hook="TimeLineDate"], [class*="date" i]',
+        ),
+      );
+      const dose = text(row.querySelector('[data-hook="Dose"], [class*="dose" i]'));
+      const location = text(row.querySelector('[data-hook="Location"], [class*="location" i]'));
+
+      const expanded = row.querySelector('.collapse.show');
+      const detailRoot = expanded?.querySelector('.d-md-block.d-none') ?? expanded;
+      const administrations = detailRoot
+        ? Array.from(
+            detailRoot.querySelectorAll(
+              '[class*="VaccinationsList-ExpandedItem-ExpandedItem__wrapExpandedItem"]',
+            ),
+          )
+        : [];
+
+      if (administrations.length === 0) {
+        return [{ vaccineName, administeredOn, ageAtAdministration: null, dose, location }];
+      }
+
+      return administrations.map((administration, index) => {
+        const detailDate = Array.from(administration.querySelectorAll('span'))
+          .map((element) => text(element))
+          .find((value) => value !== null && /^\d{1,2}[./-]\d{1,2}[./-]\d{2,4}$/.test(value));
+
+        return {
+          vaccineName,
+          // Maccabi omits the date from the first expanded wrapper because it is
+          // already displayed in the collapsed timeline summary above it.
+          administeredOn: detailDate ?? (index === 0 ? administeredOn : null),
+          ageAtAdministration: text(
+            administration.querySelector(
+              '[class*="VaccinationsList-ExpandedItem-ExpandedItem__vaccineDetailBlue"]',
+            ),
+          ),
+          dose,
+          location,
+        };
+      });
+    });
   }, selectors.vaccinationRow[0]);
+}
+
+/** Opens each vaccine group so every dated administration is present in the DOM. */
+export async function expandVaccinationDetails(page: Page): Promise<void> {
+  const arrowSelector =
+    '[class*="VaccinationsList-TimelineRow-TimelineRow__timlinearrow___"]';
+  const detailSelector =
+    '.collapse.show [class*="VaccinationsList-ExpandedItem-ExpandedItem__wrapExpandedItem"]';
+  const arrows = page.locator(arrowSelector);
+  const count = await arrows.count();
+  const expandedRows: Locator[] = [];
+
+  for (let index = 0; index < count; index += 1) {
+    const arrow = arrows.nth(index);
+    if (!(await arrow.isVisible())) continue;
+    const row = arrow.locator('xpath=ancestor::*[@data-testid="vaccination-row"][1]');
+    const button = arrow.locator('xpath=ancestor::*[@role="button"][1]');
+    if ((await row.count()) > 0) expandedRows.push(row);
+    if ((await button.count()) === 0 || (await button.getAttribute('aria-expanded')) !== 'true') {
+      await arrow.click();
+    }
+  }
+
+  if (expandedRows.length > 0) {
+    const detailsRendered = await waitUntil(
+      async () =>
+        (
+          await Promise.all(
+            expandedRows.map(async (row) => (await row.locator(detailSelector).count()) > 0),
+          )
+        ).every(Boolean),
+      5_000,
+      50,
+    );
+    if (!detailsRendered) throw new Error('Vaccination detail rows did not finish rendering.');
+  }
 }
 
 /** One appointment row as read straight from the DOM, before interpretation. */
@@ -589,6 +681,7 @@ export class MaccabiScraper extends BaseScraperWithBrowser {
       throw new SelectorDriftError('a logged-in vaccinations page', diagnostics);
     }
     await waitUntil(async () => elementExists(page, selectors.vaccinationRow), 8_000);
+    await expandVaccinationDetails(page);
     const vaccinations = (await scrapeVaccinationRows(page))
       .map((row) => vaccinationRowToVaccination(row))
       .filter((vaccination): vaccination is Vaccination => vaccination !== null)

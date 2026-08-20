@@ -168,6 +168,8 @@ export const vaccinationSchema = z.object({
   id: z.string(),
   vaccineName: z.string().min(1),
   administeredOn: isoDateSchema,
+  /** Member age in years when this administration was recorded by the fund. */
+  ageAtAdministration: z.number().nonnegative().nullable(),
   dose: z.string().nullable(),
   location: z.string().nullable(),
   provider: providerIdSchema,
