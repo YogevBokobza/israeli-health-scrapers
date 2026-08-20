@@ -10,7 +10,7 @@
     "semantic_hash": "b3d32b519a7e28e1f4d478138a987445"
   },
   "src/definitions.ts": {
-    "mtime": 1785257774.8999693,
+    "mtime": 1787233988.0808818,
     "ast_hash": "8448fc719e6e59d8dbda8f494ff511be",
     "semantic_hash": "8448fc719e6e59d8dbda8f494ff511be"
   },
@@ -40,14 +40,14 @@
     "semantic_hash": "4aa93f07d061b4e7fc3125e86f80a5cb"
   },
   "src/index.ts": {
-    "mtime": 1785257774.900469,
+    "mtime": 1787233988.084241,
     "ast_hash": "4a67c1942a6dcd4f7ae2f1fc2c864358",
     "semantic_hash": "4a67c1942a6dcd4f7ae2f1fc2c864358"
   },
   "src/scrapers/base-scraper-with-browser.ts": {
-    "mtime": 1785074426.7320602,
-    "ast_hash": "0a2ee5ef732a9d85efff2eca90abdac7",
-    "semantic_hash": "0a2ee5ef732a9d85efff2eca90abdac7"
+    "mtime": 1785322484.8898025,
+    "ast_hash": "6f3b28fc1ff021ecd728147c70e30aba",
+    "semantic_hash": "6f3b28fc1ff021ecd728147c70e30aba"
   },
   "src/scrapers/base-scraper.ts": {
     "mtime": 1785057711.4412687,
@@ -70,9 +70,9 @@
     "semantic_hash": "56216c69adc8f3c560ae823fdf0eb970"
   },
   "src/scrapers/maccabi.ts": {
-    "mtime": 1785257774.9009695,
-    "ast_hash": "cd3b6bea3dff3709f8d832a283fd5783",
-    "semantic_hash": "cd3b6bea3dff3709f8d832a283fd5783"
+    "mtime": 1787233988.0895073,
+    "ast_hash": "8ed6d8a3f4100d7ddb8e25760a911ddc",
+    "semantic_hash": "8ed6d8a3f4100d7ddb8e25760a911ddc"
   },
   "src/scrapers/mock.ts": {
     "mtime": 1785057711.4422686,
@@ -95,14 +95,14 @@
     "semantic_hash": "882dbf6583cc1cb242eec84e0ae72adb"
   },
   "test/scrapers/maccabi-dom.test.ts": {
-    "mtime": 1785257774.9019687,
-    "ast_hash": "c79710c3a8929b11c88263fe8ab789ae",
-    "semantic_hash": "c79710c3a8929b11c88263fe8ab789ae"
+    "mtime": 1787233988.0940561,
+    "ast_hash": "cca9e5e0ede8fc8dd0fcd0d2995dab94",
+    "semantic_hash": "cca9e5e0ede8fc8dd0fcd0d2995dab94"
   },
   "test/scrapers/maccabi.test.ts": {
-    "mtime": 1785257774.9029682,
-    "ast_hash": "8d957e1b8657f35799cfbd781f1ae91c",
-    "semantic_hash": "8d957e1b8657f35799cfbd781f1ae91c"
+    "mtime": 1787233988.0979934,
+    "ast_hash": "a2def372d3f748fafabe3a30a667ded3",
+    "semantic_hash": "a2def372d3f748fafabe3a30a667ded3"
   },
   "tsconfig.json": {
     "mtime": 1785057711.444769,
@@ -153,5 +153,10 @@
     "mtime": 1785257774.9019687,
     "ast_hash": "6989c58ac4813aae2310c2188e522578",
     "semantic_hash": "6989c58ac4813aae2310c2188e522578"
+  },
+  "test/scrapers/base-scraper-with-browser.test.ts": {
+    "mtime": 1785322484.8903067,
+    "ast_hash": "e4f4213d90ae1f37cc7a11307e42ebe7",
+    "semantic_hash": "e4f4213d90ae1f37cc7a11307e42ebe7"
   }
 }
