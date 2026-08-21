@@ -45,6 +45,14 @@ const urls = {
   vaccinations: `${BASE_URL}/sonline/medicalfile/vaccinations/Lobby/`,
 } as const;
 
+export const maccabiMedicationSelectors = {
+  row: ['[data-testid="prescription-row"]'],
+  name: ['[class*="TimeLineItem-module__header"]'],
+  date: ['[data-hook="TimeLineDate"]'],
+  prescriber: ['[class*="specializationRow"] p'],
+  standingBadge: ['[data-hook="Badge"]'],
+} as const;
+
 const selectors = {
   // The id-only screen and the id+password screen render two different id fields
   // (idNumber vs idNumber2/citizenId) rather than reusing one — both are listed so
@@ -69,7 +77,7 @@ const selectors = {
   loggedInMarker: ['a[data-hook="Button__logout"]', 'a[href*="Logout" i]', 'a[href*="signout" i]'],
   invalidCredentials: ['[class*="error" i]', '[role="alert"]'],
   blocked: ['[class*="blocked" i]', '[class*="חסום"]'],
-  prescriptionRow: ['[data-testid="prescription-row"]'],
+  prescriptionRow: maccabiMedicationSelectors.row,
   // No data-testid on this page — matched by the component's own class instead,
   // same convention as invalidCredentials/blocked above.
   appointmentRow: ['[class*="TimeLineItem-module__item"]'],
@@ -139,7 +147,7 @@ export function prescriptionRowToMedication(
 
 /** Reads every prescription row off the page as plain strings. */
 export async function scrapePrescriptionRows(page: Page): Promise<ScrapedPrescriptionRow[]> {
-  return page.evaluate((rowSelector) => {
+  return page.evaluate((bindingSelectors) => {
     const text = (el: Element | null) => {
       const value = (el?.textContent ?? '')
         .replace(/[‎‏‪-‮⁦-⁩]/g, '')
@@ -149,13 +157,19 @@ export async function scrapePrescriptionRows(page: Page): Promise<ScrapedPrescri
       return value.length > 0 ? value : null;
     };
 
-    return Array.from(document.querySelectorAll(rowSelector)).map((row) => ({
-      name: text(row.querySelector('[class*="TimeLineItem-module__header"]')),
-      date: text(row.querySelector('[data-hook="TimeLineDate"]')),
-      prescribedBy: text(row.querySelector('[class*="specializationRow"] p')),
-      isStanding: row.querySelector('[data-hook="Badge"]') !== null,
+    return Array.from(document.querySelectorAll(bindingSelectors.row)).map((row) => ({
+      name: text(row.querySelector(bindingSelectors.name)),
+      date: text(row.querySelector(bindingSelectors.date)),
+      prescribedBy: text(row.querySelector(bindingSelectors.prescriber)),
+      isStanding: row.querySelector(bindingSelectors.standingBadge) !== null,
     }));
-  }, selectors.prescriptionRow[0]);
+  }, {
+    row: maccabiMedicationSelectors.row[0],
+    name: maccabiMedicationSelectors.name[0],
+    date: maccabiMedicationSelectors.date[0],
+    prescriber: maccabiMedicationSelectors.prescriber[0],
+    standingBadge: maccabiMedicationSelectors.standingBadge[0],
+  });
 }
 
 export interface ScrapedVaccinationRow {

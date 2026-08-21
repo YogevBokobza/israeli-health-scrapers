@@ -1,22 +1,22 @@
 # Graph Report - israeli-health-scrapers  (2026-08-21)
 
 ## Corpus Check
-- 44 files · ~23,113 words
+- 47 files · ~23,640 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 381 nodes · 820 edges · 20 communities (18 shown, 2 thin omitted)
-- Extraction: 98% EXTRACTED · 2% INFERRED · 0% AMBIGUOUS · INFERRED: 18 edges (avg confidence: 0.9)
+- 394 nodes · 846 edges · 20 communities (18 shown, 2 thin omitted)
+- Extraction: 98% EXTRACTED · 2% INFERRED · 0% AMBIGUOUS · INFERRED: 20 edges (avg confidence: 0.88)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `ab53dacd`
+- Built from commit: `5bdf1513`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
 ## Community Hubs (Navigation)
 - index.ts
-- dates.ts
+- session.ts
 - package.json
 - base-scraper-with-browser.ts
 - Maccabi Valid Prescriptions Fixture
@@ -27,7 +27,7 @@
 - AES-256-GCM Session Storage
 - Codebase Intelligence for israeli-health-scrapers (Repowise)
 - maccabi.ts
-- capture-button.ts
+- playwright
 - maccabi.test.ts
 - Issue tracker: GitHub
 - Domain Docs
@@ -36,10 +36,10 @@
 - triage-labels.md
 
 ## God Nodes (most connected - your core abstractions)
-1. `compilerOptions` - 16 edges
-2. `ScraperCredentials` - 15 edges
-3. `BaseScraperWithBrowser` - 15 edges
-4. `playwright` - 14 edges
+1. `playwright` - 16 edges
+2. `compilerOptions` - 16 edges
+3. `ScraperCredentials` - 15 edges
+4. `BaseScraperWithBrowser` - 15 edges
 5. `captureDiagnostics()` - 14 edges
 6. `MaccabiScraper` - 13 edges
 7. `waitUntil()` - 12 edges
@@ -56,8 +56,8 @@
   README.md → test/fixtures/maccabi/appointments.html
 - `CaptureRequest` --references--> `HealthFundId`  [EXTRACTED]
   tools/calibrate/capture.ts → src/definitions.ts
-- `main()` --calls--> `loadSession()`  [EXTRACTED]
-  tools/calibrate/cli.ts → src/helpers/session.ts
+- `captureSnapshot()` --calls--> `ensureDir()`  [EXTRACTED]
+  tools/calibrate/capture.ts → src/helpers/paths.ts
 
 ## Import Cycles
 - None detected.
@@ -73,17 +73,17 @@
 Cohesion: 0.11
 Nodes (26): FetchTarget, HealthAccount, healthAccountSchema, HealthFundTypes, isoDateSchema, LoginMethod, MedicationStatus, medicationStatusSchema (+18 more)
 
-### Community 1 - "dates.ts"
-Cohesion: 0.37
-Nodes (11): deriveExpiry(), formatOffset(), isBlank(), jerusalemOffsetMinutes(), normalizeText(), parseInteger(), parseIsraeliDate(), parseIsraeliDateTime() (+3 more)
+### Community 1 - "session.ts"
+Cohesion: 0.20
+Nodes (17): VIEWPORT, HealthFundId, dataRoot(), diagnosticsDir(), ensureDir(), sessionPath(), clearSession(), isExpired() (+9 more)
 
 ### Community 2 - "package.json"
-Cohesion: 0.05
-Nodes (39): dependencies, playwright, zod, description, devDependencies, tsx, @types/node, typescript (+31 more)
+Cohesion: 0.06
+Nodes (33): dependencies, playwright, zod, description, devDependencies, tsx, @types/node, typescript (+25 more)
 
 ### Community 3 - "base-scraper-with-browser.ts"
-Cohesion: 0.13
-Nodes (16): VIEWPORT, ScraperErrorTypes, conditionMatches(), LOGIN_RESULT_ERRORS, LoginCondition, LoginField, LoginResults, matchLoginResult() (+8 more)
+Cohesion: 0.10
+Nodes (20): ScraperErrorTypes, clickFirst(), fillFirst(), typeFirst(), BaseScraperWithBrowser, conditionMatches(), LOGIN_RESULT_ERRORS, LoginCondition (+12 more)
 
 ### Community 4 - "Maccabi Valid Prescriptions Fixture"
 Cohesion: 0.10
@@ -98,8 +98,8 @@ Cohesion: 0.10
 Nodes (22): BaseScraper Lifecycle, Scraper Contract Suite, Declarative Login State Machine, Encrypted Session Persistence, health-mcp Consumer, israeli-bank-scrapers, Maccabi Calibrated Scraper, Israeli Health Scrapers Project Instructions (+14 more)
 
 ### Community 7 - "capture.ts"
-Cohesion: 0.15
-Nodes (25): HealthFundId, capturesDir(), dataRoot(), diagnosticsDir(), ensureDir(), sessionPath(), clearSession(), loadSession() (+17 more)
+Cohesion: 0.13
+Nodes (26): FETCH_TARGETS, capturesDir(), pageWithButton(), BootstrapArgs, bootstrapCaptureButton(), CaptureButtonResult, injectCaptureButton(), captureSnapshot() (+18 more)
 
 ### Community 8 - "compilerOptions"
 Cohesion: 0.12
@@ -110,16 +110,16 @@ Cohesion: 0.18
 Nodes (9): Architecture, Code health, Codebase Intelligence for israeli-health-scrapers (Repowise), Commands, Entry points, Files that need care (bug-fix history first, then churn — check `get_risk` before editing), How to work in this repo, Key modules (+1 more)
 
 ### Community 12 - "maccabi.ts"
-Cohesion: 0.09
-Nodes (34): Appointment, Medication, TestResult, Vaccination, captureDiagnostics(), clickFirst(), elementExists(), fillFirst() (+26 more)
+Cohesion: 0.11
+Nodes (39): Appointment, Medication, TestResult, Vaccination, deriveExpiry(), formatOffset(), isBlank(), jerusalemOffsetMinutes() (+31 more)
 
-### Community 13 - "capture-button.ts"
-Cohesion: 0.15
-Nodes (20): playwright, FETCH_TARGETS, isExpired(), chromiumExecutablePath(), launchTestBrowser(), pageWithButton(), BootstrapArgs, bootstrapCaptureButton() (+12 more)
+### Community 13 - "playwright"
+Cohesion: 0.12
+Nodes (20): keywords, health, israel, kupat-holim, maccabi, playwright, scraper, maccabiMedicationSelectors (+12 more)
 
 ### Community 14 - "maccabi.test.ts"
-Cohesion: 0.17
-Nodes (11): appointmentSchema, medicationSchema, testResultSchema, vaccinationSchema, ScrapedAppointmentRow, ScrapedPrescriptionRow, ScrapedVaccinationRow, appointmentRow (+3 more)
+Cohesion: 0.15
+Nodes (11): appointmentSchema, medicationSchema, testResultSchema, vaccinationSchema, ScrapedAppointmentRow, ScrapedVaccinationRow, appointmentRow, NOW (+3 more)
 
 ### Community 15 - "Issue tracker: GitHub"
 Cohesion: 0.29
@@ -138,24 +138,24 @@ Cohesion: 0.50
 Nodes (3): Calibration by user-driven capture + agent reconstruction, Consequences, Considered options
 
 ## Knowledge Gaps
-- **122 isolated node(s):** `name`, `version`, `description`, `license`, `type` (+117 more)
+- **125 isolated node(s):** `name`, `version`, `description`, `license`, `type` (+120 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **2 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `playwright` connect `capture-button.ts` to `index.ts`, `package.json`, `base-scraper-with-browser.ts`, `capture.ts`, `maccabi.ts`, `maccabi.test.ts`?**
-  _High betweenness centrality (0.148) - this node is a cross-community bridge._
-- **Why does `keywords` connect `package.json` to `capture-button.ts`?**
-  _High betweenness centrality (0.118) - this node is a cross-community bridge._
+- **Why does `playwright` connect `playwright` to `index.ts`, `session.ts`, `base-scraper-with-browser.ts`, `capture.ts`, `maccabi.ts`, `maccabi.test.ts`?**
+  _High betweenness centrality (0.168) - this node is a cross-community bridge._
+- **Why does `keywords` connect `playwright` to `package.json`?**
+  _High betweenness centrality (0.117) - this node is a cross-community bridge._
 - **What connects `name`, `version`, `description` to the rest of the system?**
-  _122 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _125 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `index.ts` be split into smaller, more focused modules?**
   _Cohesion score 0.1125886524822695 - nodes in this community are weakly interconnected._
 - **Should `package.json` be split into smaller, more focused modules?**
-  _Cohesion score 0.05 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.058823529411764705 - nodes in this community are weakly interconnected._
 - **Should `base-scraper-with-browser.ts` be split into smaller, more focused modules?**
-  _Cohesion score 0.13333333333333333 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.10256410256410256 - nodes in this community are weakly interconnected._
 - **Should `Maccabi Valid Prescriptions Fixture` be split into smaller, more focused modules?**
   _Cohesion score 0.09538461538461539 - nodes in this community are weakly interconnected._
