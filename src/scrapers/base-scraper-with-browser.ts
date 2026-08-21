@@ -79,9 +79,13 @@ export interface LoginOptions {
   postLogin?: (page: Page) => Promise<void>;
 }
 
-async function conditionMatches(condition: LoginCondition, page: Page): Promise<boolean> {
-  if (typeof condition === 'string') return page.url().includes(condition);
-  if (condition instanceof RegExp) return condition.test(page.url());
+async function conditionMatches(
+  condition: LoginCondition,
+  page: Page,
+  sourceUrl = page.url(),
+): Promise<boolean> {
+  if (typeof condition === 'string') return sourceUrl.includes(condition);
+  if (condition instanceof RegExp) return condition.test(sourceUrl);
   return condition(page);
 }
 
@@ -95,13 +99,14 @@ async function conditionMatches(condition: LoginCondition, page: Page): Promise<
 export async function matchLoginResult(
   possibleResults: PossibleLoginResults,
   page: Page,
+  sourceUrl = page.url(),
 ): Promise<LoginResults | null> {
   for (const [result, conditions] of Object.entries(possibleResults) as [
     LoginResults,
     LoginCondition[],
   ][]) {
     for (const condition of conditions) {
-      if (await conditionMatches(condition, page)) return result;
+      if (await conditionMatches(condition, page, sourceUrl)) return result;
     }
   }
   return null;

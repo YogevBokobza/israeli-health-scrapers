@@ -4,7 +4,11 @@ import { fileURLToPath } from 'node:url';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import type { Browser, Page } from 'playwright';
 
-import { maccabiMedicationBindingDefinition } from '../../../src/scrapers/maccabi.js';
+import {
+  maccabiLoginBindingDefinition,
+  maccabiMedicationBindingDefinition,
+} from '../../../src/scrapers/maccabi.js';
+import { LoginResults } from '../../../src/scrapers/base-scraper-with-browser.js';
 import { resolveSnapshotBindings } from '../../../tools/calibrate/binding-resolver.js';
 import { browserAvailable, launchTestBrowser } from '../../browser.js';
 
@@ -81,5 +85,18 @@ describe.skipIf(!browserAvailable)('binding resolver', () => {
     const resolution = await resolveSnapshotBindings(page, medicationsFixture, undefined);
 
     expect(resolution).toEqual({ status: 'pending', bindings: [], result: null });
+  });
+
+  it('uses the captured URL when resolving the current login outcome', async () => {
+    const resolution = await resolveSnapshotBindings(
+      page,
+      '<html><body></body></html>',
+      maccabiLoginBindingDefinition,
+      'https://online.maccabi4u.co.il/sonline/homepage/',
+    );
+
+    expect(resolution.status).toBe('resolved');
+    if (resolution.status !== 'resolved') return;
+    expect(resolution.result.outcome).toBe(LoginResults.Success);
   });
 });

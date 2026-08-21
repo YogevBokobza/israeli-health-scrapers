@@ -32,7 +32,8 @@
     "typecheck": "tsc -p tsconfig.json --noEmit && tsc -p tools/tsconfig.json --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
-    "calibrate": "tsx tools/calibrate/cli.ts"
+    "calibrate": "tsx tools/calibrate/cli.ts",
+    "calibrate:view": "tsx tools/calibrate/view-cli.ts"
   },
   "dependencies": {
     "playwright": "^1.50.0",

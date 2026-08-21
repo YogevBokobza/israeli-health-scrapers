@@ -9,7 +9,7 @@ export interface BindingDefinition<TResult, TField extends string = string> {
 
 export interface TargetBindingDefinition<TResult, TField extends string = string> {
   bindings: readonly BindingDefinition<TResult, TField>[];
-  parse: (page: Page) => Promise<TResult>;
+  parse: (page: Page, sourceUrl?: string) => Promise<TResult>;
 }
 
 export interface ResolvedBinding<TField extends string = string> {
@@ -32,12 +32,13 @@ export async function resolveSnapshotBindings<
   page: Page,
   html: string,
   definition: TargetBindingDefinition<TResult, TField> | undefined,
+  sourceUrl?: string,
 ): Promise<BindingResolution<TResult, TField>> {
   await page.setContent(html, { waitUntil: 'domcontentloaded' });
 
   if (!definition) return { status: 'pending', bindings: [], result: null };
 
-  const result = await definition.parse(page);
+  const result = await definition.parse(page, sourceUrl);
   const bindings = await Promise.all(
     definition.bindings.map(async (binding): Promise<ResolvedBinding<TField>> => {
       const matchCount = await page.locator(binding.selector).count();
