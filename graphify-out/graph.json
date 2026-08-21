@@ -244,7 +244,7 @@
       "_origin": "ast",
       "id": "ref_playwright",
       "community": 13,
-      "community_name": "capture-button.ts",
+      "community_name": "playwright",
       "norm_label": "playwright"
     },
     {
@@ -507,8 +507,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_constants",
-      "community": 3,
-      "community_name": "base-scraper-with-browser.ts",
+      "community": 1,
+      "community_name": "session.ts",
       "norm_label": "constants.ts"
     },
     {
@@ -518,8 +518,8 @@
       "source_location": "L23",
       "_origin": "ast",
       "id": "src_constants_viewport",
-      "community": 3,
-      "community_name": "base-scraper-with-browser.ts",
+      "community": 1,
+      "community_name": "session.ts",
       "norm_label": "viewport"
     },
     {
@@ -551,8 +551,8 @@
       "source_location": "L19",
       "_origin": "ast",
       "id": "src_definitions_healthfundid",
-      "community": 7,
-      "community_name": "capture.ts",
+      "community": 1,
+      "community_name": "session.ts",
       "norm_label": "healthfundid"
     },
     {
@@ -618,7 +618,7 @@
       "_origin": "ast",
       "id": "src_definitions_fetch_targets",
       "community": 13,
-      "community_name": "capture-button.ts",
+      "community_name": "playwright",
       "norm_label": "fetch_targets"
     },
     {
@@ -683,8 +683,8 @@
       "source_location": "L118",
       "_origin": "ast",
       "id": "src_definitions_medicationschema",
-      "community": 14,
-      "community_name": "maccabi.test.ts",
+      "community": 0,
+      "community_name": "index.ts",
       "norm_label": "medicationschema"
     },
     {
@@ -705,8 +705,8 @@
       "source_location": "L140",
       "_origin": "ast",
       "id": "src_definitions_appointmentschema",
-      "community": 14,
-      "community_name": "maccabi.test.ts",
+      "community": 0,
+      "community_name": "index.ts",
       "norm_label": "appointmentschema"
     },
     {
@@ -749,8 +749,8 @@
       "source_location": "L168",
       "_origin": "ast",
       "id": "src_definitions_testresultschema",
-      "community": 14,
-      "community_name": "maccabi.test.ts",
+      "community": 0,
+      "community_name": "index.ts",
       "norm_label": "testresultschema"
     },
     {
@@ -771,8 +771,8 @@
       "source_location": "L179",
       "_origin": "ast",
       "id": "src_definitions_vaccinationschema",
-      "community": 14,
-      "community_name": "maccabi.test.ts",
+      "community": 0,
+      "community_name": "index.ts",
       "norm_label": "vaccinationschema"
     },
     {
@@ -837,8 +837,8 @@
       "source_location": "L226",
       "_origin": "ast",
       "id": "src_definitions_scrapererrortypes",
-      "community": 3,
-      "community_name": "base-scraper-with-browser.ts",
+      "community": 14,
+      "community_name": "errors.ts",
       "norm_label": "scrapererrortypes"
     },
     {
@@ -859,8 +859,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_helpers_dates",
-      "community": 1,
-      "community_name": "dates.ts",
+      "community": 0,
+      "community_name": "index.ts",
       "norm_label": "dates.ts"
     },
     {
@@ -870,8 +870,8 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "src_helpers_dates_normalizetext",
-      "community": 1,
-      "community_name": "dates.ts",
+      "community": 0,
+      "community_name": "index.ts",
       "norm_label": "normalizetext()"
     },
     {
@@ -881,8 +881,8 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "src_helpers_dates_isblank",
-      "community": 1,
-      "community_name": "dates.ts",
+      "community": 0,
+      "community_name": "index.ts",
       "norm_label": "isblank()"
     },
     {
@@ -892,8 +892,8 @@
       "source_location": "L26",
       "_origin": "ast",
       "id": "src_helpers_dates_textornull",
-      "community": 1,
-      "community_name": "dates.ts",
+      "community": 0,
+      "community_name": "index.ts",
       "norm_label": "textornull()"
     },
     {
@@ -903,8 +903,8 @@
       "source_location": "L38",
       "_origin": "ast",
       "id": "src_helpers_dates_parseisraelidate",
-      "community": 1,
-      "community_name": "dates.ts",
+      "community": 0,
+      "community_name": "index.ts",
       "norm_label": "parseisraelidate()"
     },
     {
@@ -914,8 +914,8 @@
       "source_location": "L70",
       "_origin": "ast",
       "id": "src_helpers_dates_jerusalemoffsetminutes",
-      "community": 1,
-      "community_name": "dates.ts",
+      "community": 0,
+      "community_name": "index.ts",
       "norm_label": "jerusalemoffsetminutes()"
     },
     {
@@ -925,8 +925,8 @@
       "source_location": "L82",
       "_origin": "ast",
       "id": "src_helpers_dates_formatoffset",
-      "community": 1,
-      "community_name": "dates.ts",
+      "community": 0,
+      "community_name": "index.ts",
       "norm_label": "formatoffset()"
     },
     {
@@ -936,8 +936,8 @@
       "source_location": "L97",
       "_origin": "ast",
       "id": "src_helpers_dates_parseisraelidatetime",
-      "community": 1,
-      "community_name": "dates.ts",
+      "community": 0,
+      "community_name": "index.ts",
       "norm_label": "parseisraelidatetime()"
     },
     {
@@ -947,8 +947,8 @@
       "source_location": "L124",
       "_origin": "ast",
       "id": "src_helpers_dates_parseinteger",
-      "community": 1,
-      "community_name": "dates.ts",
+      "community": 0,
+      "community_name": "index.ts",
       "norm_label": "parseinteger()"
     },
     {
@@ -958,8 +958,8 @@
       "source_location": "L137",
       "_origin": "ast",
       "id": "src_helpers_dates_deriveexpiry",
-      "community": 1,
-      "community_name": "dates.ts",
+      "community": 0,
+      "community_name": "index.ts",
       "norm_label": "deriveexpiry()"
     },
     {
@@ -969,8 +969,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_helpers_debug",
-      "community": 7,
-      "community_name": "capture.ts",
+      "community": 1,
+      "community_name": "session.ts",
       "norm_label": "debug.ts"
     },
     {
@@ -980,8 +980,8 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "src_helpers_debug_capturediagnostics",
-      "community": 12,
-      "community_name": "maccabi.ts",
+      "community": 1,
+      "community_name": "session.ts",
       "norm_label": "capturediagnostics()"
     },
     {
@@ -991,8 +991,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_helpers_elements",
-      "community": 12,
-      "community_name": "maccabi.ts",
+      "community": 3,
+      "community_name": "base-scraper-with-browser.ts",
       "norm_label": "elements.ts"
     },
     {
@@ -1002,8 +1002,8 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "src_helpers_elements_elementexists",
-      "community": 12,
-      "community_name": "maccabi.ts",
+      "community": 3,
+      "community_name": "base-scraper-with-browser.ts",
       "norm_label": "elementexists()"
     },
     {
@@ -1013,8 +1013,8 @@
       "source_location": "L19",
       "_origin": "ast",
       "id": "src_helpers_elements_fillfirst",
-      "community": 12,
-      "community_name": "maccabi.ts",
+      "community": 3,
+      "community_name": "base-scraper-with-browser.ts",
       "norm_label": "fillfirst()"
     },
     {
@@ -1024,8 +1024,8 @@
       "source_location": "L40",
       "_origin": "ast",
       "id": "src_helpers_elements_typefirst",
-      "community": 12,
-      "community_name": "maccabi.ts",
+      "community": 3,
+      "community_name": "base-scraper-with-browser.ts",
       "norm_label": "typefirst()"
     },
     {
@@ -1035,8 +1035,8 @@
       "source_location": "L55",
       "_origin": "ast",
       "id": "src_helpers_elements_clickfirst",
-      "community": 12,
-      "community_name": "maccabi.ts",
+      "community": 3,
+      "community_name": "base-scraper-with-browser.ts",
       "norm_label": "clickfirst()"
     },
     {
@@ -1046,8 +1046,8 @@
       "source_location": "L67",
       "_origin": "ast",
       "id": "src_helpers_elements_textoffirst",
-      "community": 12,
-      "community_name": "maccabi.ts",
+      "community": 3,
+      "community_name": "base-scraper-with-browser.ts",
       "norm_label": "textoffirst()"
     },
     {
@@ -1057,8 +1057,8 @@
       "source_location": "L88",
       "_origin": "ast",
       "id": "src_helpers_elements_waituntil",
-      "community": 12,
-      "community_name": "maccabi.ts",
+      "community": 3,
+      "community_name": "base-scraper-with-browser.ts",
       "norm_label": "waituntil()"
     },
     {
@@ -1068,8 +1068,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_helpers_paths",
-      "community": 7,
-      "community_name": "capture.ts",
+      "community": 1,
+      "community_name": "session.ts",
       "norm_label": "paths.ts"
     },
     {
@@ -1079,8 +1079,8 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "src_helpers_paths_dataroot",
-      "community": 7,
-      "community_name": "capture.ts",
+      "community": 1,
+      "community_name": "session.ts",
       "norm_label": "dataroot()"
     },
     {
@@ -1090,8 +1090,8 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "src_helpers_paths_sessionpath",
-      "community": 7,
-      "community_name": "capture.ts",
+      "community": 1,
+      "community_name": "session.ts",
       "norm_label": "sessionpath()"
     },
     {
@@ -1101,8 +1101,8 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "src_helpers_paths_diagnosticsdir",
-      "community": 7,
-      "community_name": "capture.ts",
+      "community": 1,
+      "community_name": "session.ts",
       "norm_label": "diagnosticsdir()"
     },
     {
@@ -1112,8 +1112,8 @@
       "source_location": "L25",
       "_origin": "ast",
       "id": "src_helpers_paths_capturesdir",
-      "community": 7,
-      "community_name": "capture.ts",
+      "community": 1,
+      "community_name": "session.ts",
       "norm_label": "capturesdir()"
     },
     {
@@ -1123,8 +1123,8 @@
       "source_location": "L30",
       "_origin": "ast",
       "id": "src_helpers_paths_ensuredir",
-      "community": 7,
-      "community_name": "capture.ts",
+      "community": 1,
+      "community_name": "session.ts",
       "norm_label": "ensuredir()"
     },
     {
@@ -1134,8 +1134,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_helpers_session",
-      "community": 7,
-      "community_name": "capture.ts",
+      "community": 1,
+      "community_name": "session.ts",
       "norm_label": "session.ts"
     },
     {
@@ -1145,8 +1145,8 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "src_helpers_session_storedsession",
-      "community": 7,
-      "community_name": "capture.ts",
+      "community": 1,
+      "community_name": "session.ts",
       "norm_label": "storedsession"
     },
     {
@@ -1156,8 +1156,8 @@
       "source_location": "L31",
       "_origin": "ast",
       "id": "src_helpers_session_sessionkey",
-      "community": 7,
-      "community_name": "capture.ts",
+      "community": 1,
+      "community_name": "session.ts",
       "norm_label": "sessionkey()"
     },
     {
@@ -1167,8 +1167,8 @@
       "source_location": "L42",
       "_origin": "ast",
       "id": "src_helpers_session_savesession",
-      "community": 7,
-      "community_name": "capture.ts",
+      "community": 1,
+      "community_name": "session.ts",
       "norm_label": "savesession()"
     },
     {
@@ -1178,8 +1178,8 @@
       "source_location": "L74",
       "_origin": "ast",
       "id": "src_helpers_session_loadsession",
-      "community": 7,
-      "community_name": "capture.ts",
+      "community": 1,
+      "community_name": "session.ts",
       "norm_label": "loadsession()"
     },
     {
@@ -1189,8 +1189,8 @@
       "source_location": "L101",
       "_origin": "ast",
       "id": "src_helpers_session_isexpired",
-      "community": 13,
-      "community_name": "capture-button.ts",
+      "community": 1,
+      "community_name": "session.ts",
       "norm_label": "isexpired()"
     },
     {
@@ -1200,8 +1200,8 @@
       "source_location": "L105",
       "_origin": "ast",
       "id": "src_helpers_session_clearsession",
-      "community": 7,
-      "community_name": "capture.ts",
+      "community": 1,
+      "community_name": "session.ts",
       "norm_label": "clearsession()"
     },
     {
@@ -1277,8 +1277,8 @@
       "source_location": "L52",
       "_origin": "ast",
       "id": "src_scrapers_base_scraper_with_browser_loginoptions",
-      "community": 12,
-      "community_name": "maccabi.ts",
+      "community": 3,
+      "community_name": "base-scraper-with-browser.ts",
       "norm_label": "loginoptions"
     },
     {
@@ -1332,8 +1332,8 @@
       "source_location": "L157",
       "_origin": "ast",
       "id": "src_scrapers_base_scraper_with_browser_basescraperwithbrowser",
-      "community": 12,
-      "community_name": "maccabi.ts",
+      "community": 3,
+      "community_name": "base-scraper-with-browser.ts",
       "norm_label": "basescraperwithbrowser"
     },
     {
@@ -1343,8 +1343,8 @@
       "source_location": "L168",
       "_origin": "ast",
       "id": "src_scrapers_base_scraper_with_browser_basescraperwithbrowser_activepage",
-      "community": 12,
-      "community_name": "maccabi.ts",
+      "community": 3,
+      "community_name": "base-scraper-with-browser.ts",
       "norm_label": ".activepage()"
     },
     {
@@ -1354,8 +1354,8 @@
       "source_location": "L173",
       "_origin": "ast",
       "id": "src_scrapers_base_scraper_with_browser_basescraperwithbrowser_initialize",
-      "community": 12,
-      "community_name": "maccabi.ts",
+      "community": 3,
+      "community_name": "base-scraper-with-browser.ts",
       "norm_label": ".initialize()"
     },
     {
@@ -1365,8 +1365,8 @@
       "source_location": "L208",
       "_origin": "ast",
       "id": "src_scrapers_base_scraper_with_browser_basescraperwithbrowser_login",
-      "community": 12,
-      "community_name": "maccabi.ts",
+      "community": 3,
+      "community_name": "base-scraper-with-browser.ts",
       "norm_label": ".login()"
     },
     {
@@ -1376,8 +1376,8 @@
       "source_location": "L273",
       "_origin": "ast",
       "id": "src_scrapers_base_scraper_with_browser_basescraperwithbrowser_awaitloginresult",
-      "community": 12,
-      "community_name": "maccabi.ts",
+      "community": 3,
+      "community_name": "base-scraper-with-browser.ts",
       "norm_label": ".awaitloginresult()"
     },
     {
@@ -1387,8 +1387,8 @@
       "source_location": "L303",
       "_origin": "ast",
       "id": "src_scrapers_base_scraper_with_browser_basescraperwithbrowser_handletwofactor",
-      "community": 12,
-      "community_name": "maccabi.ts",
+      "community": 3,
+      "community_name": "base-scraper-with-browser.ts",
       "norm_label": ".handletwofactor()"
     },
     {
@@ -1398,8 +1398,8 @@
       "source_location": "L344",
       "_origin": "ast",
       "id": "src_scrapers_base_scraper_with_browser_basescraperwithbrowser_persistsession",
-      "community": 12,
-      "community_name": "maccabi.ts",
+      "community": 3,
+      "community_name": "base-scraper-with-browser.ts",
       "norm_label": ".persistsession()"
     },
     {
@@ -1409,8 +1409,8 @@
       "source_location": "L356",
       "_origin": "ast",
       "id": "src_scrapers_base_scraper_with_browser_basescraperwithbrowser_terminate",
-      "community": 12,
-      "community_name": "maccabi.ts",
+      "community": 1,
+      "community_name": "session.ts",
       "norm_label": ".terminate()"
     },
     {
@@ -1420,8 +1420,8 @@
       "source_location": "L384",
       "_origin": "ast",
       "id": "src_scrapers_base_scraper_with_browser_basescraperwithbrowser_triggertwofactorauth",
-      "community": 12,
-      "community_name": "maccabi.ts",
+      "community": 3,
+      "community_name": "base-scraper-with-browser.ts",
       "norm_label": ".triggertwofactorauth()"
     },
     {
@@ -1431,8 +1431,8 @@
       "source_location": "L414",
       "_origin": "ast",
       "id": "src_scrapers_base_scraper_with_browser_basescraperwithbrowser_getlongtermtwofactortoken",
-      "community": 12,
-      "community_name": "maccabi.ts",
+      "community": 3,
+      "community_name": "base-scraper-with-browser.ts",
       "norm_label": ".getlongtermtwofactortoken()"
     },
     {
@@ -1442,8 +1442,8 @@
       "source_location": "L449",
       "_origin": "ast",
       "id": "src_scrapers_base_scraper_with_browser_basescraperwithbrowser_pagehas",
-      "community": 12,
-      "community_name": "maccabi.ts",
+      "community": 3,
+      "community_name": "base-scraper-with-browser.ts",
       "norm_label": ".pagehas()"
     },
     {
@@ -1530,8 +1530,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_scrapers_errors",
-      "community": 3,
-      "community_name": "base-scraper-with-browser.ts",
+      "community": 14,
+      "community_name": "errors.ts",
       "norm_label": "errors.ts"
     },
     {
@@ -1541,8 +1541,8 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "src_scrapers_errors_scrapererror",
-      "community": 3,
-      "community_name": "base-scraper-with-browser.ts",
+      "community": 14,
+      "community_name": "errors.ts",
       "norm_label": "scrapererror"
     },
     {
@@ -1552,8 +1552,8 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "src_scrapers_errors_scrapererror_constructor",
-      "community": 3,
-      "community_name": "base-scraper-with-browser.ts",
+      "community": 14,
+      "community_name": "errors.ts",
       "norm_label": ".constructor()"
     },
     {
@@ -1563,8 +1563,8 @@
       "source_location": "L19",
       "_origin": "ast",
       "id": "src_scrapers_errors_selectordrifterror",
-      "community": 3,
-      "community_name": "base-scraper-with-browser.ts",
+      "community": 14,
+      "community_name": "errors.ts",
       "norm_label": "selectordrifterror"
     },
     {
@@ -1574,8 +1574,8 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "src_scrapers_errors_selectordrifterror_constructor",
-      "community": 3,
-      "community_name": "base-scraper-with-browser.ts",
+      "community": 14,
+      "community_name": "errors.ts",
       "norm_label": ".constructor()"
     },
     {
@@ -1585,8 +1585,8 @@
       "source_location": "L33",
       "_origin": "ast",
       "id": "src_scrapers_errors_twofactorretrievermissingerror",
-      "community": 3,
-      "community_name": "base-scraper-with-browser.ts",
+      "community": 14,
+      "community_name": "errors.ts",
       "norm_label": "twofactorretrievermissingerror"
     },
     {
@@ -1596,8 +1596,8 @@
       "source_location": "L34",
       "_origin": "ast",
       "id": "src_scrapers_errors_twofactorretrievermissingerror_constructor",
-      "community": 3,
-      "community_name": "base-scraper-with-browser.ts",
+      "community": 14,
+      "community_name": "errors.ts",
       "norm_label": ".constructor()"
     },
     {
@@ -1607,8 +1607,8 @@
       "source_location": "L43",
       "_origin": "ast",
       "id": "src_scrapers_errors_timeouterror",
-      "community": 3,
-      "community_name": "base-scraper-with-browser.ts",
+      "community": 14,
+      "community_name": "errors.ts",
       "norm_label": "timeouterror"
     },
     {
@@ -1618,8 +1618,8 @@
       "source_location": "L44",
       "_origin": "ast",
       "id": "src_scrapers_errors_timeouterror_constructor",
-      "community": 3,
-      "community_name": "base-scraper-with-browser.ts",
+      "community": 14,
+      "community_name": "errors.ts",
       "norm_label": ".constructor()"
     },
     {
@@ -1799,10 +1799,21 @@
       "norm_label": "urls"
     },
     {
-      "label": "selectors",
+      "label": "maccabiMedicationSelectors",
       "file_type": "code",
       "source_file": "src/scrapers/maccabi.ts",
       "source_location": "L48",
+      "_origin": "ast",
+      "id": "src_scrapers_maccabi_maccabimedicationselectors",
+      "community": 12,
+      "community_name": "maccabi.ts",
+      "norm_label": "maccabimedicationselectors"
+    },
+    {
+      "label": "selectors",
+      "file_type": "code",
+      "source_file": "src/scrapers/maccabi.ts",
+      "source_location": "L56",
       "_origin": "ast",
       "id": "src_scrapers_maccabi_selectors",
       "community": 12,
@@ -1813,29 +1824,29 @@
       "label": "ScrapedPrescriptionRow",
       "file_type": "code",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L99",
+      "source_location": "L107",
       "_origin": "ast",
       "id": "src_scrapers_maccabi_scrapedprescriptionrow",
-      "community": 14,
-      "community_name": "maccabi.test.ts",
+      "community": 0,
+      "community_name": "index.ts",
       "norm_label": "scrapedprescriptionrow"
     },
     {
       "label": "prescriptionRowToMedication()",
       "file_type": "code",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L116",
+      "source_location": "L124",
       "_origin": "ast",
       "id": "src_scrapers_maccabi_prescriptionrowtomedication",
-      "community": 1,
-      "community_name": "dates.ts",
+      "community": 0,
+      "community_name": "index.ts",
       "norm_label": "prescriptionrowtomedication()"
     },
     {
       "label": "scrapePrescriptionRows()",
       "file_type": "code",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L141",
+      "source_location": "L149",
       "_origin": "ast",
       "id": "src_scrapers_maccabi_scrapeprescriptionrows",
       "community": 12,
@@ -1843,32 +1854,54 @@
       "norm_label": "scrapeprescriptionrows()"
     },
     {
+      "label": "medicationDescendantSelector()",
+      "file_type": "code",
+      "source_file": "src/scrapers/maccabi.ts",
+      "source_location": "L175",
+      "_origin": "ast",
+      "id": "src_scrapers_maccabi_medicationdescendantselector",
+      "community": 12,
+      "community_name": "maccabi.ts",
+      "norm_label": "medicationdescendantselector()"
+    },
+    {
+      "label": "maccabiMedicationBindingDefinition",
+      "file_type": "code",
+      "source_file": "src/scrapers/maccabi.ts",
+      "source_location": "L179",
+      "_origin": "ast",
+      "id": "src_scrapers_maccabi_maccabimedicationbindingdefinition",
+      "community": 13,
+      "community_name": "playwright",
+      "norm_label": "maccabimedicationbindingdefinition"
+    },
+    {
       "label": "ScrapedVaccinationRow",
       "file_type": "code",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L161",
+      "source_location": "L210",
       "_origin": "ast",
       "id": "src_scrapers_maccabi_scrapedvaccinationrow",
-      "community": 14,
-      "community_name": "maccabi.test.ts",
+      "community": 0,
+      "community_name": "index.ts",
       "norm_label": "scrapedvaccinationrow"
     },
     {
       "label": "vaccinationRowToVaccination()",
       "file_type": "code",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L169",
+      "source_location": "L218",
       "_origin": "ast",
       "id": "src_scrapers_maccabi_vaccinationrowtovaccination",
-      "community": 12,
-      "community_name": "maccabi.ts",
+      "community": 0,
+      "community_name": "index.ts",
       "norm_label": "vaccinationrowtovaccination()"
     },
     {
       "label": "scrapeVaccinationRows()",
       "file_type": "code",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L194",
+      "source_location": "L243",
       "_origin": "ast",
       "id": "src_scrapers_maccabi_scrapevaccinationrows",
       "community": 12,
@@ -1879,7 +1912,7 @@
       "label": "expandVaccinationDetails()",
       "file_type": "code",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L259",
+      "source_location": "L308",
       "_origin": "ast",
       "id": "src_scrapers_maccabi_expandvaccinationdetails",
       "community": 12,
@@ -1890,29 +1923,29 @@
       "label": "ScrapedAppointmentRow",
       "file_type": "code",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L295",
+      "source_location": "L344",
       "_origin": "ast",
       "id": "src_scrapers_maccabi_scrapedappointmentrow",
-      "community": 14,
-      "community_name": "maccabi.test.ts",
+      "community": 0,
+      "community_name": "index.ts",
       "norm_label": "scrapedappointmentrow"
     },
     {
       "label": "appointmentRowToAppointment()",
       "file_type": "code",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L312",
+      "source_location": "L361",
       "_origin": "ast",
       "id": "src_scrapers_maccabi_appointmentrowtoappointment",
-      "community": 1,
-      "community_name": "dates.ts",
+      "community": 0,
+      "community_name": "index.ts",
       "norm_label": "appointmentrowtoappointment()"
     },
     {
       "label": "scrapeAppointmentRows()",
       "file_type": "code",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L340",
+      "source_location": "L389",
       "_origin": "ast",
       "id": "src_scrapers_maccabi_scrapeappointmentrows",
       "community": 12,
@@ -1923,7 +1956,7 @@
       "label": "scrapeAppointmentDetail()",
       "file_type": "code",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L375",
+      "source_location": "L424",
       "_origin": "ast",
       "id": "src_scrapers_maccabi_scrapeappointmentdetail",
       "community": 12,
@@ -1934,7 +1967,7 @@
       "label": "ScrapedTestResultRow",
       "file_type": "code",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L411",
+      "source_location": "L460",
       "_origin": "ast",
       "id": "src_scrapers_maccabi_scrapedtestresultrow",
       "community": 12,
@@ -1945,18 +1978,18 @@
       "label": "testResultRowToTestResult()",
       "file_type": "code",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L427",
+      "source_location": "L476",
       "_origin": "ast",
       "id": "src_scrapers_maccabi_testresultrowtotestresult",
-      "community": 12,
-      "community_name": "maccabi.ts",
+      "community": 0,
+      "community_name": "index.ts",
       "norm_label": "testresultrowtotestresult()"
     },
     {
       "label": "scrapeTestResultRows()",
       "file_type": "code",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L451",
+      "source_location": "L500",
       "_origin": "ast",
       "id": "src_scrapers_maccabi_scrapetestresultrows",
       "community": 12,
@@ -1967,7 +2000,7 @@
       "label": "loadAllTestResultRows()",
       "file_type": "code",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L483",
+      "source_location": "L532",
       "_origin": "ast",
       "id": "src_scrapers_maccabi_loadalltestresultrows",
       "community": 12,
@@ -1978,7 +2011,7 @@
       "label": "MaccabiScraper",
       "file_type": "code",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L507",
+      "source_location": "L556",
       "_origin": "ast",
       "id": "src_scrapers_maccabi_maccabiscraper",
       "community": 12,
@@ -1989,18 +2022,18 @@
       "label": ".getLoginOptions()",
       "file_type": "code",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L508",
+      "source_location": "L557",
       "_origin": "ast",
       "id": "src_scrapers_maccabi_maccabiscraper_getloginoptions",
-      "community": 12,
-      "community_name": "maccabi.ts",
+      "community": 3,
+      "community_name": "base-scraper-with-browser.ts",
       "norm_label": ".getloginoptions()"
     },
     {
       "label": ".fetchAccounts()",
       "file_type": "code",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L575",
+      "source_location": "L624",
       "_origin": "ast",
       "id": "src_scrapers_maccabi_maccabiscraper_fetchaccounts",
       "community": 12,
@@ -2011,7 +2044,7 @@
       "label": ".fetchMedications()",
       "file_type": "code",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L602",
+      "source_location": "L651",
       "_origin": "ast",
       "id": "src_scrapers_maccabi_maccabiscraper_fetchmedications",
       "community": 12,
@@ -2022,7 +2055,7 @@
       "label": ".fetchAppointments()",
       "file_type": "code",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L637",
+      "source_location": "L686",
       "_origin": "ast",
       "id": "src_scrapers_maccabi_maccabiscraper_fetchappointments",
       "community": 12,
@@ -2033,7 +2066,7 @@
       "label": ".fetchVaccinations()",
       "file_type": "code",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L676",
+      "source_location": "L725",
       "_origin": "ast",
       "id": "src_scrapers_maccabi_maccabiscraper_fetchvaccinations",
       "community": 12,
@@ -2044,7 +2077,7 @@
       "label": ".fetchTestResults()",
       "file_type": "code",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L697",
+      "source_location": "L746",
       "_origin": "ast",
       "id": "src_scrapers_maccabi_maccabiscraper_fetchtestresults",
       "community": 12,
@@ -2055,7 +2088,7 @@
       "label": ".fetchAppointmentDetail()",
       "file_type": "code",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L735",
+      "source_location": "L784",
       "_origin": "ast",
       "id": "src_scrapers_maccabi_maccabiscraper_fetchappointmentdetail",
       "community": 12,
@@ -2147,7 +2180,7 @@
       "_origin": "ast",
       "id": "test_browser",
       "community": 13,
-      "community_name": "capture-button.ts",
+      "community_name": "playwright",
       "norm_label": "browser.ts"
     },
     {
@@ -2158,7 +2191,7 @@
       "_origin": "ast",
       "id": "test_browser_chromiumexecutablepath",
       "community": 13,
-      "community_name": "capture-button.ts",
+      "community_name": "playwright",
       "norm_label": "chromiumexecutablepath()"
     },
     {
@@ -2169,7 +2202,7 @@
       "_origin": "ast",
       "id": "test_browser_launchtestbrowser",
       "community": 13,
-      "community_name": "capture-button.ts",
+      "community_name": "playwright",
       "norm_label": "launchtestbrowser()"
     },
     {
@@ -2190,8 +2223,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "test_helpers_dates_test",
-      "community": 1,
-      "community_name": "dates.ts",
+      "community": 0,
+      "community_name": "index.ts",
       "norm_label": "dates.test.ts"
     },
     {
@@ -2333,8 +2366,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "test_scrapers_maccabi_test",
-      "community": 14,
-      "community_name": "maccabi.test.ts",
+      "community": 0,
+      "community_name": "index.ts",
       "norm_label": "maccabi.test.ts"
     },
     {
@@ -2344,8 +2377,8 @@
       "source_location": "L28",
       "_origin": "ast",
       "id": "test_scrapers_maccabi_test_now",
-      "community": 14,
-      "community_name": "maccabi.test.ts",
+      "community": 0,
+      "community_name": "index.ts",
       "norm_label": "now"
     },
     {
@@ -2377,8 +2410,8 @@
       "source_location": "L51",
       "_origin": "ast",
       "id": "test_scrapers_maccabi_test_standingrow",
-      "community": 14,
-      "community_name": "maccabi.test.ts",
+      "community": 0,
+      "community_name": "index.ts",
       "norm_label": "standingrow"
     },
     {
@@ -2388,8 +2421,8 @@
       "source_location": "L108",
       "_origin": "ast",
       "id": "test_scrapers_maccabi_test_appointmentrow",
-      "community": 14,
-      "community_name": "maccabi.test.ts",
+      "community": 0,
+      "community_name": "index.ts",
       "norm_label": "appointmentrow"
     },
     {
@@ -2399,9 +2432,42 @@
       "source_location": "L176",
       "_origin": "ast",
       "id": "test_scrapers_maccabi_test_testresultrow",
-      "community": 14,
-      "community_name": "maccabi.test.ts",
+      "community": 0,
+      "community_name": "index.ts",
       "norm_label": "testresultrow"
+    },
+    {
+      "label": "binding-resolver-dom.test.ts",
+      "file_type": "code",
+      "source_file": "test/tools/calibrate/binding-resolver-dom.test.ts",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "test_tools_calibrate_binding_resolver_dom_test",
+      "community": 13,
+      "community_name": "playwright",
+      "norm_label": "binding-resolver-dom.test.ts"
+    },
+    {
+      "label": "fixturesDir",
+      "file_type": "code",
+      "source_file": "test/tools/calibrate/binding-resolver-dom.test.ts",
+      "source_location": "L11",
+      "_origin": "ast",
+      "id": "test_tools_calibrate_binding_resolver_dom_test_fixturesdir",
+      "community": 13,
+      "community_name": "playwright",
+      "norm_label": "fixturesdir"
+    },
+    {
+      "label": "medicationsFixture",
+      "file_type": "code",
+      "source_file": "test/tools/calibrate/binding-resolver-dom.test.ts",
+      "source_location": "L15",
+      "_origin": "ast",
+      "id": "test_tools_calibrate_binding_resolver_dom_test_medicationsfixture",
+      "community": 13,
+      "community_name": "playwright",
+      "norm_label": "medicationsfixture"
     },
     {
       "label": "capture-button-dom.test.ts",
@@ -2411,7 +2477,7 @@
       "_origin": "ast",
       "id": "test_tools_calibrate_capture_button_dom_test",
       "community": 13,
-      "community_name": "capture-button.ts",
+      "community_name": "playwright",
       "norm_label": "capture-button-dom.test.ts"
     },
     {
@@ -2422,7 +2488,7 @@
       "_origin": "ast",
       "id": "test_tools_calibrate_capture_button_dom_test_pagewithbutton",
       "community": 13,
-      "community_name": "capture-button.ts",
+      "community_name": "playwright",
       "norm_label": "pagewithbutton()"
     },
     {
@@ -2455,8 +2521,74 @@
       "_origin": "ast",
       "id": "test_tools_calibrate_target_picker_test",
       "community": 13,
-      "community_name": "capture-button.ts",
+      "community_name": "playwright",
       "norm_label": "target-picker.test.ts"
+    },
+    {
+      "label": "binding-resolver.ts",
+      "file_type": "code",
+      "source_file": "tools/calibrate/binding-resolver.ts",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "tools_calibrate_binding_resolver",
+      "community": 13,
+      "community_name": "playwright",
+      "norm_label": "binding-resolver.ts"
+    },
+    {
+      "label": "BindingDefinition",
+      "file_type": "code",
+      "source_file": "tools/calibrate/binding-resolver.ts",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "tools_calibrate_binding_resolver_bindingdefinition",
+      "community": 13,
+      "community_name": "playwright",
+      "norm_label": "bindingdefinition"
+    },
+    {
+      "label": "TargetBindingDefinition",
+      "file_type": "code",
+      "source_file": "tools/calibrate/binding-resolver.ts",
+      "source_location": "L10",
+      "_origin": "ast",
+      "id": "tools_calibrate_binding_resolver_targetbindingdefinition",
+      "community": 13,
+      "community_name": "playwright",
+      "norm_label": "targetbindingdefinition"
+    },
+    {
+      "label": "ResolvedBinding",
+      "file_type": "code",
+      "source_file": "tools/calibrate/binding-resolver.ts",
+      "source_location": "L15",
+      "_origin": "ast",
+      "id": "tools_calibrate_binding_resolver_resolvedbinding",
+      "community": 13,
+      "community_name": "playwright",
+      "norm_label": "resolvedbinding"
+    },
+    {
+      "label": "BindingResolution",
+      "file_type": "code",
+      "source_file": "tools/calibrate/binding-resolver.ts",
+      "source_location": "L23",
+      "_origin": "ast",
+      "id": "tools_calibrate_binding_resolver_bindingresolution",
+      "community": 13,
+      "community_name": "playwright",
+      "norm_label": "bindingresolution"
+    },
+    {
+      "label": "resolveSnapshotBindings()",
+      "file_type": "code",
+      "source_file": "tools/calibrate/binding-resolver.ts",
+      "source_location": "L28",
+      "_origin": "ast",
+      "id": "tools_calibrate_binding_resolver_resolvesnapshotbindings",
+      "community": 13,
+      "community_name": "playwright",
+      "norm_label": "resolvesnapshotbindings()"
     },
     {
       "label": "capture-button.ts",
@@ -2466,7 +2598,7 @@
       "_origin": "ast",
       "id": "tools_calibrate_capture_button",
       "community": 13,
-      "community_name": "capture-button.ts",
+      "community_name": "playwright",
       "norm_label": "capture-button.ts"
     },
     {
@@ -2477,7 +2609,7 @@
       "_origin": "ast",
       "id": "tools_calibrate_capture_button_capturebuttonresult",
       "community": 13,
-      "community_name": "capture-button.ts",
+      "community_name": "playwright",
       "norm_label": "capturebuttonresult"
     },
     {
@@ -2488,7 +2620,7 @@
       "_origin": "ast",
       "id": "tools_calibrate_capture_button_bootstrapargs",
       "community": 13,
-      "community_name": "capture-button.ts",
+      "community_name": "playwright",
       "norm_label": "bootstrapargs"
     },
     {
@@ -2499,7 +2631,7 @@
       "_origin": "ast",
       "id": "tools_calibrate_capture_button_bootstrapcapturebutton",
       "community": 13,
-      "community_name": "capture-button.ts",
+      "community_name": "playwright",
       "norm_label": "bootstrapcapturebutton()"
     },
     {
@@ -2510,7 +2642,7 @@
       "_origin": "ast",
       "id": "tools_calibrate_capture_button_injectcapturebutton",
       "community": 13,
-      "community_name": "capture-button.ts",
+      "community_name": "playwright",
       "norm_label": "injectcapturebutton()"
     },
     {
@@ -2520,8 +2652,8 @@
       "source_location": "L168",
       "_origin": "ast",
       "id": "tools_calibrate_capture_button_installcapturebutton",
-      "community": 13,
-      "community_name": "capture-button.ts",
+      "community": 1,
+      "community_name": "session.ts",
       "norm_label": "installcapturebutton()"
     },
     {
@@ -2542,8 +2674,8 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "tools_calibrate_capture_capturerequest",
-      "community": 7,
-      "community_name": "capture.ts",
+      "community": 1,
+      "community_name": "session.ts",
       "norm_label": "capturerequest"
     },
     {
@@ -2564,8 +2696,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "tools_calibrate_cli",
-      "community": 13,
-      "community_name": "capture-button.ts",
+      "community": 1,
+      "community_name": "session.ts",
       "norm_label": "cli.ts"
     },
     {
@@ -2575,8 +2707,8 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "tools_calibrate_cli_calibratable_funds",
-      "community": 13,
-      "community_name": "capture-button.ts",
+      "community": 1,
+      "community_name": "session.ts",
       "norm_label": "calibratable_funds"
     },
     {
@@ -2586,8 +2718,8 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "tools_calibrate_cli_parsefund",
-      "community": 13,
-      "community_name": "capture-button.ts",
+      "community": 1,
+      "community_name": "session.ts",
       "norm_label": "parsefund()"
     },
     {
@@ -2597,8 +2729,8 @@
       "source_location": "L23",
       "_origin": "ast",
       "id": "tools_calibrate_cli_main",
-      "community": 13,
-      "community_name": "capture-button.ts",
+      "community": 1,
+      "community_name": "session.ts",
       "norm_label": "main()"
     },
     {
@@ -2763,7 +2895,7 @@
       "_origin": "ast",
       "id": "tools_calibrate_target_picker",
       "community": 13,
-      "community_name": "capture-button.ts",
+      "community_name": "playwright",
       "norm_label": "target-picker.ts"
     },
     {
@@ -2774,7 +2906,7 @@
       "_origin": "ast",
       "id": "tools_calibrate_target_picker_capture_targets",
       "community": 13,
-      "community_name": "capture-button.ts",
+      "community_name": "playwright",
       "norm_label": "capture_targets"
     },
     {
@@ -2785,7 +2917,7 @@
       "_origin": "ast",
       "id": "tools_calibrate_target_picker_capture_states",
       "community": 13,
-      "community_name": "capture-button.ts",
+      "community_name": "playwright",
       "norm_label": "capture_states"
     },
     {
@@ -2796,7 +2928,7 @@
       "_origin": "ast",
       "id": "tools_calibrate_target_picker_isknowntarget",
       "community": 13,
-      "community_name": "capture-button.ts",
+      "community_name": "playwright",
       "norm_label": "isknowntarget()"
     },
     {
@@ -2807,7 +2939,7 @@
       "_origin": "ast",
       "id": "tools_calibrate_target_picker_islowercamelslug",
       "community": 13,
-      "community_name": "capture-button.ts",
+      "community_name": "playwright",
       "norm_label": "islowercamelslug()"
     },
     {
@@ -2818,7 +2950,7 @@
       "_origin": "ast",
       "id": "tools_calibrate_target_picker_targetvalidation",
       "community": 13,
-      "community_name": "capture-button.ts",
+      "community_name": "playwright",
       "norm_label": "targetvalidation"
     },
     {
@@ -2829,7 +2961,7 @@
       "_origin": "ast",
       "id": "tools_calibrate_target_picker_validatecapturetarget",
       "community": 13,
-      "community_name": "capture-button.ts",
+      "community_name": "playwright",
       "norm_label": "validatecapturetarget()"
     },
     {
@@ -4742,11 +4874,35 @@
       "relation": "imports_from",
       "context": "import",
       "confidence": "EXTRACTED",
+      "source_file": "test/tools/calibrate/binding-resolver-dom.test.ts",
+      "source_location": "L5",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "test_tools_calibrate_binding_resolver_dom_test",
+      "target": "ref_playwright",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
       "source_file": "test/tools/calibrate/capture-button-dom.test.ts",
       "source_location": "L2",
       "weight": 1.0,
       "_origin": "ast",
       "source": "test_tools_calibrate_capture_button_dom_test",
+      "target": "ref_playwright",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "tools/calibrate/binding-resolver.ts",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "tools_calibrate_binding_resolver",
       "target": "ref_playwright",
       "confidence_score": 1.0
     },
@@ -6272,7 +6428,7 @@
       "context": "generic_arg",
       "confidence": "EXTRACTED",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L602",
+      "source_location": "L651",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi_maccabiscraper_fetchmedications",
@@ -6332,7 +6488,7 @@
       "context": "generic_arg",
       "confidence": "EXTRACTED",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L637",
+      "source_location": "L686",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi_maccabiscraper_fetchappointments",
@@ -6416,7 +6572,7 @@
       "context": "generic_arg",
       "confidence": "EXTRACTED",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L697",
+      "source_location": "L746",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi_maccabiscraper_fetchtestresults",
@@ -6476,7 +6632,7 @@
       "context": "generic_arg",
       "confidence": "EXTRACTED",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L676",
+      "source_location": "L725",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi_maccabiscraper_fetchvaccinations",
@@ -6560,7 +6716,7 @@
       "context": "generic_arg",
       "confidence": "EXTRACTED",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L575",
+      "source_location": "L624",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi_maccabiscraper_fetchaccounts",
@@ -7116,7 +7272,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L316",
+      "source_location": "L365",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi_appointmentrowtoappointment",
@@ -7128,7 +7284,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L120",
+      "source_location": "L128",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi_prescriptionrowtomedication",
@@ -7140,7 +7296,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L428",
+      "source_location": "L477",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi_testresultrowtotestresult",
@@ -7152,7 +7308,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L170",
+      "source_location": "L219",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi_vaccinationrowtovaccination",
@@ -7200,7 +7356,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L123",
+      "source_location": "L131",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi_prescriptionrowtomedication",
@@ -7212,7 +7368,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L429",
+      "source_location": "L478",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi_testresultrowtotestresult",
@@ -7224,7 +7380,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L171",
+      "source_location": "L220",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi_vaccinationrowtovaccination",
@@ -7284,7 +7440,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L313",
+      "source_location": "L362",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi_appointmentrowtoappointment",
@@ -7344,7 +7500,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L124",
+      "source_location": "L132",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi_prescriptionrowtomedication",
@@ -7547,7 +7703,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L743",
+      "source_location": "L792",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi_maccabiscraper_fetchappointmentdetail",
@@ -7559,7 +7715,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L642",
+      "source_location": "L691",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi_maccabiscraper_fetchappointments",
@@ -7571,7 +7727,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L607",
+      "source_location": "L656",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi_maccabiscraper_fetchmedications",
@@ -7583,7 +7739,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L702",
+      "source_location": "L751",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi_maccabiscraper_fetchtestresults",
@@ -7595,7 +7751,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L680",
+      "source_location": "L729",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi_maccabiscraper_fetchvaccinations",
@@ -7607,7 +7763,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L542",
+      "source_location": "L591",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi_maccabiscraper_getloginoptions",
@@ -7757,7 +7913,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L756",
+      "source_location": "L805",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi_maccabiscraper_fetchappointmentdetail",
@@ -7769,7 +7925,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L641",
+      "source_location": "L690",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi_maccabiscraper_fetchappointments",
@@ -7781,7 +7937,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L606",
+      "source_location": "L655",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi_maccabiscraper_fetchmedications",
@@ -7793,7 +7949,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L701",
+      "source_location": "L750",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi_maccabiscraper_fetchtestresults",
@@ -7805,7 +7961,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L679",
+      "source_location": "L728",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi_maccabiscraper_fetchvaccinations",
@@ -7817,7 +7973,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L529",
+      "source_location": "L578",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi_maccabiscraper_getloginoptions",
@@ -7877,7 +8033,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L539",
+      "source_location": "L588",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi_maccabiscraper_getloginoptions",
@@ -7997,7 +8153,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L536",
+      "source_location": "L585",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi_maccabiscraper_getloginoptions",
@@ -8057,7 +8213,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L280",
+      "source_location": "L329",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi_expandvaccinationdetails",
@@ -8069,7 +8225,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L741",
+      "source_location": "L790",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi_maccabiscraper_fetchappointmentdetail",
@@ -8081,7 +8237,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L646",
+      "source_location": "L695",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi_maccabiscraper_fetchappointments",
@@ -8093,7 +8249,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L614",
+      "source_location": "L663",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi_maccabiscraper_fetchmedications",
@@ -8105,7 +8261,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L708",
+      "source_location": "L757",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi_maccabiscraper_fetchtestresults",
@@ -8117,7 +8273,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L683",
+      "source_location": "L732",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi_maccabiscraper_fetchvaccinations",
@@ -8129,7 +8285,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L527",
+      "source_location": "L576",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi_maccabiscraper_getloginoptions",
@@ -9367,7 +9523,7 @@
       "context": "return_type",
       "confidence": "EXTRACTED",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L508",
+      "source_location": "L557",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi_maccabiscraper_getloginoptions",
@@ -9609,7 +9765,7 @@
       "context": "type",
       "confidence": "EXTRACTED",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L507",
+      "source_location": "L556",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi_maccabiscraper",
@@ -10374,7 +10530,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L312",
+      "source_location": "L361",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi",
@@ -10385,7 +10541,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L259",
+      "source_location": "L308",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi",
@@ -10396,7 +10552,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L483",
+      "source_location": "L532",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi",
@@ -10407,121 +10563,11 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L507",
+      "source_location": "L179",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi",
-      "target": "src_scrapers_maccabi_maccabiscraper",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L116",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "src_scrapers_maccabi",
-      "target": "src_scrapers_maccabi_prescriptionrowtomedication",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L375",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "src_scrapers_maccabi",
-      "target": "src_scrapers_maccabi_scrapeappointmentdetail",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L340",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "src_scrapers_maccabi",
-      "target": "src_scrapers_maccabi_scrapeappointmentrows",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L295",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "src_scrapers_maccabi",
-      "target": "src_scrapers_maccabi_scrapedappointmentrow",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L99",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "src_scrapers_maccabi",
-      "target": "src_scrapers_maccabi_scrapedprescriptionrow",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L411",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "src_scrapers_maccabi",
-      "target": "src_scrapers_maccabi_scrapedtestresultrow",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L161",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "src_scrapers_maccabi",
-      "target": "src_scrapers_maccabi_scrapedvaccinationrow",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L141",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "src_scrapers_maccabi",
-      "target": "src_scrapers_maccabi_scrapeprescriptionrows",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L451",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "src_scrapers_maccabi",
-      "target": "src_scrapers_maccabi_scrapetestresultrows",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L194",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "src_scrapers_maccabi",
-      "target": "src_scrapers_maccabi_scrapevaccinationrows",
+      "target": "src_scrapers_maccabi_maccabimedicationbindingdefinition",
       "confidence_score": 1.0
     },
     {
@@ -10532,6 +10578,150 @@
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi",
+      "target": "src_scrapers_maccabi_maccabimedicationselectors",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/scrapers/maccabi.ts",
+      "source_location": "L556",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_scrapers_maccabi",
+      "target": "src_scrapers_maccabi_maccabiscraper",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/scrapers/maccabi.ts",
+      "source_location": "L175",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_scrapers_maccabi",
+      "target": "src_scrapers_maccabi_medicationdescendantselector",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/scrapers/maccabi.ts",
+      "source_location": "L124",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_scrapers_maccabi",
+      "target": "src_scrapers_maccabi_prescriptionrowtomedication",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/scrapers/maccabi.ts",
+      "source_location": "L424",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_scrapers_maccabi",
+      "target": "src_scrapers_maccabi_scrapeappointmentdetail",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/scrapers/maccabi.ts",
+      "source_location": "L389",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_scrapers_maccabi",
+      "target": "src_scrapers_maccabi_scrapeappointmentrows",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/scrapers/maccabi.ts",
+      "source_location": "L344",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_scrapers_maccabi",
+      "target": "src_scrapers_maccabi_scrapedappointmentrow",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/scrapers/maccabi.ts",
+      "source_location": "L107",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_scrapers_maccabi",
+      "target": "src_scrapers_maccabi_scrapedprescriptionrow",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/scrapers/maccabi.ts",
+      "source_location": "L460",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_scrapers_maccabi",
+      "target": "src_scrapers_maccabi_scrapedtestresultrow",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/scrapers/maccabi.ts",
+      "source_location": "L210",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_scrapers_maccabi",
+      "target": "src_scrapers_maccabi_scrapedvaccinationrow",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "indirect_call",
+      "confidence": "INFERRED",
+      "source_file": "src/scrapers/maccabi.ts",
+      "source_location": "L207",
+      "weight": 1.0,
+      "_origin": "ast",
+      "context": "collection",
+      "source": "src_scrapers_maccabi",
+      "target": "src_scrapers_maccabi_scrapeprescriptionrows",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/scrapers/maccabi.ts",
+      "source_location": "L500",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_scrapers_maccabi",
+      "target": "src_scrapers_maccabi_scrapetestresultrows",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/scrapers/maccabi.ts",
+      "source_location": "L243",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_scrapers_maccabi",
+      "target": "src_scrapers_maccabi_scrapevaccinationrows",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/scrapers/maccabi.ts",
+      "source_location": "L56",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_scrapers_maccabi",
       "target": "src_scrapers_maccabi_selectors",
       "confidence_score": 1.0
     },
@@ -10539,7 +10729,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L427",
+      "source_location": "L476",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi",
@@ -10561,7 +10751,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L169",
+      "source_location": "L218",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi",
@@ -10604,6 +10794,18 @@
       "confidence_score": 1.0
     },
     {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "test/tools/calibrate/binding-resolver-dom.test.ts",
+      "source_location": "L7",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "test_tools_calibrate_binding_resolver_dom_test",
+      "target": "src_scrapers_maccabi",
+      "confidence_score": 1.0
+    },
+    {
       "relation": "imports",
       "context": "import",
       "confidence": "EXTRACTED",
@@ -10620,7 +10822,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L618",
+      "source_location": "L667",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi_maccabiscraper_fetchmedications",
@@ -10656,7 +10858,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L617",
+      "source_location": "L666",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi_maccabiscraper_fetchmedications",
@@ -10669,7 +10871,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L153",
+      "source_location": "L161",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi_scrapeprescriptionrows",
@@ -10691,6 +10893,18 @@
       "relation": "imports",
       "context": "import",
       "confidence": "EXTRACTED",
+      "source_file": "test/tools/calibrate/binding-resolver-dom.test.ts",
+      "source_location": "L7",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "test_tools_calibrate_binding_resolver_dom_test",
+      "target": "src_scrapers_maccabi_maccabimedicationbindingdefinition",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
       "source_file": "test/scrapers/maccabi.test.ts",
       "source_location": "L4",
       "weight": 1.0,
@@ -10704,7 +10918,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L686",
+      "source_location": "L735",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi_maccabiscraper_fetchvaccinations",
@@ -10740,7 +10954,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L685",
+      "source_location": "L734",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi_maccabiscraper_fetchvaccinations",
@@ -10753,7 +10967,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L209",
+      "source_location": "L258",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi_scrapevaccinationrows",
@@ -10777,7 +10991,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L273",
+      "source_location": "L322",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi_expandvaccinationdetails",
@@ -10788,7 +11002,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L684",
+      "source_location": "L733",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi_maccabiscraper_fetchvaccinations",
@@ -10824,7 +11038,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L661",
+      "source_location": "L710",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi_maccabiscraper_fetchappointments",
@@ -10860,7 +11074,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L648",
+      "source_location": "L697",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi_maccabiscraper_fetchappointments",
@@ -10873,7 +11087,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L355",
+      "source_location": "L404",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi_scrapeappointmentrows",
@@ -10896,7 +11110,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L758",
+      "source_location": "L807",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi_maccabiscraper_fetchappointmentdetail",
@@ -10921,7 +11135,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L463",
+      "source_location": "L512",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi_scrapetestresultrows",
@@ -10944,7 +11158,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L712",
+      "source_location": "L761",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi_maccabiscraper_fetchtestresults",
@@ -10980,7 +11194,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L711",
+      "source_location": "L760",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi_maccabiscraper_fetchtestresults",
@@ -11004,7 +11218,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L709",
+      "source_location": "L758",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi_maccabiscraper_fetchtestresults",
@@ -11027,7 +11241,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L575",
+      "source_location": "L624",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi_maccabiscraper",
@@ -11038,7 +11252,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L735",
+      "source_location": "L784",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi_maccabiscraper",
@@ -11049,7 +11263,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L637",
+      "source_location": "L686",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi_maccabiscraper",
@@ -11060,7 +11274,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L602",
+      "source_location": "L651",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi_maccabiscraper",
@@ -11071,7 +11285,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L697",
+      "source_location": "L746",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi_maccabiscraper",
@@ -11082,7 +11296,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L676",
+      "source_location": "L725",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi_maccabiscraper",
@@ -11093,7 +11307,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L508",
+      "source_location": "L557",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi_maccabiscraper",
@@ -11129,7 +11343,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L587",
+      "source_location": "L636",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi_maccabiscraper_fetchaccounts",
@@ -11141,7 +11355,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L583",
+      "source_location": "L632",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi_maccabiscraper_fetchaccounts",
@@ -11153,7 +11367,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L591",
+      "source_location": "L640",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi_maccabiscraper_fetchaccounts",
@@ -11165,7 +11379,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L595",
+      "source_location": "L644",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi_maccabiscraper_fetchaccounts",
@@ -11177,7 +11391,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L655",
+      "source_location": "L704",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi_maccabiscraper_fetchappointments",
@@ -11277,6 +11491,18 @@
       "relation": "imports_from",
       "context": "import",
       "confidence": "EXTRACTED",
+      "source_file": "test/tools/calibrate/binding-resolver-dom.test.ts",
+      "source_location": "L9",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "test_tools_calibrate_binding_resolver_dom_test",
+      "target": "test_browser",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
       "source_file": "test/tools/calibrate/capture-button-dom.test.ts",
       "source_location": "L5",
       "weight": 1.0,
@@ -11306,6 +11532,18 @@
       "weight": 1.0,
       "_origin": "ast",
       "source": "test_scrapers_maccabi_dom_test",
+      "target": "test_browser_launchtestbrowser",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "test/tools/calibrate/binding-resolver-dom.test.ts",
+      "source_location": "L9",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "test_tools_calibrate_binding_resolver_dom_test",
       "target": "test_browser_launchtestbrowser",
       "confidence_score": 1.0
     },
@@ -11500,6 +11738,52 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
+      "source_file": "test/tools/calibrate/binding-resolver-dom.test.ts",
+      "source_location": "L11",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "test_tools_calibrate_binding_resolver_dom_test",
+      "target": "test_tools_calibrate_binding_resolver_dom_test_fixturesdir",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "test/tools/calibrate/binding-resolver-dom.test.ts",
+      "source_location": "L15",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "test_tools_calibrate_binding_resolver_dom_test",
+      "target": "test_tools_calibrate_binding_resolver_dom_test_medicationsfixture",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "test/tools/calibrate/binding-resolver-dom.test.ts",
+      "source_location": "L8",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "test_tools_calibrate_binding_resolver_dom_test",
+      "target": "tools_calibrate_binding_resolver",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "test/tools/calibrate/binding-resolver-dom.test.ts",
+      "source_location": "L8",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "test_tools_calibrate_binding_resolver_dom_test",
+      "target": "tools_calibrate_binding_resolver_resolvesnapshotbindings",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
       "source_file": "test/tools/calibrate/capture-button-dom.test.ts",
       "source_location": "L33",
       "weight": 1.0,
@@ -11686,6 +11970,61 @@
       "_origin": "ast",
       "source": "test_tools_calibrate_target_picker_test",
       "target": "tools_calibrate_target_picker_validatecapturetarget",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tools/calibrate/binding-resolver.ts",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "tools_calibrate_binding_resolver",
+      "target": "tools_calibrate_binding_resolver_bindingdefinition",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tools/calibrate/binding-resolver.ts",
+      "source_location": "L23",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "tools_calibrate_binding_resolver",
+      "target": "tools_calibrate_binding_resolver_bindingresolution",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tools/calibrate/binding-resolver.ts",
+      "source_location": "L15",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "tools_calibrate_binding_resolver",
+      "target": "tools_calibrate_binding_resolver_resolvedbinding",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tools/calibrate/binding-resolver.ts",
+      "source_location": "L28",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "tools_calibrate_binding_resolver",
+      "target": "tools_calibrate_binding_resolver_resolvesnapshotbindings",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tools/calibrate/binding-resolver.ts",
+      "source_location": "L10",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "tools_calibrate_binding_resolver",
+      "target": "tools_calibrate_binding_resolver_targetbindingdefinition",
       "confidence_score": 1.0
     },
     {
@@ -13896,5 +14235,5 @@
       "source_file": "test/fixtures/maccabi/medications.html"
     }
   ],
-  "built_at_commit": "ab53dacda7db47cbf9c197e9b2ae0b05182b9862"
+  "built_at_commit": "e42e098086358d09ccafd478585b702e88d60701"
 }
