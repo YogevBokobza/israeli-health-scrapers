@@ -1,7 +1,7 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 
-import { FETCH_TARGETS } from '../../src/definitions.js';
+import { isKnownTarget } from './target-picker.js';
 
 /**
  * The capture manifest: one entry per snapshot, tying its label to what it's a
@@ -16,12 +16,6 @@ export interface ManifestEntry {
   /** True when `target` is not yet a modeled `FetchTarget` — a free-text calibration slug. */
   provisional: boolean;
 }
-
-/**
- * Targets the manifest already knows about; anything else is a provisional target.
- * `login` is not a `FetchTarget` — it is the one other value the capture picker offers.
- */
-const KNOWN_TARGETS: ReadonlySet<string> = new Set<string>(['login', ...FETCH_TARGETS]);
 
 function slug(value: string): string {
   return value
@@ -57,7 +51,7 @@ export function buildManifestEntry(params: {
     state: params.state,
     url: params.url,
     capturedAt: params.capturedAt ?? new Date().toISOString(),
-    provisional: !KNOWN_TARGETS.has(params.target),
+    provisional: !isKnownTarget(params.target),
   };
 }
 
