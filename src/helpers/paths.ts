@@ -21,6 +21,11 @@ export function diagnosticsDir(): string {
   return path.join(dataRoot(), 'diagnostics');
 }
 
+/** Where the calibration tool writes raw snapshots for one fund. Gitignored, never dist. */
+export function capturesDir(companyId: HealthFundId): string {
+  return path.join(dataRoot(), 'captures', companyId);
+}
+
 /** Creates a directory tree with owner-only permissions. */
 export async function ensureDir(dir: string): Promise<void> {
   await fs.mkdir(dir, { recursive: true, mode: 0o700 });

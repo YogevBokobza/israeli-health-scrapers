@@ -133,6 +133,13 @@ On a parsing failure the scraper writes the page HTML and a screenshot to
 Parser tests run off `test/fixtures/`, so replacing a fixture with a real redacted dump
 strengthens them without touching test code.
 
+`npm run calibrate -- <fund>` opens a headed browser scoped to a fund and captures
+labelled snapshots (stripped HTML + screenshot + URL + a manifest entry) to gitignored
+`data/captures/<fund>/`. It reuses a stored session when one exists; otherwise log in by
+hand — the tool never depends on that fund's scraper code existing. See
+`docs/adr/0001-user-driven-capture-and-agent-reconstruction.md` and `CONTEXT.md` for the
+full calibration workflow this is the first piece of.
+
 ## Adding a fund
 
 1. `src/scrapers/<fund>.ts` extending `BaseScraperWithBrowser`.
