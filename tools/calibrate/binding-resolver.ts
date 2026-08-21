@@ -1,49 +1,52 @@
 import type { Page } from 'playwright';
 
-export interface BindingDefinition {
+export interface BindingDefinition<TResult, TField extends string = string> {
   /** The parser field populated by this selector. */
-  field: string;
+  field: TField;
   selector: string;
+  valueFromResult: (result: TResult) => unknown;
 }
 
-export interface TargetBindingDefinition<TResult> {
-  bindings: readonly BindingDefinition[];
+export interface TargetBindingDefinition<TResult, TField extends string = string> {
+  bindings: readonly BindingDefinition<TResult, TField>[];
   parse: (page: Page) => Promise<TResult>;
 }
 
-export interface ResolvedBinding extends BindingDefinition {
+export interface ResolvedBinding<TField extends string = string> {
+  field: TField;
+  selector: string;
   matchCount: number;
-  values: string[];
+  value: unknown;
 }
 
-export type BindingResolution<TResult> =
+export type BindingResolution<TResult, TField extends string = string> =
   | { status: 'pending'; bindings: []; result: null }
-  | { status: 'resolved'; bindings: ResolvedBinding[]; result: TResult };
-
-function normalizeText(value: string): string {
-  return value.replace(/\s+/g, ' ').trim();
-}
+  | { status: 'resolved'; bindings: ResolvedBinding<TField>[]; result: TResult };
 
 /** Runs current selectors and parser code against one captured snapshot. */
-export async function resolveSnapshotBindings<TResult>(
+export async function resolveSnapshotBindings<
+  TResult = unknown,
+  TField extends string = string,
+>(
   page: Page,
   html: string,
-  definition: TargetBindingDefinition<TResult> | undefined,
-): Promise<BindingResolution<TResult>> {
+  definition: TargetBindingDefinition<TResult, TField> | undefined,
+): Promise<BindingResolution<TResult, TField>> {
   await page.setContent(html, { waitUntil: 'domcontentloaded' });
 
   if (!definition) return { status: 'pending', bindings: [], result: null };
 
+  const result = await definition.parse(page);
   const bindings = await Promise.all(
-    definition.bindings.map(async (binding): Promise<ResolvedBinding> => {
-      const locator = page.locator(binding.selector);
+    definition.bindings.map(async (binding): Promise<ResolvedBinding<TField>> => {
       return {
-        ...binding,
-        matchCount: await locator.count(),
-        values: (await locator.allTextContents()).map(normalizeText),
+        field: binding.field,
+        selector: binding.selector,
+        matchCount: await page.locator(binding.selector).count(),
+        value: binding.valueFromResult(result),
       };
     }),
   );
 
-  return { status: 'resolved', bindings, result: await definition.parse(page) };
+  return { status: 'resolved', bindings, result };
 }

@@ -172,6 +172,41 @@ export async function scrapePrescriptionRows(page: Page): Promise<ScrapedPrescri
   });
 }
 
+const medicationDescendantSelector = (selector: readonly string[]): string =>
+  `${maccabiMedicationSelectors.row[0]} ${selector[0]}`;
+
+/** Current medication selectors and parser exposed to the fund-agnostic calibration resolver. */
+export const maccabiMedicationBindingDefinition = {
+  bindings: [
+    {
+      field: 'rows',
+      selector: maccabiMedicationSelectors.row[0],
+      valueFromResult: (rows: ScrapedPrescriptionRow[]) => rows,
+    },
+    {
+      field: 'name',
+      selector: medicationDescendantSelector(maccabiMedicationSelectors.name),
+      valueFromResult: (rows: ScrapedPrescriptionRow[]) => rows.map((row) => row.name),
+    },
+    {
+      field: 'date',
+      selector: medicationDescendantSelector(maccabiMedicationSelectors.date),
+      valueFromResult: (rows: ScrapedPrescriptionRow[]) => rows.map((row) => row.date),
+    },
+    {
+      field: 'prescribedBy',
+      selector: medicationDescendantSelector(maccabiMedicationSelectors.prescriber),
+      valueFromResult: (rows: ScrapedPrescriptionRow[]) => rows.map((row) => row.prescribedBy),
+    },
+    {
+      field: 'isStanding',
+      selector: medicationDescendantSelector(maccabiMedicationSelectors.standingBadge),
+      valueFromResult: (rows: ScrapedPrescriptionRow[]) => rows.map((row) => row.isStanding),
+    },
+  ],
+  parse: scrapePrescriptionRows,
+} as const;
+
 export interface ScrapedVaccinationRow {
   vaccineName: string | null;
   administeredOn: string | null;
