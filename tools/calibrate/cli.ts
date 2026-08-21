@@ -5,7 +5,7 @@ import { chromium } from 'playwright';
 import { HealthFundTypes, type HealthFundId } from '../../src/definitions.js';
 import { BROWSER_LOCALE, BROWSER_TIMEZONE, VIEWPORT } from '../../src/constants.js';
 import { isExpired, loadSession } from '../../src/helpers/session.js';
-import { captureSnapshot } from './capture.js';
+import { installCaptureButton } from './capture-button.js';
 
 /** Real funds only — `mock` is a fixture-backed id with no site to calibrate against. */
 const CALIBRATABLE_FUNDS: HealthFundId[] = Object.values(HealthFundTypes).filter(
@@ -46,19 +46,17 @@ async function main(): Promise<void> {
       ? `Reused the stored session for ${fund} — navigate to what you want to capture.`
       : `No stored session for ${fund} — log in by hand, then navigate to what you want to capture.`,
   );
-  console.log('For each snapshot, enter its target and state. Leave the target blank to quit.\n');
+  console.log(
+    'A capture button is floating on the page — pick a target and state there, then click Capture.\n' +
+      'It survives navigating around the site. Press Enter here when you are done to close the browser.\n',
+  );
+
+  await installCaptureButton(page, fund);
 
   const rl = readline.createInterface({ input: stdin, output: stdout });
 
   try {
-    for (;;) {
-      const target = (await rl.question('target: ')).trim();
-      if (!target) break;
-      const state = (await rl.question('state: ')).trim();
-
-      const entry = await captureSnapshot(page, { fund, target, state });
-      console.log(`captured "${entry.label}" -> data/captures/${fund}/${entry.label}.{html,png,url.txt}\n`);
-    }
+    await rl.question('');
   } finally {
     rl.close();
     await context.close().catch(() => {});
