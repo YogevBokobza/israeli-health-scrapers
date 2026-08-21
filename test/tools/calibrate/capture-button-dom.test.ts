@@ -56,8 +56,7 @@ describe.skipIf(!browserAvailable)('capture button', () => {
     const page = await pageWithButton();
 
     const options = await page
-      .locator('#ihs-calibrate-capture-button select')
-      .first()
+      .locator('#ihs-calibrate-capture-button select[name="target"]')
       .locator('option')
       .allTextContents();
 
@@ -66,12 +65,22 @@ describe.skipIf(!browserAvailable)('capture button', () => {
     );
   });
 
-  it('captures the selected target and state via the exposed function', async () => {
+  it('suggests the four known states without restricting the state field to them', async () => {
+    const page = await pageWithButton();
+
+    const suggestions = await page
+      .locator('#ihs-calibrate-capture-button datalist option')
+      .evaluateAll((options) => options.map((option) => (option as HTMLOptionElement).value));
+
+    expect(suggestions).toEqual(['collapsed', 'expanded', 'list', 'detail']);
+  });
+
+  it('captures the selected target and a suggested state via the exposed function', async () => {
     const page = await pageWithButton();
     const root = page.locator('#ihs-calibrate-capture-button');
 
-    await root.locator('select').first().selectOption('vaccinations');
-    await root.locator('select').nth(1).selectOption('expanded');
+    await root.locator('select[name="target"]').selectOption('vaccinations');
+    await root.locator('input[name="state"]').fill('expanded');
     await root.locator('button[type="submit"]').click();
 
     await expect.poll(() => root.locator('span').textContent()).toBe('captured "vaccinations--expanded"');
@@ -82,13 +91,15 @@ describe.skipIf(!browserAvailable)('capture button', () => {
     const page = await pageWithButton();
     const root = page.locator('#ihs-calibrate-capture-button');
 
-    await root.locator('select').first().selectOption('__other__');
-    await root.locator('input[type="text"]').fill('Form 17');
+    await root.locator('select[name="target"]').selectOption('__other__');
+    await root.locator('input[name="other-target"]').fill('Form 17');
     await root.locator('button[type="submit"]').click();
 
     expect(captured).toEqual([]);
     const isValid = await page.evaluate(
-      () => document.querySelector<HTMLInputElement>('#ihs-calibrate-capture-button input')!.validity.valid,
+      () =>
+        document.querySelector<HTMLInputElement>('#ihs-calibrate-capture-button input[name="other-target"]')!
+          .validity.valid,
     );
     expect(isValid).toBe(false);
   });
@@ -97,12 +108,31 @@ describe.skipIf(!browserAvailable)('capture button', () => {
     const page = await pageWithButton();
     const root = page.locator('#ihs-calibrate-capture-button');
 
-    await root.locator('select').first().selectOption('__other__');
-    await root.locator('input[type="text"]').fill('form17');
+    await root.locator('select[name="target"]').selectOption('__other__');
+    await root.locator('input[name="other-target"]').fill('form17');
     await root.locator('button[type="submit"]').click();
 
     await expect.poll(() => root.locator('span').textContent()).toBe('captured "form17--"');
     expect(captured).toEqual([{ target: 'form17', state: '' }]);
+  });
+
+  it('captures ordered login screens as distinct free-text states, not colliding on one label', async () => {
+    const page = await pageWithButton();
+    const root = page.locator('#ihs-calibrate-capture-button');
+
+    await root.locator('select[name="target"]').selectOption('login');
+    await root.locator('input[name="state"]').fill('id-screen');
+    await root.locator('button[type="submit"]').click();
+    await expect.poll(() => root.locator('span').textContent()).toBe('captured "login--id-screen"');
+
+    await root.locator('input[name="state"]').fill('otp-screen');
+    await root.locator('button[type="submit"]').click();
+    await expect.poll(() => root.locator('span').textContent()).toBe('captured "login--otp-screen"');
+
+    expect(captured).toEqual([
+      { target: 'login', state: 'id-screen' },
+      { target: 'login', state: 'otp-screen' },
+    ]);
   });
 
   it('re-creates the button after an SPA route change removes it', async () => {

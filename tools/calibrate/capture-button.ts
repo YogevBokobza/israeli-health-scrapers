@@ -53,6 +53,7 @@ function bootstrapCaptureButton({ targets, states }: BootstrapArgs): void {
     ].join(';');
 
     const targetSelect = document.createElement('select');
+    targetSelect.name = 'target';
     for (const target of [...targets, OTHER]) {
       const option = document.createElement('option');
       option.value = target;
@@ -62,6 +63,7 @@ function bootstrapCaptureButton({ targets, states }: BootstrapArgs): void {
 
     const otherInput = document.createElement('input');
     otherInput.type = 'text';
+    otherInput.name = 'other-target';
     otherInput.placeholder = 'lowerCamel target';
     otherInput.pattern = '^[a-z][a-zA-Z0-9]*$';
     otherInput.style.width = '110px';
@@ -74,16 +76,24 @@ function bootstrapCaptureButton({ targets, states }: BootstrapArgs): void {
       if (!isOther) otherInput.value = '';
     });
 
-    const stateSelect = document.createElement('select');
-    const noState = document.createElement('option');
-    noState.value = '';
-    noState.textContent = '(no state)';
-    stateSelect.appendChild(noState);
+    // Free text, not a closed picker: a login-calibration session needs one label per
+    // ordered screen (e.g. "id-screen", "otp-screen") and those don't fit
+    // collapsed/expanded/list/detail. The datalist only offers those four as
+    // suggestions — it does not restrict the value the way `<select>` would.
+    const stateListId = `${ROOT_ID}-states`;
+    const stateInput = document.createElement('input');
+    stateInput.type = 'text';
+    stateInput.name = 'state';
+    stateInput.setAttribute('list', stateListId);
+    stateInput.placeholder = 'state (optional)';
+    stateInput.style.width = '110px';
+
+    const stateOptions = document.createElement('datalist');
+    stateOptions.id = stateListId;
     for (const state of states) {
       const option = document.createElement('option');
       option.value = state;
-      option.textContent = state;
-      stateSelect.appendChild(option);
+      stateOptions.appendChild(option);
     }
 
     const submit = document.createElement('button');
@@ -93,7 +103,7 @@ function bootstrapCaptureButton({ targets, states }: BootstrapArgs): void {
     const status = document.createElement('span');
     status.style.cssText = 'min-width:130px;opacity:.85;';
 
-    root.append(targetSelect, otherInput, stateSelect, submit, status);
+    root.append(targetSelect, otherInput, stateInput, stateOptions, submit, status);
     document.body.appendChild(root);
 
     // The browser withholds the `submit` event entirely for an invalid form submitted
@@ -102,7 +112,7 @@ function bootstrapCaptureButton({ targets, states }: BootstrapArgs): void {
       event.preventDefault();
 
       const target = targetSelect.value === OTHER ? otherInput.value.trim() : targetSelect.value;
-      const state = stateSelect.value;
+      const state = stateInput.value.trim();
 
       status.textContent = 'capturing…';
       const capture = (

@@ -8,8 +8,12 @@ import { FETCH_TARGETS } from '../../src/definitions.js';
  */
 export const CAPTURE_TARGETS = ['login', ...FETCH_TARGETS] as const;
 
+/**
+ * Suggestions only, offered via the capture button's state datalist — not a closed
+ * set. Login-calibration needs one free-text label per ordered screen (`id-screen`,
+ * `otp-screen`, ...), which none of these four fit.
+ */
 export const CAPTURE_STATES = ['collapsed', 'expanded', 'list', 'detail'] as const;
-export type CaptureState = (typeof CAPTURE_STATES)[number];
 
 export function isKnownTarget(target: string): boolean {
   return (CAPTURE_TARGETS as readonly string[]).includes(target);
