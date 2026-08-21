@@ -57,6 +57,7 @@
       "_origin": "ast",
       "id": "package",
       "community": 2,
+      "community_name": "package.json",
       "norm_label": "package.json"
     },
     {
@@ -67,6 +68,7 @@
       "_origin": "ast",
       "id": "package_name",
       "community": 2,
+      "community_name": "package.json",
       "norm_label": "name"
     },
     {
@@ -77,6 +79,7 @@
       "_origin": "ast",
       "id": "package_version",
       "community": 2,
+      "community_name": "package.json",
       "norm_label": "version"
     },
     {
@@ -87,6 +90,7 @@
       "_origin": "ast",
       "id": "package_description",
       "community": 2,
+      "community_name": "package.json",
       "norm_label": "description"
     },
     {
@@ -97,6 +101,7 @@
       "_origin": "ast",
       "id": "package_license",
       "community": 2,
+      "community_name": "package.json",
       "norm_label": "license"
     },
     {
@@ -107,6 +112,7 @@
       "_origin": "ast",
       "id": "package_type",
       "community": 2,
+      "community_name": "package.json",
       "norm_label": "type"
     },
     {
@@ -117,6 +123,7 @@
       "_origin": "ast",
       "id": "package_main",
       "community": 2,
+      "community_name": "package.json",
       "norm_label": "main"
     },
     {
@@ -127,6 +134,7 @@
       "_origin": "ast",
       "id": "package_types",
       "community": 2,
+      "community_name": "package.json",
       "norm_label": "types"
     },
     {
@@ -137,6 +145,7 @@
       "_origin": "ast",
       "id": "package_exports",
       "community": 2,
+      "community_name": "package.json",
       "norm_label": "exports"
     },
     {
@@ -147,6 +156,7 @@
       "_origin": "ast",
       "id": "package_files",
       "community": 2,
+      "community_name": "package.json",
       "norm_label": "files"
     },
     {
@@ -157,6 +167,7 @@
       "_origin": "ast",
       "id": "package_json_ref_dist",
       "community": 2,
+      "community_name": "package.json",
       "norm_label": "dist"
     },
     {
@@ -166,7 +177,8 @@
       "source_location": "L18",
       "_origin": "ast",
       "id": "package_keywords",
-      "community": 2,
+      "community": 13,
+      "community_name": "playwright",
       "norm_label": "keywords"
     },
     {
@@ -176,7 +188,8 @@
       "source_location": "L18",
       "_origin": "ast",
       "id": "ref_israel",
-      "community": 2,
+      "community": 13,
+      "community_name": "playwright",
       "norm_label": "israel"
     },
     {
@@ -186,7 +199,8 @@
       "source_location": "L18",
       "_origin": "ast",
       "id": "ref_health",
-      "community": 2,
+      "community": 13,
+      "community_name": "playwright",
       "norm_label": "health"
     },
     {
@@ -196,7 +210,8 @@
       "source_location": "L18",
       "_origin": "ast",
       "id": "ref_kupat_holim",
-      "community": 2,
+      "community": 13,
+      "community_name": "playwright",
       "norm_label": "kupat-holim"
     },
     {
@@ -206,7 +221,8 @@
       "source_location": "L18",
       "_origin": "ast",
       "id": "ref_maccabi",
-      "community": 2,
+      "community": 13,
+      "community_name": "playwright",
       "norm_label": "maccabi"
     },
     {
@@ -216,7 +232,8 @@
       "source_location": "L18",
       "_origin": "ast",
       "id": "ref_scraper",
-      "community": 2,
+      "community": 13,
+      "community_name": "playwright",
       "norm_label": "scraper"
     },
     {
@@ -226,7 +243,8 @@
       "source_location": "L18",
       "_origin": "ast",
       "id": "ref_playwright",
-      "community": 1,
+      "community": 13,
+      "community_name": "playwright",
       "norm_label": "playwright"
     },
     {
@@ -237,6 +255,7 @@
       "_origin": "ast",
       "id": "package_engines",
       "community": 2,
+      "community_name": "package.json",
       "norm_label": "engines"
     },
     {
@@ -247,6 +266,7 @@
       "_origin": "ast",
       "id": "package_engines_node",
       "community": 2,
+      "community_name": "package.json",
       "norm_label": "node"
     },
     {
@@ -257,6 +277,7 @@
       "_origin": "ast",
       "id": "package_scripts",
       "community": 2,
+      "community_name": "package.json",
       "norm_label": "scripts"
     },
     {
@@ -267,6 +288,7 @@
       "_origin": "ast",
       "id": "package_scripts_build",
       "community": 2,
+      "community_name": "package.json",
       "norm_label": "build"
     },
     {
@@ -277,6 +299,7 @@
       "_origin": "ast",
       "id": "package_scripts_prepare",
       "community": 2,
+      "community_name": "package.json",
       "norm_label": "prepare"
     },
     {
@@ -287,6 +310,7 @@
       "_origin": "ast",
       "id": "package_scripts_typecheck",
       "community": 2,
+      "community_name": "package.json",
       "norm_label": "typecheck"
     },
     {
@@ -297,6 +321,7 @@
       "_origin": "ast",
       "id": "package_scripts_test",
       "community": 2,
+      "community_name": "package.json",
       "norm_label": "test"
     },
     {
@@ -307,6 +332,7 @@
       "_origin": "ast",
       "id": "package_scripts_test_watch",
       "community": 2,
+      "community_name": "package.json",
       "norm_label": "test:watch"
     },
     {
@@ -317,6 +343,7 @@
       "_origin": "ast",
       "id": "package_dependencies",
       "community": 2,
+      "community_name": "package.json",
       "norm_label": "dependencies"
     },
     {
@@ -327,6 +354,7 @@
       "_origin": "ast",
       "id": "package_dependencies_playwright",
       "community": 2,
+      "community_name": "package.json",
       "norm_label": "playwright"
     },
     {
@@ -337,6 +365,7 @@
       "_origin": "ast",
       "id": "playwright",
       "community": 2,
+      "community_name": "package.json",
       "norm_label": "playwright"
     },
     {
@@ -347,6 +376,7 @@
       "_origin": "ast",
       "id": "package_dependencies_zod",
       "community": 2,
+      "community_name": "package.json",
       "norm_label": "zod"
     },
     {
@@ -357,6 +387,7 @@
       "_origin": "ast",
       "id": "zod",
       "community": 2,
+      "community_name": "package.json",
       "norm_label": "zod"
     },
     {
@@ -367,6 +398,7 @@
       "_origin": "ast",
       "id": "package_devdependencies",
       "community": 2,
+      "community_name": "package.json",
       "norm_label": "devdependencies"
     },
     {
@@ -377,6 +409,7 @@
       "_origin": "ast",
       "id": "package_devdependencies_types_node",
       "community": 2,
+      "community_name": "package.json",
       "norm_label": "@types/node"
     },
     {
@@ -387,6 +420,7 @@
       "_origin": "ast",
       "id": "types_node",
       "community": 2,
+      "community_name": "package.json",
       "norm_label": "@types/node"
     },
     {
@@ -397,6 +431,7 @@
       "_origin": "ast",
       "id": "package_devdependencies_typescript",
       "community": 2,
+      "community_name": "package.json",
       "norm_label": "typescript"
     },
     {
@@ -407,6 +442,7 @@
       "_origin": "ast",
       "id": "typescript",
       "community": 2,
+      "community_name": "package.json",
       "norm_label": "typescript"
     },
     {
@@ -417,6 +453,7 @@
       "_origin": "ast",
       "id": "package_devdependencies_vitest",
       "community": 2,
+      "community_name": "package.json",
       "norm_label": "vitest"
     },
     {
@@ -427,6 +464,7 @@
       "_origin": "ast",
       "id": "vitest",
       "community": 2,
+      "community_name": "package.json",
       "norm_label": "vitest"
     },
     {
@@ -437,6 +475,7 @@
       "_origin": "ast",
       "id": "src_constants",
       "community": 3,
+      "community_name": "base-scraper-with-browser.ts",
       "norm_label": "constants.ts"
     },
     {
@@ -447,6 +486,7 @@
       "_origin": "ast",
       "id": "src_constants_viewport",
       "community": 3,
+      "community_name": "base-scraper-with-browser.ts",
       "norm_label": "viewport"
     },
     {
@@ -457,6 +497,7 @@
       "_origin": "ast",
       "id": "src_definitions",
       "community": 0,
+      "community_name": "index.ts",
       "norm_label": "definitions.ts"
     },
     {
@@ -467,6 +508,7 @@
       "_origin": "ast",
       "id": "src_definitions_healthfundtypes",
       "community": 0,
+      "community_name": "index.ts",
       "norm_label": "healthfundtypes"
     },
     {
@@ -477,6 +519,7 @@
       "_origin": "ast",
       "id": "src_definitions_healthfundid",
       "community": 7,
+      "community_name": "session.ts",
       "norm_label": "healthfundid"
     },
     {
@@ -487,6 +530,7 @@
       "_origin": "ast",
       "id": "src_definitions_scrapercredentials",
       "community": 0,
+      "community_name": "index.ts",
       "norm_label": "scrapercredentials"
     },
     {
@@ -497,6 +541,7 @@
       "_origin": "ast",
       "id": "src_definitions_scrapermetadata",
       "community": 0,
+      "community_name": "index.ts",
       "norm_label": "scrapermetadata"
     },
     {
@@ -507,6 +552,7 @@
       "_origin": "ast",
       "id": "src_definitions_loginmethod",
       "community": 0,
+      "community_name": "index.ts",
       "norm_label": "loginmethod"
     },
     {
@@ -517,6 +563,7 @@
       "_origin": "ast",
       "id": "src_definitions_scraperprogresstypes",
       "community": 0,
+      "community_name": "index.ts",
       "norm_label": "scraperprogresstypes"
     },
     {
@@ -527,6 +574,7 @@
       "_origin": "ast",
       "id": "src_definitions_scraperoptions",
       "community": 0,
+      "community_name": "index.ts",
       "norm_label": "scraperoptions"
     },
     {
@@ -537,6 +585,7 @@
       "_origin": "ast",
       "id": "src_definitions_fetchtarget",
       "community": 0,
+      "community_name": "index.ts",
       "norm_label": "fetchtarget"
     },
     {
@@ -547,6 +596,7 @@
       "_origin": "ast",
       "id": "src_definitions_provideridschema",
       "community": 0,
+      "community_name": "index.ts",
       "norm_label": "provideridschema"
     },
     {
@@ -557,6 +607,7 @@
       "_origin": "ast",
       "id": "src_definitions_isodateschema",
       "community": 0,
+      "community_name": "index.ts",
       "norm_label": "isodateschema"
     },
     {
@@ -567,6 +618,7 @@
       "_origin": "ast",
       "id": "src_definitions_medicationstatusschema",
       "community": 0,
+      "community_name": "index.ts",
       "norm_label": "medicationstatusschema"
     },
     {
@@ -577,6 +629,7 @@
       "_origin": "ast",
       "id": "src_definitions_medicationstatus",
       "community": 0,
+      "community_name": "index.ts",
       "norm_label": "medicationstatus"
     },
     {
@@ -587,6 +640,7 @@
       "_origin": "ast",
       "id": "src_definitions_medicationschema",
       "community": 0,
+      "community_name": "index.ts",
       "norm_label": "medicationschema"
     },
     {
@@ -596,7 +650,8 @@
       "source_location": "L126",
       "_origin": "ast",
       "id": "src_definitions_medication",
-      "community": 0,
+      "community": 12,
+      "community_name": "maccabi.ts",
       "norm_label": "medication"
     },
     {
@@ -607,6 +662,7 @@
       "_origin": "ast",
       "id": "src_definitions_appointmentschema",
       "community": 0,
+      "community_name": "index.ts",
       "norm_label": "appointmentschema"
     },
     {
@@ -616,7 +672,8 @@
       "source_location": "L138",
       "_origin": "ast",
       "id": "src_definitions_appointment",
-      "community": 0,
+      "community": 12,
+      "community_name": "maccabi.ts",
       "norm_label": "appointment"
     },
     {
@@ -627,6 +684,7 @@
       "_origin": "ast",
       "id": "src_definitions_messageschema",
       "community": 0,
+      "community_name": "index.ts",
       "norm_label": "messageschema"
     },
     {
@@ -637,6 +695,7 @@
       "_origin": "ast",
       "id": "src_definitions_message",
       "community": 0,
+      "community_name": "index.ts",
       "norm_label": "message"
     },
     {
@@ -647,6 +706,7 @@
       "_origin": "ast",
       "id": "src_definitions_testresultschema",
       "community": 0,
+      "community_name": "index.ts",
       "norm_label": "testresultschema"
     },
     {
@@ -656,67 +716,96 @@
       "source_location": "L165",
       "_origin": "ast",
       "id": "src_definitions_testresult",
-      "community": 0,
+      "community": 12,
+      "community_name": "maccabi.ts",
       "norm_label": "testresult"
+    },
+    {
+      "label": "vaccinationSchema",
+      "file_type": "code",
+      "source_file": "src/definitions.ts",
+      "source_location": "L167",
+      "_origin": "ast",
+      "id": "src_definitions_vaccinationschema",
+      "community": 0,
+      "community_name": "index.ts",
+      "norm_label": "vaccinationschema"
+    },
+    {
+      "label": "Vaccination",
+      "file_type": "code",
+      "source_file": "src/definitions.ts",
+      "source_location": "L178",
+      "_origin": "ast",
+      "id": "src_definitions_vaccination",
+      "community": 12,
+      "community_name": "maccabi.ts",
+      "norm_label": "vaccination"
     },
     {
       "label": "healthAccountSchema",
       "file_type": "code",
       "source_file": "src/definitions.ts",
-      "source_location": "L171",
+      "source_location": "L184",
       "_origin": "ast",
       "id": "src_definitions_healthaccountschema",
       "community": 0,
+      "community_name": "index.ts",
       "norm_label": "healthaccountschema"
     },
     {
       "label": "HealthAccount",
       "file_type": "code",
       "source_file": "src/definitions.ts",
-      "source_location": "L178",
+      "source_location": "L192",
       "_origin": "ast",
       "id": "src_definitions_healthaccount",
       "community": 0,
+      "community_name": "index.ts",
       "norm_label": "healthaccount"
     },
     {
       "label": "ScraperScrapingResult",
       "file_type": "code",
       "source_file": "src/definitions.ts",
-      "source_location": "L187",
+      "source_location": "L201",
       "_origin": "ast",
       "id": "src_definitions_scraperscrapingresult",
       "community": 0,
+      "community_name": "index.ts",
       "norm_label": "scraperscrapingresult"
     },
     {
       "label": "ScraperLoginResult",
       "file_type": "code",
       "source_file": "src/definitions.ts",
-      "source_location": "L194",
+      "source_location": "L208",
       "_origin": "ast",
       "id": "src_definitions_scraperloginresult",
       "community": 0,
+      "community_name": "index.ts",
       "norm_label": "scraperloginresult"
     },
     {
       "label": "ScraperErrorTypes",
       "file_type": "code",
       "source_file": "src/definitions.ts",
-      "source_location": "L200",
+      "source_location": "L214",
       "_origin": "ast",
       "id": "src_definitions_scrapererrortypes",
-      "community": 0,
+      "community": 8,
+      "community_name": "errors.ts",
       "norm_label": "scrapererrortypes"
     },
     {
       "label": "ScraperPageContext",
       "file_type": "code",
       "source_file": "src/definitions.ts",
-      "source_location": "L213",
+      "source_location": "L227",
       "_origin": "ast",
       "id": "src_definitions_scraperpagecontext",
       "community": 0,
+      "community_name": "index.ts",
       "norm_label": "scraperpagecontext"
     },
     {
@@ -727,6 +816,7 @@
       "_origin": "ast",
       "id": "src_helpers_dates",
       "community": 1,
+      "community_name": "maccabi.test.ts",
       "norm_label": "dates.ts"
     },
     {
@@ -737,6 +827,7 @@
       "_origin": "ast",
       "id": "src_helpers_dates_normalizetext",
       "community": 1,
+      "community_name": "maccabi.test.ts",
       "norm_label": "normalizetext()"
     },
     {
@@ -747,6 +838,7 @@
       "_origin": "ast",
       "id": "src_helpers_dates_isblank",
       "community": 1,
+      "community_name": "maccabi.test.ts",
       "norm_label": "isblank()"
     },
     {
@@ -757,6 +849,7 @@
       "_origin": "ast",
       "id": "src_helpers_dates_textornull",
       "community": 1,
+      "community_name": "maccabi.test.ts",
       "norm_label": "textornull()"
     },
     {
@@ -767,6 +860,7 @@
       "_origin": "ast",
       "id": "src_helpers_dates_parseisraelidate",
       "community": 1,
+      "community_name": "maccabi.test.ts",
       "norm_label": "parseisraelidate()"
     },
     {
@@ -777,6 +871,7 @@
       "_origin": "ast",
       "id": "src_helpers_dates_jerusalemoffsetminutes",
       "community": 1,
+      "community_name": "maccabi.test.ts",
       "norm_label": "jerusalemoffsetminutes()"
     },
     {
@@ -787,6 +882,7 @@
       "_origin": "ast",
       "id": "src_helpers_dates_formatoffset",
       "community": 1,
+      "community_name": "maccabi.test.ts",
       "norm_label": "formatoffset()"
     },
     {
@@ -797,6 +893,7 @@
       "_origin": "ast",
       "id": "src_helpers_dates_parseisraelidatetime",
       "community": 1,
+      "community_name": "maccabi.test.ts",
       "norm_label": "parseisraelidatetime()"
     },
     {
@@ -807,6 +904,7 @@
       "_origin": "ast",
       "id": "src_helpers_dates_parseinteger",
       "community": 1,
+      "community_name": "maccabi.test.ts",
       "norm_label": "parseinteger()"
     },
     {
@@ -817,6 +915,7 @@
       "_origin": "ast",
       "id": "src_helpers_dates_deriveexpiry",
       "community": 1,
+      "community_name": "maccabi.test.ts",
       "norm_label": "deriveexpiry()"
     },
     {
@@ -827,6 +926,7 @@
       "_origin": "ast",
       "id": "src_helpers_debug",
       "community": 7,
+      "community_name": "session.ts",
       "norm_label": "debug.ts"
     },
     {
@@ -836,7 +936,8 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "src_helpers_debug_capturediagnostics",
-      "community": 3,
+      "community": 12,
+      "community_name": "maccabi.ts",
       "norm_label": "capturediagnostics()"
     },
     {
@@ -847,6 +948,7 @@
       "_origin": "ast",
       "id": "src_helpers_elements",
       "community": 3,
+      "community_name": "base-scraper-with-browser.ts",
       "norm_label": "elements.ts"
     },
     {
@@ -856,7 +958,8 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "src_helpers_elements_elementexists",
-      "community": 3,
+      "community": 12,
+      "community_name": "maccabi.ts",
       "norm_label": "elementexists()"
     },
     {
@@ -867,6 +970,7 @@
       "_origin": "ast",
       "id": "src_helpers_elements_fillfirst",
       "community": 3,
+      "community_name": "base-scraper-with-browser.ts",
       "norm_label": "fillfirst()"
     },
     {
@@ -877,6 +981,7 @@
       "_origin": "ast",
       "id": "src_helpers_elements_typefirst",
       "community": 3,
+      "community_name": "base-scraper-with-browser.ts",
       "norm_label": "typefirst()"
     },
     {
@@ -887,6 +992,7 @@
       "_origin": "ast",
       "id": "src_helpers_elements_clickfirst",
       "community": 3,
+      "community_name": "base-scraper-with-browser.ts",
       "norm_label": "clickfirst()"
     },
     {
@@ -897,6 +1003,7 @@
       "_origin": "ast",
       "id": "src_helpers_elements_textoffirst",
       "community": 3,
+      "community_name": "base-scraper-with-browser.ts",
       "norm_label": "textoffirst()"
     },
     {
@@ -906,7 +1013,8 @@
       "source_location": "L88",
       "_origin": "ast",
       "id": "src_helpers_elements_waituntil",
-      "community": 3,
+      "community": 12,
+      "community_name": "maccabi.ts",
       "norm_label": "waituntil()"
     },
     {
@@ -917,6 +1025,7 @@
       "_origin": "ast",
       "id": "src_helpers_paths",
       "community": 7,
+      "community_name": "session.ts",
       "norm_label": "paths.ts"
     },
     {
@@ -927,6 +1036,7 @@
       "_origin": "ast",
       "id": "src_helpers_paths_dataroot",
       "community": 7,
+      "community_name": "session.ts",
       "norm_label": "dataroot()"
     },
     {
@@ -937,6 +1047,7 @@
       "_origin": "ast",
       "id": "src_helpers_paths_sessionpath",
       "community": 7,
+      "community_name": "session.ts",
       "norm_label": "sessionpath()"
     },
     {
@@ -947,6 +1058,7 @@
       "_origin": "ast",
       "id": "src_helpers_paths_diagnosticsdir",
       "community": 7,
+      "community_name": "session.ts",
       "norm_label": "diagnosticsdir()"
     },
     {
@@ -957,6 +1069,7 @@
       "_origin": "ast",
       "id": "src_helpers_paths_ensuredir",
       "community": 7,
+      "community_name": "session.ts",
       "norm_label": "ensuredir()"
     },
     {
@@ -967,6 +1080,7 @@
       "_origin": "ast",
       "id": "src_helpers_session",
       "community": 7,
+      "community_name": "session.ts",
       "norm_label": "session.ts"
     },
     {
@@ -977,6 +1091,7 @@
       "_origin": "ast",
       "id": "src_helpers_session_storedsession",
       "community": 7,
+      "community_name": "session.ts",
       "norm_label": "storedsession"
     },
     {
@@ -987,6 +1102,7 @@
       "_origin": "ast",
       "id": "src_helpers_session_sessionkey",
       "community": 7,
+      "community_name": "session.ts",
       "norm_label": "sessionkey()"
     },
     {
@@ -997,6 +1113,7 @@
       "_origin": "ast",
       "id": "src_helpers_session_savesession",
       "community": 7,
+      "community_name": "session.ts",
       "norm_label": "savesession()"
     },
     {
@@ -1007,6 +1124,7 @@
       "_origin": "ast",
       "id": "src_helpers_session_loadsession",
       "community": 7,
+      "community_name": "session.ts",
       "norm_label": "loadsession()"
     },
     {
@@ -1016,7 +1134,8 @@
       "source_location": "L101",
       "_origin": "ast",
       "id": "src_helpers_session_isexpired",
-      "community": 7,
+      "community": 3,
+      "community_name": "base-scraper-with-browser.ts",
       "norm_label": "isexpired()"
     },
     {
@@ -1027,6 +1146,7 @@
       "_origin": "ast",
       "id": "src_helpers_session_clearsession",
       "community": 7,
+      "community_name": "session.ts",
       "norm_label": "clearsession()"
     },
     {
@@ -1037,6 +1157,7 @@
       "_origin": "ast",
       "id": "src_index",
       "community": 0,
+      "community_name": "index.ts",
       "norm_label": "index.ts"
     },
     {
@@ -1047,6 +1168,7 @@
       "_origin": "ast",
       "id": "src_scrapers_base_scraper_with_browser",
       "community": 3,
+      "community_name": "base-scraper-with-browser.ts",
       "norm_label": "base-scraper-with-browser.ts"
     },
     {
@@ -1056,7 +1178,8 @@
       "source_location": "L23",
       "_origin": "ast",
       "id": "src_scrapers_base_scraper_with_browser_loginresults",
-      "community": 8,
+      "community": 3,
+      "community_name": "base-scraper-with-browser.ts",
       "norm_label": "loginresults"
     },
     {
@@ -1067,6 +1190,7 @@
       "_origin": "ast",
       "id": "src_scrapers_base_scraper_with_browser_logincondition",
       "community": 3,
+      "community_name": "base-scraper-with-browser.ts",
       "norm_label": "logincondition"
     },
     {
@@ -1076,7 +1200,8 @@
       "source_location": "L39",
       "_origin": "ast",
       "id": "src_scrapers_base_scraper_with_browser_possibleloginresults",
-      "community": 8,
+      "community": 3,
+      "community_name": "base-scraper-with-browser.ts",
       "norm_label": "possibleloginresults"
     },
     {
@@ -1086,7 +1211,8 @@
       "source_location": "L41",
       "_origin": "ast",
       "id": "src_scrapers_base_scraper_with_browser_loginfield",
-      "community": 8,
+      "community": 3,
+      "community_name": "base-scraper-with-browser.ts",
       "norm_label": "loginfield"
     },
     {
@@ -1097,6 +1223,7 @@
       "_origin": "ast",
       "id": "src_scrapers_base_scraper_with_browser_loginoptions",
       "community": 3,
+      "community_name": "base-scraper-with-browser.ts",
       "norm_label": "loginoptions"
     },
     {
@@ -1107,6 +1234,7 @@
       "_origin": "ast",
       "id": "src_scrapers_base_scraper_with_browser_conditionmatches",
       "community": 3,
+      "community_name": "base-scraper-with-browser.ts",
       "norm_label": "conditionmatches()"
     },
     {
@@ -1117,6 +1245,7 @@
       "_origin": "ast",
       "id": "src_scrapers_base_scraper_with_browser_matchloginresult",
       "community": 3,
+      "community_name": "base-scraper-with-browser.ts",
       "norm_label": "matchloginresult()"
     },
     {
@@ -1127,6 +1256,7 @@
       "_origin": "ast",
       "id": "src_scrapers_base_scraper_with_browser_waitforinitialloginstate",
       "community": 3,
+      "community_name": "base-scraper-with-browser.ts",
       "norm_label": "waitforinitialloginstate()"
     },
     {
@@ -1137,6 +1267,7 @@
       "_origin": "ast",
       "id": "src_scrapers_base_scraper_with_browser_login_result_errors",
       "community": 3,
+      "community_name": "base-scraper-with-browser.ts",
       "norm_label": "login_result_errors"
     },
     {
@@ -1147,6 +1278,7 @@
       "_origin": "ast",
       "id": "src_scrapers_base_scraper_with_browser_basescraperwithbrowser",
       "community": 3,
+      "community_name": "base-scraper-with-browser.ts",
       "norm_label": "basescraperwithbrowser"
     },
     {
@@ -1157,6 +1289,7 @@
       "_origin": "ast",
       "id": "src_scrapers_base_scraper_with_browser_basescraperwithbrowser_activepage",
       "community": 3,
+      "community_name": "base-scraper-with-browser.ts",
       "norm_label": ".activepage()"
     },
     {
@@ -1166,7 +1299,8 @@
       "source_location": "L173",
       "_origin": "ast",
       "id": "src_scrapers_base_scraper_with_browser_basescraperwithbrowser_initialize",
-      "community": 7,
+      "community": 3,
+      "community_name": "base-scraper-with-browser.ts",
       "norm_label": ".initialize()"
     },
     {
@@ -1177,6 +1311,7 @@
       "_origin": "ast",
       "id": "src_scrapers_base_scraper_with_browser_basescraperwithbrowser_login",
       "community": 3,
+      "community_name": "base-scraper-with-browser.ts",
       "norm_label": ".login()"
     },
     {
@@ -1187,6 +1322,7 @@
       "_origin": "ast",
       "id": "src_scrapers_base_scraper_with_browser_basescraperwithbrowser_awaitloginresult",
       "community": 3,
+      "community_name": "base-scraper-with-browser.ts",
       "norm_label": ".awaitloginresult()"
     },
     {
@@ -1197,6 +1333,7 @@
       "_origin": "ast",
       "id": "src_scrapers_base_scraper_with_browser_basescraperwithbrowser_handletwofactor",
       "community": 3,
+      "community_name": "base-scraper-with-browser.ts",
       "norm_label": ".handletwofactor()"
     },
     {
@@ -1207,6 +1344,7 @@
       "_origin": "ast",
       "id": "src_scrapers_base_scraper_with_browser_basescraperwithbrowser_persistsession",
       "community": 3,
+      "community_name": "base-scraper-with-browser.ts",
       "norm_label": ".persistsession()"
     },
     {
@@ -1217,6 +1355,7 @@
       "_origin": "ast",
       "id": "src_scrapers_base_scraper_with_browser_basescraperwithbrowser_terminate",
       "community": 3,
+      "community_name": "base-scraper-with-browser.ts",
       "norm_label": ".terminate()"
     },
     {
@@ -1227,6 +1366,7 @@
       "_origin": "ast",
       "id": "src_scrapers_base_scraper_with_browser_basescraperwithbrowser_triggertwofactorauth",
       "community": 3,
+      "community_name": "base-scraper-with-browser.ts",
       "norm_label": ".triggertwofactorauth()"
     },
     {
@@ -1237,6 +1377,7 @@
       "_origin": "ast",
       "id": "src_scrapers_base_scraper_with_browser_basescraperwithbrowser_getlongtermtwofactortoken",
       "community": 3,
+      "community_name": "base-scraper-with-browser.ts",
       "norm_label": ".getlongtermtwofactortoken()"
     },
     {
@@ -1247,6 +1388,7 @@
       "_origin": "ast",
       "id": "src_scrapers_base_scraper_with_browser_basescraperwithbrowser_pagehas",
       "community": 3,
+      "community_name": "base-scraper-with-browser.ts",
       "norm_label": ".pagehas()"
     },
     {
@@ -1257,6 +1399,7 @@
       "_origin": "ast",
       "id": "src_scrapers_base_scraper",
       "community": 0,
+      "community_name": "index.ts",
       "norm_label": "base-scraper.ts"
     },
     {
@@ -1267,6 +1410,7 @@
       "_origin": "ast",
       "id": "src_scrapers_base_scraper_basescraper",
       "community": 0,
+      "community_name": "index.ts",
       "norm_label": "basescraper"
     },
     {
@@ -1277,6 +1421,7 @@
       "_origin": "ast",
       "id": "src_scrapers_base_scraper_basescraper_constructor",
       "community": 0,
+      "community_name": "index.ts",
       "norm_label": ".constructor()"
     },
     {
@@ -1287,6 +1432,7 @@
       "_origin": "ast",
       "id": "src_scrapers_base_scraper_basescraper_emitprogress",
       "community": 0,
+      "community_name": "index.ts",
       "norm_label": ".emitprogress()"
     },
     {
@@ -1297,6 +1443,7 @@
       "_origin": "ast",
       "id": "src_scrapers_base_scraper_basescraper_log",
       "community": 0,
+      "community_name": "index.ts",
       "norm_label": ".log()"
     },
     {
@@ -1307,6 +1454,7 @@
       "_origin": "ast",
       "id": "src_scrapers_base_scraper_basescraper_fetchdata",
       "community": 0,
+      "community_name": "index.ts",
       "norm_label": ".fetchdata()"
     },
     {
@@ -1317,6 +1465,7 @@
       "_origin": "ast",
       "id": "src_scrapers_base_scraper_basescraper_scrape",
       "community": 0,
+      "community_name": "index.ts",
       "norm_label": ".scrape()"
     },
     {
@@ -1326,7 +1475,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_scrapers_errors",
-      "community": 0,
+      "community": 8,
+      "community_name": "errors.ts",
       "norm_label": "errors.ts"
     },
     {
@@ -1336,7 +1486,8 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "src_scrapers_errors_scrapererror",
-      "community": 0,
+      "community": 8,
+      "community_name": "errors.ts",
       "norm_label": "scrapererror"
     },
     {
@@ -1346,7 +1497,8 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "src_scrapers_errors_scrapererror_constructor",
-      "community": 0,
+      "community": 8,
+      "community_name": "errors.ts",
       "norm_label": ".constructor()"
     },
     {
@@ -1356,7 +1508,8 @@
       "source_location": "L19",
       "_origin": "ast",
       "id": "src_scrapers_errors_selectordrifterror",
-      "community": 0,
+      "community": 8,
+      "community_name": "errors.ts",
       "norm_label": "selectordrifterror"
     },
     {
@@ -1366,7 +1519,8 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "src_scrapers_errors_selectordrifterror_constructor",
-      "community": 0,
+      "community": 8,
+      "community_name": "errors.ts",
       "norm_label": ".constructor()"
     },
     {
@@ -1376,7 +1530,8 @@
       "source_location": "L33",
       "_origin": "ast",
       "id": "src_scrapers_errors_twofactorretrievermissingerror",
-      "community": 0,
+      "community": 8,
+      "community_name": "errors.ts",
       "norm_label": "twofactorretrievermissingerror"
     },
     {
@@ -1386,7 +1541,8 @@
       "source_location": "L34",
       "_origin": "ast",
       "id": "src_scrapers_errors_twofactorretrievermissingerror_constructor",
-      "community": 0,
+      "community": 8,
+      "community_name": "errors.ts",
       "norm_label": ".constructor()"
     },
     {
@@ -1396,7 +1552,8 @@
       "source_location": "L43",
       "_origin": "ast",
       "id": "src_scrapers_errors_timeouterror",
-      "community": 0,
+      "community": 8,
+      "community_name": "errors.ts",
       "norm_label": "timeouterror"
     },
     {
@@ -1406,7 +1563,8 @@
       "source_location": "L44",
       "_origin": "ast",
       "id": "src_scrapers_errors_timeouterror_constructor",
-      "community": 0,
+      "community": 8,
+      "community_name": "errors.ts",
       "norm_label": ".constructor()"
     },
     {
@@ -1417,6 +1575,7 @@
       "_origin": "ast",
       "id": "src_scrapers_errors_toerrorresult",
       "community": 0,
+      "community_name": "index.ts",
       "norm_label": "toerrorresult()"
     },
     {
@@ -1427,6 +1586,7 @@
       "_origin": "ast",
       "id": "src_scrapers_factory",
       "community": 0,
+      "community_name": "index.ts",
       "norm_label": "factory.ts"
     },
     {
@@ -1437,6 +1597,7 @@
       "_origin": "ast",
       "id": "src_scrapers_factory_scrapers",
       "community": 0,
+      "community_name": "index.ts",
       "norm_label": "scrapers"
     },
     {
@@ -1447,6 +1608,7 @@
       "_origin": "ast",
       "id": "src_scrapers_factory_implemented_funds",
       "community": 0,
+      "community_name": "index.ts",
       "norm_label": "implemented_funds"
     },
     {
@@ -1457,6 +1619,7 @@
       "_origin": "ast",
       "id": "src_scrapers_factory_createscraper",
       "community": 0,
+      "community_name": "index.ts",
       "norm_label": "createscraper()"
     },
     {
@@ -1467,6 +1630,7 @@
       "_origin": "ast",
       "id": "src_scrapers_factory_enabledfunds",
       "community": 0,
+      "community_name": "index.ts",
       "norm_label": "enabledfunds()"
     },
     {
@@ -1477,6 +1641,7 @@
       "_origin": "ast",
       "id": "src_scrapers_interface",
       "community": 0,
+      "community_name": "index.ts",
       "norm_label": "interface.ts"
     },
     {
@@ -1487,6 +1652,7 @@
       "_origin": "ast",
       "id": "src_scrapers_interface_scraper",
       "community": 0,
+      "community_name": "index.ts",
       "norm_label": "scraper"
     },
     {
@@ -1497,6 +1663,7 @@
       "_origin": "ast",
       "id": "src_scrapers_interface_scraper_scrape",
       "community": 0,
+      "community_name": "index.ts",
       "norm_label": ".scrape()"
     },
     {
@@ -1507,6 +1674,7 @@
       "_origin": "ast",
       "id": "src_scrapers_interface_scraper_login",
       "community": 0,
+      "community_name": "index.ts",
       "norm_label": ".login()"
     },
     {
@@ -1517,6 +1685,7 @@
       "_origin": "ast",
       "id": "src_scrapers_interface_scraper_fetchdata",
       "community": 0,
+      "community_name": "index.ts",
       "norm_label": ".fetchdata()"
     },
     {
@@ -1527,6 +1696,7 @@
       "_origin": "ast",
       "id": "src_scrapers_interface_scraper_terminate",
       "community": 0,
+      "community_name": "index.ts",
       "norm_label": ".terminate()"
     },
     {
@@ -1537,6 +1707,7 @@
       "_origin": "ast",
       "id": "src_scrapers_interface_scraper_triggertwofactorauth",
       "community": 0,
+      "community_name": "index.ts",
       "norm_label": ".triggertwofactorauth()"
     },
     {
@@ -1547,6 +1718,7 @@
       "_origin": "ast",
       "id": "src_scrapers_interface_scraper_getlongtermtwofactortoken",
       "community": 0,
+      "community_name": "index.ts",
       "norm_label": ".getlongtermtwofactortoken()"
     },
     {
@@ -1556,217 +1728,294 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_scrapers_maccabi",
-      "community": 1,
+      "community": 12,
+      "community_name": "maccabi.ts",
       "norm_label": "maccabi.ts"
     },
     {
       "label": "urls",
       "file_type": "code",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L36",
+      "source_location": "L37",
       "_origin": "ast",
       "id": "src_scrapers_maccabi_urls",
-      "community": 1,
+      "community": 12,
+      "community_name": "maccabi.ts",
       "norm_label": "urls"
     },
     {
       "label": "selectors",
       "file_type": "code",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L46",
+      "source_location": "L48",
       "_origin": "ast",
       "id": "src_scrapers_maccabi_selectors",
-      "community": 1,
+      "community": 12,
+      "community_name": "maccabi.ts",
       "norm_label": "selectors"
     },
     {
       "label": "ScrapedPrescriptionRow",
       "file_type": "code",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L96",
+      "source_location": "L99",
       "_origin": "ast",
       "id": "src_scrapers_maccabi_scrapedprescriptionrow",
       "community": 1,
+      "community_name": "maccabi.test.ts",
       "norm_label": "scrapedprescriptionrow"
     },
     {
       "label": "prescriptionRowToMedication()",
       "file_type": "code",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L113",
+      "source_location": "L116",
       "_origin": "ast",
       "id": "src_scrapers_maccabi_prescriptionrowtomedication",
       "community": 1,
+      "community_name": "maccabi.test.ts",
       "norm_label": "prescriptionrowtomedication()"
     },
     {
       "label": "scrapePrescriptionRows()",
       "file_type": "code",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L138",
+      "source_location": "L141",
       "_origin": "ast",
       "id": "src_scrapers_maccabi_scrapeprescriptionrows",
-      "community": 1,
+      "community": 12,
+      "community_name": "maccabi.ts",
       "norm_label": "scrapeprescriptionrows()"
+    },
+    {
+      "label": "ScrapedVaccinationRow",
+      "file_type": "code",
+      "source_file": "src/scrapers/maccabi.ts",
+      "source_location": "L161",
+      "_origin": "ast",
+      "id": "src_scrapers_maccabi_scrapedvaccinationrow",
+      "community": 1,
+      "community_name": "maccabi.test.ts",
+      "norm_label": "scrapedvaccinationrow"
+    },
+    {
+      "label": "vaccinationRowToVaccination()",
+      "file_type": "code",
+      "source_file": "src/scrapers/maccabi.ts",
+      "source_location": "L169",
+      "_origin": "ast",
+      "id": "src_scrapers_maccabi_vaccinationrowtovaccination",
+      "community": 1,
+      "community_name": "maccabi.test.ts",
+      "norm_label": "vaccinationrowtovaccination()"
+    },
+    {
+      "label": "scrapeVaccinationRows()",
+      "file_type": "code",
+      "source_file": "src/scrapers/maccabi.ts",
+      "source_location": "L194",
+      "_origin": "ast",
+      "id": "src_scrapers_maccabi_scrapevaccinationrows",
+      "community": 12,
+      "community_name": "maccabi.ts",
+      "norm_label": "scrapevaccinationrows()"
+    },
+    {
+      "label": "expandVaccinationDetails()",
+      "file_type": "code",
+      "source_file": "src/scrapers/maccabi.ts",
+      "source_location": "L259",
+      "_origin": "ast",
+      "id": "src_scrapers_maccabi_expandvaccinationdetails",
+      "community": 12,
+      "community_name": "maccabi.ts",
+      "norm_label": "expandvaccinationdetails()"
     },
     {
       "label": "ScrapedAppointmentRow",
       "file_type": "code",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L155",
+      "source_location": "L295",
       "_origin": "ast",
       "id": "src_scrapers_maccabi_scrapedappointmentrow",
       "community": 1,
+      "community_name": "maccabi.test.ts",
       "norm_label": "scrapedappointmentrow"
     },
     {
       "label": "appointmentRowToAppointment()",
       "file_type": "code",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L172",
+      "source_location": "L312",
       "_origin": "ast",
       "id": "src_scrapers_maccabi_appointmentrowtoappointment",
       "community": 1,
+      "community_name": "maccabi.test.ts",
       "norm_label": "appointmentrowtoappointment()"
     },
     {
       "label": "scrapeAppointmentRows()",
       "file_type": "code",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L200",
+      "source_location": "L340",
       "_origin": "ast",
       "id": "src_scrapers_maccabi_scrapeappointmentrows",
-      "community": 1,
+      "community": 12,
+      "community_name": "maccabi.ts",
       "norm_label": "scrapeappointmentrows()"
     },
     {
       "label": "scrapeAppointmentDetail()",
       "file_type": "code",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L231",
+      "source_location": "L375",
       "_origin": "ast",
       "id": "src_scrapers_maccabi_scrapeappointmentdetail",
-      "community": 1,
+      "community": 12,
+      "community_name": "maccabi.ts",
       "norm_label": "scrapeappointmentdetail()"
     },
     {
       "label": "ScrapedTestResultRow",
       "file_type": "code",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L263",
+      "source_location": "L411",
       "_origin": "ast",
       "id": "src_scrapers_maccabi_scrapedtestresultrow",
-      "community": 1,
+      "community": 12,
+      "community_name": "maccabi.ts",
       "norm_label": "scrapedtestresultrow"
     },
     {
       "label": "testResultRowToTestResult()",
       "file_type": "code",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L279",
+      "source_location": "L427",
       "_origin": "ast",
       "id": "src_scrapers_maccabi_testresultrowtotestresult",
       "community": 1,
+      "community_name": "maccabi.test.ts",
       "norm_label": "testresultrowtotestresult()"
     },
     {
       "label": "scrapeTestResultRows()",
       "file_type": "code",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L303",
+      "source_location": "L451",
       "_origin": "ast",
       "id": "src_scrapers_maccabi_scrapetestresultrows",
-      "community": 1,
+      "community": 12,
+      "community_name": "maccabi.ts",
       "norm_label": "scrapetestresultrows()"
     },
     {
       "label": "loadAllTestResultRows()",
       "file_type": "code",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L335",
+      "source_location": "L483",
       "_origin": "ast",
       "id": "src_scrapers_maccabi_loadalltestresultrows",
-      "community": 1,
+      "community": 12,
+      "community_name": "maccabi.ts",
       "norm_label": "loadalltestresultrows()"
     },
     {
       "label": "MaccabiScraper",
       "file_type": "code",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L359",
+      "source_location": "L507",
       "_origin": "ast",
       "id": "src_scrapers_maccabi_maccabiscraper",
-      "community": 3,
+      "community": 12,
+      "community_name": "maccabi.ts",
       "norm_label": "maccabiscraper"
     },
     {
       "label": ".getLoginOptions()",
       "file_type": "code",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L360",
+      "source_location": "L508",
       "_origin": "ast",
       "id": "src_scrapers_maccabi_maccabiscraper_getloginoptions",
-      "community": 3,
+      "community": 12,
+      "community_name": "maccabi.ts",
       "norm_label": ".getloginoptions()"
     },
     {
       "label": ".fetchAccounts()",
       "file_type": "code",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L427",
+      "source_location": "L575",
       "_origin": "ast",
       "id": "src_scrapers_maccabi_maccabiscraper_fetchaccounts",
-      "community": 3,
+      "community": 12,
+      "community_name": "maccabi.ts",
       "norm_label": ".fetchaccounts()"
     },
     {
       "label": ".fetchMedications()",
       "file_type": "code",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L450",
+      "source_location": "L602",
       "_origin": "ast",
       "id": "src_scrapers_maccabi_maccabiscraper_fetchmedications",
-      "community": 3,
+      "community": 12,
+      "community_name": "maccabi.ts",
       "norm_label": ".fetchmedications()"
     },
     {
       "label": ".fetchAppointments()",
       "file_type": "code",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L485",
+      "source_location": "L637",
       "_origin": "ast",
       "id": "src_scrapers_maccabi_maccabiscraper_fetchappointments",
-      "community": 3,
+      "community": 12,
+      "community_name": "maccabi.ts",
       "norm_label": ".fetchappointments()"
+    },
+    {
+      "label": ".fetchVaccinations()",
+      "file_type": "code",
+      "source_file": "src/scrapers/maccabi.ts",
+      "source_location": "L676",
+      "_origin": "ast",
+      "id": "src_scrapers_maccabi_maccabiscraper_fetchvaccinations",
+      "community": 12,
+      "community_name": "maccabi.ts",
+      "norm_label": ".fetchvaccinations()"
     },
     {
       "label": ".fetchTestResults()",
       "file_type": "code",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L525",
+      "source_location": "L697",
       "_origin": "ast",
       "id": "src_scrapers_maccabi_maccabiscraper_fetchtestresults",
-      "community": 3,
+      "community": 12,
+      "community_name": "maccabi.ts",
       "norm_label": ".fetchtestresults()"
     },
     {
       "label": ".fetchAppointmentDetail()",
       "file_type": "code",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L563",
+      "source_location": "L735",
       "_origin": "ast",
       "id": "src_scrapers_maccabi_maccabiscraper_fetchappointmentdetail",
-      "community": 3,
+      "community": 12,
+      "community_name": "maccabi.ts",
       "norm_label": ".fetchappointmentdetail()"
     },
     {
       "label": "NOTE: login, medications, appointments, and test-results selectors are\u2026",
       "file_type": "rationale",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L29",
+      "source_location": "L30",
       "_origin": "ast",
-      "id": "src_scrapers_maccabi_rationale_29",
-      "community": 1,
+      "id": "src_scrapers_maccabi_rationale_30",
+      "community": 12,
+      "community_name": "maccabi.ts",
       "norm_label": "note: login, medications, appointments, and test-results selectors are..."
     },
     {
@@ -1777,6 +2026,7 @@
       "_origin": "ast",
       "id": "src_scrapers_mock",
       "community": 0,
+      "community_name": "index.ts",
       "norm_label": "mock.ts"
     },
     {
@@ -1787,6 +2037,7 @@
       "_origin": "ast",
       "id": "src_scrapers_mock_mockscraper",
       "community": 0,
+      "community_name": "index.ts",
       "norm_label": "mockscraper"
     },
     {
@@ -1797,6 +2048,7 @@
       "_origin": "ast",
       "id": "src_scrapers_mock_mockscraper_initialize",
       "community": 0,
+      "community_name": "index.ts",
       "norm_label": ".initialize()"
     },
     {
@@ -1807,6 +2059,7 @@
       "_origin": "ast",
       "id": "src_scrapers_mock_mockscraper_login",
       "community": 0,
+      "community_name": "index.ts",
       "norm_label": ".login()"
     },
     {
@@ -1817,6 +2070,7 @@
       "_origin": "ast",
       "id": "src_scrapers_mock_mockscraper_fetchaccounts",
       "community": 0,
+      "community_name": "index.ts",
       "norm_label": ".fetchaccounts()"
     },
     {
@@ -1827,6 +2081,7 @@
       "_origin": "ast",
       "id": "src_scrapers_mock_mockscraper_terminate",
       "community": 0,
+      "community_name": "index.ts",
       "norm_label": ".terminate()"
     },
     {
@@ -1836,7 +2091,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "test_browser",
-      "community": 1,
+      "community": 13,
+      "community_name": "playwright",
       "norm_label": "browser.ts"
     },
     {
@@ -1846,7 +2102,8 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "test_browser_chromiumexecutablepath",
-      "community": 1,
+      "community": 13,
+      "community_name": "playwright",
       "norm_label": "chromiumexecutablepath()"
     },
     {
@@ -1856,7 +2113,8 @@
       "source_location": "L30",
       "_origin": "ast",
       "id": "test_browser_launchtestbrowser",
-      "community": 1,
+      "community": 13,
+      "community_name": "playwright",
       "norm_label": "launchtestbrowser()"
     },
     {
@@ -1867,6 +2125,7 @@
       "_origin": "ast",
       "id": "test_contract_scrapers_test",
       "community": 0,
+      "community_name": "index.ts",
       "norm_label": "scrapers.test.ts"
     },
     {
@@ -1877,6 +2136,7 @@
       "_origin": "ast",
       "id": "test_helpers_dates_test",
       "community": 1,
+      "community_name": "maccabi.test.ts",
       "norm_label": "dates.test.ts"
     },
     {
@@ -1886,7 +2146,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "test_scrapers_base_scraper_with_browser_test",
-      "community": 8,
+      "community": 3,
+      "community_name": "base-scraper-with-browser.ts",
       "norm_label": "base-scraper-with-browser.test.ts"
     },
     {
@@ -1896,7 +2157,8 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "test_scrapers_base_scraper_with_browser_test_delayedpage",
-      "community": 8,
+      "community": 3,
+      "community_name": "base-scraper-with-browser.ts",
       "norm_label": "delayedpage()"
     },
     {
@@ -1906,7 +2168,8 @@
       "source_location": "L26",
       "_origin": "ast",
       "id": "test_scrapers_base_scraper_with_browser_test_possibleresults",
-      "community": 8,
+      "community": 3,
+      "community_name": "base-scraper-with-browser.ts",
       "norm_label": "possibleresults"
     },
     {
@@ -1916,7 +2179,8 @@
       "source_location": "L30",
       "_origin": "ast",
       "id": "test_scrapers_base_scraper_with_browser_test_fields",
-      "community": 8,
+      "community": 3,
+      "community_name": "base-scraper-with-browser.ts",
       "norm_label": "fields"
     },
     {
@@ -1926,67 +2190,85 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "test_scrapers_maccabi_dom_test",
-      "community": 1,
+      "community": 12,
+      "community_name": "maccabi.ts",
       "norm_label": "maccabi-dom.test.ts"
     },
     {
       "label": "fixturesDir",
       "file_type": "code",
       "source_file": "test/scrapers/maccabi-dom.test.ts",
-      "source_location": "L29",
+      "source_location": "L32",
       "_origin": "ast",
       "id": "test_scrapers_maccabi_dom_test_fixturesdir",
-      "community": 1,
+      "community": 12,
+      "community_name": "maccabi.ts",
       "norm_label": "fixturesdir"
     },
     {
       "label": "fixture",
       "file_type": "code",
       "source_file": "test/scrapers/maccabi-dom.test.ts",
-      "source_location": "L30",
+      "source_location": "L33",
       "_origin": "ast",
       "id": "test_scrapers_maccabi_dom_test_fixture",
-      "community": 1,
+      "community": 12,
+      "community_name": "maccabi.ts",
       "norm_label": "fixture"
     },
     {
       "label": "appointmentsFixture",
       "file_type": "code",
       "source_file": "test/scrapers/maccabi-dom.test.ts",
-      "source_location": "L31",
+      "source_location": "L34",
       "_origin": "ast",
       "id": "test_scrapers_maccabi_dom_test_appointmentsfixture",
-      "community": 1,
+      "community": 12,
+      "community_name": "maccabi.ts",
       "norm_label": "appointmentsfixture"
     },
     {
       "label": "appointmentDetailFixture",
       "file_type": "code",
       "source_file": "test/scrapers/maccabi-dom.test.ts",
-      "source_location": "L32",
+      "source_location": "L35",
       "_origin": "ast",
       "id": "test_scrapers_maccabi_dom_test_appointmentdetailfixture",
-      "community": 1,
+      "community": 12,
+      "community_name": "maccabi.ts",
       "norm_label": "appointmentdetailfixture"
     },
     {
       "label": "testResultsFixture",
       "file_type": "code",
       "source_file": "test/scrapers/maccabi-dom.test.ts",
-      "source_location": "L33",
+      "source_location": "L36",
       "_origin": "ast",
       "id": "test_scrapers_maccabi_dom_test_testresultsfixture",
-      "community": 1,
+      "community": 12,
+      "community_name": "maccabi.ts",
       "norm_label": "testresultsfixture"
+    },
+    {
+      "label": "vaccinationsFixture",
+      "file_type": "code",
+      "source_file": "test/scrapers/maccabi-dom.test.ts",
+      "source_location": "L37",
+      "_origin": "ast",
+      "id": "test_scrapers_maccabi_dom_test_vaccinationsfixture",
+      "community": 12,
+      "community_name": "maccabi.ts",
+      "norm_label": "vaccinationsfixture"
     },
     {
       "label": "NOW",
       "file_type": "code",
       "source_file": "test/scrapers/maccabi-dom.test.ts",
-      "source_location": "L35",
+      "source_location": "L39",
       "_origin": "ast",
       "id": "test_scrapers_maccabi_dom_test_now",
-      "community": 1,
+      "community": 12,
+      "community_name": "maccabi.ts",
       "norm_label": "now"
     },
     {
@@ -1997,66 +2279,73 @@
       "_origin": "ast",
       "id": "test_scrapers_maccabi_test",
       "community": 1,
+      "community_name": "maccabi.test.ts",
       "norm_label": "maccabi.test.ts"
     },
     {
       "label": "NOW",
       "file_type": "code",
       "source_file": "test/scrapers/maccabi.test.ts",
-      "source_location": "L25",
+      "source_location": "L28",
       "_origin": "ast",
       "id": "test_scrapers_maccabi_test_now",
       "community": 1,
+      "community_name": "maccabi.test.ts",
       "norm_label": "now"
     },
     {
       "label": "TestableMaccabiScraper",
       "file_type": "code",
       "source_file": "test/scrapers/maccabi.test.ts",
-      "source_location": "L27",
+      "source_location": "L30",
       "_origin": "ast",
       "id": "test_scrapers_maccabi_test_testablemaccabiscraper",
-      "community": 3,
+      "community": 1,
+      "community_name": "maccabi.test.ts",
       "norm_label": "testablemaccabiscraper"
     },
     {
       "label": ".loginOptions()",
       "file_type": "code",
       "source_file": "test/scrapers/maccabi.test.ts",
-      "source_location": "L28",
+      "source_location": "L31",
       "_origin": "ast",
       "id": "test_scrapers_maccabi_test_testablemaccabiscraper_loginoptions",
-      "community": 3,
+      "community": 1,
+      "community_name": "maccabi.test.ts",
       "norm_label": ".loginoptions()"
     },
     {
       "label": "standingRow",
       "file_type": "code",
       "source_file": "test/scrapers/maccabi.test.ts",
-      "source_location": "L48",
+      "source_location": "L51",
       "_origin": "ast",
       "id": "test_scrapers_maccabi_test_standingrow",
       "community": 1,
+      "community_name": "maccabi.test.ts",
       "norm_label": "standingrow"
     },
     {
       "label": "appointmentRow",
       "file_type": "code",
       "source_file": "test/scrapers/maccabi.test.ts",
-      "source_location": "L105",
+      "source_location": "L108",
       "_origin": "ast",
       "id": "test_scrapers_maccabi_test_appointmentrow",
       "community": 1,
+      "community_name": "maccabi.test.ts",
       "norm_label": "appointmentrow"
     },
     {
       "label": "testResultRow",
       "file_type": "code",
       "source_file": "test/scrapers/maccabi.test.ts",
-      "source_location": "L173",
+      "source_location": "L176",
       "_origin": "ast",
       "id": "test_scrapers_maccabi_test_testresultrow",
       "community": 1,
+      "community_name": "maccabi.test.ts",
       "norm_label": "testresultrow"
     },
     {
@@ -2067,6 +2356,7 @@
       "_origin": "ast",
       "id": "tsconfig",
       "community": 5,
+      "community_name": "compilerOptions",
       "norm_label": "tsconfig.json"
     },
     {
@@ -2077,6 +2367,7 @@
       "_origin": "ast",
       "id": "tsconfig_compileroptions",
       "community": 5,
+      "community_name": "compilerOptions",
       "norm_label": "compileroptions"
     },
     {
@@ -2087,6 +2378,7 @@
       "_origin": "ast",
       "id": "tsconfig_compileroptions_target",
       "community": 5,
+      "community_name": "compilerOptions",
       "norm_label": "target"
     },
     {
@@ -2097,6 +2389,7 @@
       "_origin": "ast",
       "id": "tsconfig_compileroptions_lib",
       "community": 5,
+      "community_name": "compilerOptions",
       "norm_label": "lib"
     },
     {
@@ -2107,6 +2400,7 @@
       "_origin": "ast",
       "id": "ref_es2022",
       "community": 5,
+      "community_name": "compilerOptions",
       "norm_label": "es2022"
     },
     {
@@ -2117,6 +2411,7 @@
       "_origin": "ast",
       "id": "ref_dom",
       "community": 5,
+      "community_name": "compilerOptions",
       "norm_label": "dom"
     },
     {
@@ -2127,6 +2422,7 @@
       "_origin": "ast",
       "id": "tsconfig_compileroptions_module",
       "community": 5,
+      "community_name": "compilerOptions",
       "norm_label": "module"
     },
     {
@@ -2137,6 +2433,7 @@
       "_origin": "ast",
       "id": "tsconfig_compileroptions_moduleresolution",
       "community": 5,
+      "community_name": "compilerOptions",
       "norm_label": "moduleresolution"
     },
     {
@@ -2147,6 +2444,7 @@
       "_origin": "ast",
       "id": "tsconfig_compileroptions_outdir",
       "community": 5,
+      "community_name": "compilerOptions",
       "norm_label": "outdir"
     },
     {
@@ -2157,6 +2455,7 @@
       "_origin": "ast",
       "id": "tsconfig_compileroptions_rootdir",
       "community": 5,
+      "community_name": "compilerOptions",
       "norm_label": "rootdir"
     },
     {
@@ -2167,6 +2466,7 @@
       "_origin": "ast",
       "id": "tsconfig_compileroptions_declaration",
       "community": 5,
+      "community_name": "compilerOptions",
       "norm_label": "declaration"
     },
     {
@@ -2177,6 +2477,7 @@
       "_origin": "ast",
       "id": "tsconfig_compileroptions_declarationmap",
       "community": 5,
+      "community_name": "compilerOptions",
       "norm_label": "declarationmap"
     },
     {
@@ -2187,6 +2488,7 @@
       "_origin": "ast",
       "id": "tsconfig_compileroptions_sourcemap",
       "community": 5,
+      "community_name": "compilerOptions",
       "norm_label": "sourcemap"
     },
     {
@@ -2197,6 +2499,7 @@
       "_origin": "ast",
       "id": "tsconfig_compileroptions_strict",
       "community": 5,
+      "community_name": "compilerOptions",
       "norm_label": "strict"
     },
     {
@@ -2207,6 +2510,7 @@
       "_origin": "ast",
       "id": "tsconfig_compileroptions_nouncheckedindexedaccess",
       "community": 5,
+      "community_name": "compilerOptions",
       "norm_label": "nouncheckedindexedaccess"
     },
     {
@@ -2217,6 +2521,7 @@
       "_origin": "ast",
       "id": "tsconfig_compileroptions_noimplicitoverride",
       "community": 5,
+      "community_name": "compilerOptions",
       "norm_label": "noimplicitoverride"
     },
     {
@@ -2227,6 +2532,7 @@
       "_origin": "ast",
       "id": "tsconfig_compileroptions_esmoduleinterop",
       "community": 5,
+      "community_name": "compilerOptions",
       "norm_label": "esmoduleinterop"
     },
     {
@@ -2237,6 +2543,7 @@
       "_origin": "ast",
       "id": "tsconfig_compileroptions_skiplibcheck",
       "community": 5,
+      "community_name": "compilerOptions",
       "norm_label": "skiplibcheck"
     },
     {
@@ -2247,6 +2554,7 @@
       "_origin": "ast",
       "id": "tsconfig_compileroptions_forceconsistentcasinginfilenames",
       "community": 5,
+      "community_name": "compilerOptions",
       "norm_label": "forceconsistentcasinginfilenames"
     },
     {
@@ -2257,6 +2565,7 @@
       "_origin": "ast",
       "id": "tsconfig_include",
       "community": 5,
+      "community_name": "compilerOptions",
       "norm_label": "include"
     },
     {
@@ -2267,6 +2576,7 @@
       "_origin": "ast",
       "id": "ref_src_ts",
       "community": 5,
+      "community_name": "compilerOptions",
       "norm_label": "src/**/*.ts"
     },
     {
@@ -2277,6 +2587,7 @@
       "_origin": "ast",
       "id": "tsconfig_exclude",
       "community": 5,
+      "community_name": "compilerOptions",
       "norm_label": "exclude"
     },
     {
@@ -2287,6 +2598,7 @@
       "_origin": "ast",
       "id": "tsconfig_json_ref_dist",
       "community": 5,
+      "community_name": "compilerOptions",
       "norm_label": "dist"
     },
     {
@@ -2297,6 +2609,7 @@
       "_origin": "ast",
       "id": "ref_node_modules",
       "community": 5,
+      "community_name": "compilerOptions",
       "norm_label": "node_modules"
     },
     {
@@ -2307,6 +2620,7 @@
       "_origin": "ast",
       "id": "ref_test",
       "community": 5,
+      "community_name": "compilerOptions",
       "norm_label": "test"
     },
     {
@@ -2317,7 +2631,129 @@
       "_origin": "ast",
       "id": "vitest_config",
       "community": 10,
+      "community_name": "vitest.config.ts",
       "norm_label": "vitest.config.ts"
+    },
+    {
+      "label": "CLAUDE.md",
+      "file_type": "document",
+      "source_file": ".claude/CLAUDE.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "claude_claude",
+      "community": 11,
+      "community_name": "Codebase Intelligence for israeli-health-scrapers (Repowise)",
+      "norm_label": "claude.md"
+    },
+    {
+      "label": "CLAUDE.md",
+      "file_type": "document",
+      "source_file": ".claude/CLAUDE.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "claude_claude_claude_md",
+      "community": 11,
+      "community_name": "Codebase Intelligence for israeli-health-scrapers (Repowise)",
+      "norm_label": "claude.md"
+    },
+    {
+      "label": "Codebase Intelligence for israeli-health-scrapers (Repowise)",
+      "file_type": "document",
+      "source_file": ".claude/CLAUDE.md",
+      "source_location": "L7",
+      "_origin": "ast",
+      "id": "claude_claude_codebase_intelligence_for_israeli_health_scrapers_repowise",
+      "community": 11,
+      "community_name": "Codebase Intelligence for israeli-health-scrapers (Repowise)",
+      "norm_label": "codebase intelligence for israeli-health-scrapers (repowise)"
+    },
+    {
+      "label": "How to work in this repo",
+      "file_type": "document",
+      "source_file": ".claude/CLAUDE.md",
+      "source_location": "L10",
+      "_origin": "ast",
+      "id": "claude_claude_how_to_work_in_this_repo",
+      "community": 11,
+      "community_name": "Codebase Intelligence for israeli-health-scrapers (Repowise)",
+      "norm_label": "how to work in this repo"
+    },
+    {
+      "label": "Tools",
+      "file_type": "document",
+      "source_file": ".claude/CLAUDE.md",
+      "source_location": "L16",
+      "_origin": "ast",
+      "id": "claude_claude_tools",
+      "community": 11,
+      "community_name": "Codebase Intelligence for israeli-health-scrapers (Repowise)",
+      "norm_label": "tools"
+    },
+    {
+      "label": "Architecture",
+      "file_type": "document",
+      "source_file": ".claude/CLAUDE.md",
+      "source_location": "L31",
+      "_origin": "ast",
+      "id": "claude_claude_architecture",
+      "community": 11,
+      "community_name": "Codebase Intelligence for israeli-health-scrapers (Repowise)",
+      "norm_label": "architecture"
+    },
+    {
+      "label": "Key modules",
+      "file_type": "document",
+      "source_file": ".claude/CLAUDE.md",
+      "source_location": "L35",
+      "_origin": "ast",
+      "id": "claude_claude_key_modules",
+      "community": 11,
+      "community_name": "Codebase Intelligence for israeli-health-scrapers (Repowise)",
+      "norm_label": "key modules"
+    },
+    {
+      "label": "Entry points",
+      "file_type": "document",
+      "source_file": ".claude/CLAUDE.md",
+      "source_location": "L43",
+      "_origin": "ast",
+      "id": "claude_claude_entry_points",
+      "community": 11,
+      "community_name": "Codebase Intelligence for israeli-health-scrapers (Repowise)",
+      "norm_label": "entry points"
+    },
+    {
+      "label": "Files that need care (bug-fix history first, then churn \u2014 check `get_risk` before editing)",
+      "file_type": "document",
+      "source_file": ".claude/CLAUDE.md",
+      "source_location": "L51",
+      "_origin": "ast",
+      "id": "claude_claude_files_that_need_care_bug_fix_history_first_then_churn_check_get_risk_before_editing",
+      "community": 11,
+      "community_name": "Codebase Intelligence for israeli-health-scrapers (Repowise)",
+      "norm_label": "files that need care (bug-fix history first, then churn \u2014 check `get_risk` before editing)"
+    },
+    {
+      "label": "Code health",
+      "file_type": "document",
+      "source_file": ".claude/CLAUDE.md",
+      "source_location": "L58",
+      "_origin": "ast",
+      "id": "claude_claude_code_health",
+      "community": 11,
+      "community_name": "Codebase Intelligence for israeli-health-scrapers (Repowise)",
+      "norm_label": "code health"
+    },
+    {
+      "label": "Commands",
+      "file_type": "document",
+      "source_file": ".claude/CLAUDE.md",
+      "source_location": "L67",
+      "_origin": "ast",
+      "id": "claude_claude_commands",
+      "community": 11,
+      "community_name": "Codebase Intelligence for israeli-health-scrapers (Repowise)",
+      "norm_label": "commands"
     },
     {
       "label": "CI Workflow",
@@ -2328,9 +2764,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "_github_workflows_ci_ci_workflow",
       "community": 4,
-      "norm_label": "ci workflow"
+      "norm_label": "ci workflow",
+      "community_name": "Maccabi Valid Prescriptions Fixture",
+      "id": "_github_workflows_ci_ci_workflow"
     },
     {
       "label": "Node.js 20 Runtime",
@@ -2341,9 +2778,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "_github_workflows_ci_node_20_runtime",
       "community": 4,
-      "norm_label": "node.js 20 runtime"
+      "norm_label": "node.js 20 runtime",
+      "community_name": "Maccabi Valid Prescriptions Fixture",
+      "id": "_github_workflows_ci_node_20_runtime"
     },
     {
       "label": "Chromium DOM Parsing Coverage",
@@ -2354,9 +2792,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "_github_workflows_ci_chromium_dom_parsing_coverage",
       "community": 4,
-      "norm_label": "chromium dom parsing coverage"
+      "norm_label": "chromium dom parsing coverage",
+      "community_name": "Maccabi Valid Prescriptions Fixture",
+      "id": "_github_workflows_ci_chromium_dom_parsing_coverage"
     },
     {
       "label": "Typecheck Test Build Quality Gates",
@@ -2367,9 +2806,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "_github_workflows_ci_quality_gate_sequence",
       "community": 4,
-      "norm_label": "typecheck test build quality gates"
+      "norm_label": "typecheck test build quality gates",
+      "community_name": "Maccabi Valid Prescriptions Fixture",
+      "id": "_github_workflows_ci_quality_gate_sequence"
     },
     {
       "label": "Israeli Health Scrapers Project Instructions",
@@ -2380,9 +2820,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "agents_project_instructions",
       "community": 6,
-      "norm_label": "israeli health scrapers project instructions"
+      "norm_label": "israeli health scrapers project instructions",
+      "community_name": "Israeli Health Scrapers Project Instructions",
+      "id": "agents_project_instructions"
     },
     {
       "label": "Pure TypeScript Library Boundary",
@@ -2393,9 +2834,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "agents_pure_typescript_library",
       "community": 6,
-      "norm_label": "pure typescript library boundary"
+      "norm_label": "pure typescript library boundary",
+      "community_name": "Israeli Health Scrapers Project Instructions",
+      "id": "agents_pure_typescript_library"
     },
     {
       "label": "Uniform Scraper Factory",
@@ -2406,9 +2848,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "agents_uniform_scraper_factory",
       "community": 6,
-      "norm_label": "uniform scraper factory"
+      "norm_label": "uniform scraper factory",
+      "community_name": "Israeli Health Scrapers Project Instructions",
+      "id": "agents_uniform_scraper_factory"
     },
     {
       "label": "BaseScraper Lifecycle",
@@ -2419,9 +2862,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "agents_basescraper_lifecycle",
       "community": 6,
-      "norm_label": "basescraper lifecycle"
+      "norm_label": "basescraper lifecycle",
+      "community_name": "Israeli Health Scrapers Project Instructions",
+      "id": "agents_basescraper_lifecycle"
     },
     {
       "label": "Declarative Login State Machine",
@@ -2432,9 +2876,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "agents_declarative_login_state_machine",
       "community": 6,
-      "norm_label": "declarative login state machine"
+      "norm_label": "declarative login state machine",
+      "community_name": "Israeli Health Scrapers Project Instructions",
+      "id": "agents_declarative_login_state_machine"
     },
     {
       "label": "One-Shot and Two-Step Login Paths",
@@ -2445,9 +2890,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "agents_two_login_paths",
       "community": 6,
-      "norm_label": "one-shot and two-step login paths"
+      "norm_label": "one-shot and two-step login paths",
+      "community_name": "Israeli Health Scrapers Project Instructions",
+      "id": "agents_two_login_paths"
     },
     {
       "label": "Maccabi Calibrated Scraper",
@@ -2458,9 +2904,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "agents_maccabi_calibrated_scraper",
       "community": 6,
-      "norm_label": "maccabi calibrated scraper"
+      "norm_label": "maccabi calibrated scraper",
+      "community_name": "Israeli Health Scrapers Project Instructions",
+      "id": "agents_maccabi_calibrated_scraper"
     },
     {
       "label": "Shared Medication Expiry Derivation",
@@ -2471,9 +2918,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "agents_shared_expiry_derivation",
       "community": 6,
-      "norm_label": "shared medication expiry derivation"
+      "norm_label": "shared medication expiry derivation",
+      "community_name": "Israeli Health Scrapers Project Instructions",
+      "id": "agents_shared_expiry_derivation"
     },
     {
       "label": "Scraper Contract Suite",
@@ -2484,9 +2932,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "agents_contract_suite",
       "community": 6,
-      "norm_label": "scraper contract suite"
+      "norm_label": "scraper contract suite",
+      "community_name": "Israeli Health Scrapers Project Instructions",
+      "id": "agents_contract_suite"
     },
     {
       "label": "Selector Diagnostics Capture",
@@ -2497,9 +2946,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "agents_diagnostics_capture",
       "community": 4,
-      "norm_label": "selector diagnostics capture"
+      "norm_label": "selector diagnostics capture",
+      "community_name": "Maccabi Valid Prescriptions Fixture",
+      "id": "agents_diagnostics_capture"
     },
     {
       "label": "Encrypted Session Persistence",
@@ -2510,9 +2960,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "agents_encrypted_session_persistence",
       "community": 6,
-      "norm_label": "encrypted session persistence"
+      "norm_label": "encrypted session persistence",
+      "community_name": "Israeli Health Scrapers Project Instructions",
+      "id": "agents_encrypted_session_persistence"
     },
     {
       "label": "Sanitized Medical Test Fixtures",
@@ -2523,9 +2974,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "agents_sanitized_test_fixtures",
       "community": 4,
-      "norm_label": "sanitized medical test fixtures"
+      "norm_label": "sanitized medical test fixtures",
+      "community_name": "Maccabi Valid Prescriptions Fixture",
+      "id": "agents_sanitized_test_fixtures"
     },
     {
       "label": "health-mcp Consumer",
@@ -2536,9 +2988,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "agents_health_mcp",
       "community": 6,
-      "norm_label": "health-mcp consumer"
+      "norm_label": "health-mcp consumer",
+      "community_name": "Israeli Health Scrapers Project Instructions",
+      "id": "agents_health_mcp"
     },
     {
       "label": "israeli-bank-scrapers",
@@ -2549,9 +3002,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "agents_israeli_bank_scrapers",
       "community": 6,
-      "norm_label": "israeli-bank-scrapers"
+      "norm_label": "israeli-bank-scrapers",
+      "community_name": "Israeli Health Scrapers Project Instructions",
+      "id": "agents_israeli_bank_scrapers"
     },
     {
       "label": "AGENTS.md Instruction Alias",
@@ -2562,9 +3016,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "claude_agents_instructions_alias",
       "community": 6,
-      "norm_label": "agents.md instruction alias"
+      "norm_label": "agents.md instruction alias",
+      "community_name": "Israeli Health Scrapers Project Instructions",
+      "id": "claude_agents_instructions_alias"
     },
     {
       "label": "Israeli Health Scrapers Library Overview",
@@ -2575,9 +3030,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "readme_library_overview",
       "community": 6,
-      "norm_label": "israeli health scrapers library overview"
+      "norm_label": "israeli health scrapers library overview",
+      "community_name": "Israeli Health Scrapers Project Instructions",
+      "id": "readme_library_overview"
     },
     {
       "label": "Uniform Typed Health Fund API",
@@ -2588,9 +3044,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "readme_uniform_typed_api",
       "community": 6,
-      "norm_label": "uniform typed health fund api"
+      "norm_label": "uniform typed health fund api",
+      "community_name": "Israeli Health Scrapers Project Instructions",
+      "id": "readme_uniform_typed_api"
     },
     {
       "label": "Returned Scrape Result Envelope",
@@ -2601,9 +3058,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "readme_scrape_result_envelope",
       "community": 6,
-      "norm_label": "returned scrape result envelope"
+      "norm_label": "returned scrape result envelope",
+      "community_name": "Israeli Health Scrapers Project Instructions",
+      "id": "readme_scrape_result_envelope"
     },
     {
       "label": "Medication Result Schema",
@@ -2614,9 +3072,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "readme_medication_result_schema",
       "community": 6,
-      "norm_label": "medication result schema"
+      "norm_label": "medication result schema",
+      "community_name": "Israeli Health Scrapers Project Instructions",
+      "id": "readme_medication_result_schema"
     },
     {
       "label": "Two-Step Login",
@@ -2627,9 +3086,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "readme_two_step_login",
       "community": 6,
-      "norm_label": "two-step login"
+      "norm_label": "two-step login",
+      "community_name": "Israeli Health Scrapers Project Instructions",
+      "id": "readme_two_step_login"
     },
     {
       "label": "AES-256-GCM Session Storage",
@@ -2640,9 +3100,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "readme_aes_256_gcm_session_storage",
       "community": 9,
-      "norm_label": "aes-256-gcm session storage"
+      "norm_label": "aes-256-gcm session storage",
+      "community_name": "AES-256-GCM Session Storage",
+      "id": "readme_aes_256_gcm_session_storage"
     },
     {
       "label": "Maccabi Calibration Workflow",
@@ -2653,9 +3114,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "readme_calibration_workflow",
       "community": 4,
-      "norm_label": "maccabi calibration workflow"
+      "norm_label": "maccabi calibration workflow",
+      "community_name": "Maccabi Valid Prescriptions Fixture",
+      "id": "readme_calibration_workflow"
     },
     {
       "label": "Declarative Fund Extension Workflow",
@@ -2666,9 +3128,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "readme_fund_extension_workflow",
       "community": 6,
-      "norm_label": "declarative fund extension workflow"
+      "norm_label": "declarative fund extension workflow",
+      "community_name": "Israeli Health Scrapers Project Instructions",
+      "id": "readme_fund_extension_workflow"
     },
     {
       "label": "Own-Account Scope and Medical Limits",
@@ -2679,9 +3142,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "readme_scope_and_limits",
       "community": 9,
-      "norm_label": "own-account scope and medical limits"
+      "norm_label": "own-account scope and medical limits",
+      "community_name": "AES-256-GCM Session Storage",
+      "id": "readme_scope_and_limits"
     },
     {
       "label": "FHIR R4 Migration Path",
@@ -2692,9 +3156,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "readme_fhir_r4_migration_path",
       "community": 6,
-      "norm_label": "fhir r4 migration path"
+      "norm_label": "fhir r4 migration path",
+      "community_name": "Israeli Health Scrapers Project Instructions",
+      "id": "readme_fhir_r4_migration_path"
     },
     {
       "label": "Maccabi Data Roadmap",
@@ -2705,9 +3170,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "readme_maccabi_roadmap",
       "community": 4,
-      "norm_label": "maccabi data roadmap"
+      "norm_label": "maccabi data roadmap",
+      "community_name": "Maccabi Valid Prescriptions Fixture",
+      "id": "readme_maccabi_roadmap"
     },
     {
       "label": "health-mcp AI Agent Server",
@@ -2718,9 +3184,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "readme_health_mcp",
       "community": 6,
-      "norm_label": "health-mcp ai agent server"
+      "norm_label": "health-mcp ai agent server",
+      "community_name": "Israeli Health Scrapers Project Instructions",
+      "id": "readme_health_mcp"
     },
     {
       "label": "israeli-bank-scrapers Model",
@@ -2731,9 +3198,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "readme_israeli_bank_scrapers",
       "community": 6,
-      "norm_label": "israeli-bank-scrapers model"
+      "norm_label": "israeli-bank-scrapers model",
+      "community_name": "Israeli Health Scrapers Project Instructions",
+      "id": "readme_israeli_bank_scrapers"
     },
     {
       "label": "Maccabi Appointment Detail Fixture",
@@ -2744,9 +3212,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "test_fixtures_maccabi_appointment_detail_appointment_detail_fixture",
       "community": 4,
-      "norm_label": "maccabi appointment detail fixture"
+      "norm_label": "maccabi appointment detail fixture",
+      "community_name": "Maccabi Valid Prescriptions Fixture",
+      "id": "test_fixtures_maccabi_appointment_detail_appointment_detail_fixture"
     },
     {
       "label": "Provider Contact Title Disambiguation",
@@ -2757,9 +3226,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "test_fixtures_maccabi_appointment_detail_provider_contact_disambiguation",
       "community": 4,
-      "norm_label": "provider contact title disambiguation"
+      "norm_label": "provider contact title disambiguation",
+      "community_name": "Maccabi Valid Prescriptions Fixture",
+      "id": "test_fixtures_maccabi_appointment_detail_provider_contact_disambiguation"
     },
     {
       "label": "Appointment Visit Instructions",
@@ -2770,9 +3240,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "test_fixtures_maccabi_appointment_detail_visit_instructions",
       "community": 4,
-      "norm_label": "appointment visit instructions"
+      "norm_label": "appointment visit instructions",
+      "community_name": "Maccabi Valid Prescriptions Fixture",
+      "id": "test_fixtures_maccabi_appointment_detail_visit_instructions"
     },
     {
       "label": "Maccabi Future Appointments Fixture",
@@ -2783,9 +3254,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "test_fixtures_maccabi_appointments_future_appointments_fixture",
       "community": 4,
-      "norm_label": "maccabi future appointments fixture"
+      "norm_label": "maccabi future appointments fixture",
+      "community_name": "Maccabi Valid Prescriptions Fixture",
+      "id": "test_fixtures_maccabi_appointments_future_appointments_fixture"
     },
     {
       "label": "Timeline Appointment Row",
@@ -2796,9 +3268,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "test_fixtures_maccabi_appointments_timeline_appointment_row",
       "community": 4,
-      "norm_label": "timeline appointment row"
+      "norm_label": "timeline appointment row",
+      "community_name": "Maccabi Valid Prescriptions Fixture",
+      "id": "test_fixtures_maccabi_appointments_timeline_appointment_row"
     },
     {
       "label": "Required Appointment Start Filter",
@@ -2809,9 +3282,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "test_fixtures_maccabi_appointments_required_start_filter",
       "community": 4,
-      "norm_label": "required appointment start filter"
+      "norm_label": "required appointment start filter",
+      "community_name": "Maccabi Valid Prescriptions Fixture",
+      "id": "test_fixtures_maccabi_appointments_required_start_filter"
     },
     {
       "label": "Combined Specialty and Visit Type",
@@ -2822,9 +3296,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "test_fixtures_maccabi_appointments_combined_specialty_visit_type",
       "community": 4,
-      "norm_label": "combined specialty and visit type"
+      "norm_label": "combined specialty and visit type",
+      "community_name": "Maccabi Valid Prescriptions Fixture",
+      "id": "test_fixtures_maccabi_appointments_combined_specialty_visit_type"
     },
     {
       "label": "Absent Appointment List Location",
@@ -2835,9 +3310,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "test_fixtures_maccabi_appointments_absent_list_location",
       "community": 4,
-      "norm_label": "absent appointment list location"
+      "norm_label": "absent appointment list location",
+      "community_name": "Maccabi Valid Prescriptions Fixture",
+      "id": "test_fixtures_maccabi_appointments_absent_list_location"
     },
     {
       "label": "Maccabi Valid Prescriptions Fixture",
@@ -2848,9 +3324,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "test_fixtures_maccabi_medications_valid_prescriptions_fixture",
       "community": 4,
-      "norm_label": "maccabi valid prescriptions fixture"
+      "norm_label": "maccabi valid prescriptions fixture",
+      "community_name": "Maccabi Valid Prescriptions Fixture",
+      "id": "test_fixtures_maccabi_medications_valid_prescriptions_fixture"
     },
     {
       "label": "Prescription Card List Structure",
@@ -2861,9 +3338,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "test_fixtures_maccabi_medications_prescription_card_structure",
       "community": 4,
-      "norm_label": "prescription card list structure"
+      "norm_label": "prescription card list structure",
+      "community_name": "Maccabi Valid Prescriptions Fixture",
+      "id": "test_fixtures_maccabi_medications_prescription_card_structure"
     },
     {
       "label": "Standing Medication Badge Filter",
@@ -2874,9 +3352,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "test_fixtures_maccabi_medications_standing_medication_filter",
       "community": 4,
-      "norm_label": "standing medication badge filter"
+      "norm_label": "standing medication badge filter",
+      "community_name": "Maccabi Valid Prescriptions Fixture",
+      "id": "test_fixtures_maccabi_medications_standing_medication_filter"
     },
     {
       "label": "Invalid Prescription Row Filter",
@@ -2887,9 +3366,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "test_fixtures_maccabi_medications_invalid_prescription_row_filter",
       "community": 4,
-      "norm_label": "invalid prescription row filter"
+      "norm_label": "invalid prescription row filter",
+      "community_name": "Maccabi Valid Prescriptions Fixture",
+      "id": "test_fixtures_maccabi_medications_invalid_prescription_row_filter"
     },
     {
       "label": "Sanitized Prescription Values",
@@ -2900,9 +3380,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "test_fixtures_maccabi_medications_sanitized_medical_values",
       "community": 4,
-      "norm_label": "sanitized prescription values"
+      "norm_label": "sanitized prescription values",
+      "community_name": "Maccabi Valid Prescriptions Fixture",
+      "id": "test_fixtures_maccabi_medications_sanitized_medical_values"
     },
     {
       "label": "Maccabi Test Results Timeline Fixture",
@@ -2913,9 +3394,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "test_fixtures_maccabi_testresults_test_results_timeline_fixture",
       "community": 4,
-      "norm_label": "maccabi test results timeline fixture"
+      "norm_label": "maccabi test results timeline fixture",
+      "community_name": "Maccabi Valid Prescriptions Fixture",
+      "id": "test_fixtures_maccabi_testresults_test_results_timeline_fixture"
     },
     {
       "label": "Timeline and Execution Dates",
@@ -2926,9 +3408,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "test_fixtures_maccabi_testresults_timeline_and_execution_dates",
       "community": 4,
-      "norm_label": "timeline and execution dates"
+      "norm_label": "timeline and execution dates",
+      "community_name": "Maccabi Valid Prescriptions Fixture",
+      "id": "test_fixtures_maccabi_testresults_timeline_and_execution_dates"
     },
     {
       "label": "Test Result Category Subtype",
@@ -2939,9 +3422,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "test_fixtures_maccabi_testresults_result_category_subtype",
       "community": 4,
-      "norm_label": "test result category subtype"
+      "norm_label": "test result category subtype",
+      "community_name": "Maccabi Valid Prescriptions Fixture",
+      "id": "test_fixtures_maccabi_testresults_result_category_subtype"
     },
     {
       "label": "Missing Test Execution Date",
@@ -2952,9 +3436,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "test_fixtures_maccabi_testresults_missing_execution_date",
       "community": 4,
-      "norm_label": "missing test execution date"
+      "norm_label": "missing test execution date",
+      "community_name": "Maccabi Valid Prescriptions Fixture",
+      "id": "test_fixtures_maccabi_testresults_missing_execution_date"
     },
     {
       "label": "Sanitized Test Result Values",
@@ -2965,9 +3450,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "test_fixtures_maccabi_testresults_sanitized_test_result_values",
       "community": 4,
-      "norm_label": "sanitized test result values"
+      "norm_label": "sanitized test result values",
+      "community_name": "Maccabi Valid Prescriptions Fixture",
+      "id": "test_fixtures_maccabi_testresults_sanitized_test_result_values"
     }
   ],
   "links": [
@@ -3538,7 +4024,7 @@
       "context": "export",
       "confidence": "EXTRACTED",
       "source_file": "src/index.ts",
-      "source_location": "L64",
+      "source_location": "L66",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_index",
@@ -3606,7 +4092,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/definitions.ts",
-      "source_location": "L178",
+      "source_location": "L192",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_definitions",
@@ -3617,7 +4103,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/definitions.ts",
-      "source_location": "L171",
+      "source_location": "L184",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_definitions",
@@ -3760,7 +4246,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/definitions.ts",
-      "source_location": "L200",
+      "source_location": "L214",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_definitions",
@@ -3771,7 +4257,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/definitions.ts",
-      "source_location": "L194",
+      "source_location": "L208",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_definitions",
@@ -3804,7 +4290,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/definitions.ts",
-      "source_location": "L213",
+      "source_location": "L227",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_definitions",
@@ -3826,7 +4312,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/definitions.ts",
-      "source_location": "L187",
+      "source_location": "L201",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_definitions",
@@ -3853,6 +4339,28 @@
       "_origin": "ast",
       "source": "src_definitions",
       "target": "src_definitions_testresultschema",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/definitions.ts",
+      "source_location": "L178",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_definitions",
+      "target": "src_definitions_vaccination",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/definitions.ts",
+      "source_location": "L167",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_definitions",
+      "target": "src_definitions_vaccinationschema",
       "confidence_score": 1.0
     },
     {
@@ -4016,7 +4524,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "test/scrapers/maccabi.test.ts",
-      "source_location": "L18",
+      "source_location": "L20",
       "weight": 1.0,
       "_origin": "ast",
       "source": "test_scrapers_maccabi_test",
@@ -4088,7 +4596,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "test/scrapers/maccabi.test.ts",
-      "source_location": "L18",
+      "source_location": "L20",
       "weight": 1.0,
       "_origin": "ast",
       "source": "test_scrapers_maccabi_test",
@@ -4148,7 +4656,7 @@
       "context": "re-export",
       "confidence": "EXTRACTED",
       "source_file": "src/index.ts",
-      "source_location": "L47",
+      "source_location": "L48",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_index",
@@ -4172,7 +4680,7 @@
       "context": "re-export",
       "confidence": "EXTRACTED",
       "source_file": "src/index.ts",
-      "source_location": "L47",
+      "source_location": "L48",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_index",
@@ -4340,7 +4848,7 @@
       "context": "re-export",
       "confidence": "EXTRACTED",
       "source_file": "src/index.ts",
-      "source_location": "L47",
+      "source_location": "L48",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_index",
@@ -4364,7 +4872,7 @@
       "context": "re-export",
       "confidence": "EXTRACTED",
       "source_file": "src/index.ts",
-      "source_location": "L47",
+      "source_location": "L48",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_index",
@@ -4424,7 +4932,7 @@
       "context": "re-export",
       "confidence": "EXTRACTED",
       "source_file": "src/index.ts",
-      "source_location": "L47",
+      "source_location": "L48",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_index",
@@ -4496,7 +5004,7 @@
       "context": "re-export",
       "confidence": "EXTRACTED",
       "source_file": "src/index.ts",
-      "source_location": "L47",
+      "source_location": "L48",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_index",
@@ -4532,7 +5040,7 @@
       "context": "re-export",
       "confidence": "EXTRACTED",
       "source_file": "src/index.ts",
-      "source_location": "L47",
+      "source_location": "L48",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_index",
@@ -4556,7 +5064,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "test/scrapers/maccabi.test.ts",
-      "source_location": "L18",
+      "source_location": "L20",
       "weight": 1.0,
       "_origin": "ast",
       "source": "test_scrapers_maccabi_test",
@@ -4568,7 +5076,7 @@
       "context": "re-export",
       "confidence": "EXTRACTED",
       "source_file": "src/index.ts",
-      "source_location": "L47",
+      "source_location": "L48",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_index",
@@ -4592,7 +5100,7 @@
       "context": "generic_arg",
       "confidence": "EXTRACTED",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L450",
+      "source_location": "L602",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi_maccabiscraper_fetchmedications",
@@ -4616,7 +5124,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "test/scrapers/maccabi.test.ts",
-      "source_location": "L18",
+      "source_location": "L20",
       "weight": 1.0,
       "_origin": "ast",
       "source": "test_scrapers_maccabi_test",
@@ -4628,7 +5136,7 @@
       "context": "re-export",
       "confidence": "EXTRACTED",
       "source_file": "src/index.ts",
-      "source_location": "L47",
+      "source_location": "L48",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_index",
@@ -4652,7 +5160,7 @@
       "context": "generic_arg",
       "confidence": "EXTRACTED",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L485",
+      "source_location": "L637",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi_maccabiscraper_fetchappointments",
@@ -4676,7 +5184,7 @@
       "context": "re-export",
       "confidence": "EXTRACTED",
       "source_file": "src/index.ts",
-      "source_location": "L47",
+      "source_location": "L48",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_index",
@@ -4700,7 +5208,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "test/scrapers/maccabi.test.ts",
-      "source_location": "L18",
+      "source_location": "L20",
       "weight": 1.0,
       "_origin": "ast",
       "source": "test_scrapers_maccabi_test",
@@ -4712,7 +5220,7 @@
       "context": "re-export",
       "confidence": "EXTRACTED",
       "source_file": "src/index.ts",
-      "source_location": "L47",
+      "source_location": "L48",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_index",
@@ -4736,11 +5244,71 @@
       "context": "generic_arg",
       "confidence": "EXTRACTED",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L525",
+      "source_location": "L697",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi_maccabiscraper_fetchtestresults",
       "target": "src_definitions_testresult",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "re_exports",
+      "context": "re-export",
+      "confidence": "EXTRACTED",
+      "source_file": "src/index.ts",
+      "source_location": "L36",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_index",
+      "target": "src_definitions_vaccinationschema",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "test/scrapers/maccabi.test.ts",
+      "source_location": "L20",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "test_scrapers_maccabi_test",
+      "target": "src_definitions_vaccinationschema",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "re_exports",
+      "context": "re-export",
+      "confidence": "EXTRACTED",
+      "source_file": "src/index.ts",
+      "source_location": "L48",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_index",
+      "target": "src_definitions_vaccination",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/scrapers/maccabi.ts",
+      "source_location": "L4",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_scrapers_maccabi",
+      "target": "src_definitions_vaccination",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "context": "generic_arg",
+      "confidence": "EXTRACTED",
+      "source_file": "src/scrapers/maccabi.ts",
+      "source_location": "L676",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_scrapers_maccabi_maccabiscraper_fetchvaccinations",
+      "target": "src_definitions_vaccination",
       "confidence_score": 1.0
     },
     {
@@ -4772,7 +5340,7 @@
       "context": "re-export",
       "confidence": "EXTRACTED",
       "source_file": "src/index.ts",
-      "source_location": "L47",
+      "source_location": "L48",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_index",
@@ -4820,7 +5388,7 @@
       "context": "generic_arg",
       "confidence": "EXTRACTED",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L427",
+      "source_location": "L575",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi_maccabiscraper_fetchaccounts",
@@ -4856,7 +5424,7 @@
       "context": "re-export",
       "confidence": "EXTRACTED",
       "source_file": "src/index.ts",
-      "source_location": "L47",
+      "source_location": "L48",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_index",
@@ -4940,7 +5508,7 @@
       "context": "re-export",
       "confidence": "EXTRACTED",
       "source_file": "src/index.ts",
-      "source_location": "L47",
+      "source_location": "L48",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_index",
@@ -5207,7 +5775,7 @@
       "context": "export",
       "confidence": "EXTRACTED",
       "source_file": "src/index.ts",
-      "source_location": "L66",
+      "source_location": "L68",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_index",
@@ -5219,7 +5787,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L19",
+      "source_location": "L20",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi",
@@ -5303,7 +5871,7 @@
       "context": "re-export",
       "confidence": "EXTRACTED",
       "source_file": "src/index.ts",
-      "source_location": "L66",
+      "source_location": "L68",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_index",
@@ -5363,7 +5931,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L19",
+      "source_location": "L20",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi",
@@ -5376,7 +5944,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L176",
+      "source_location": "L316",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi_appointmentrowtoappointment",
@@ -5388,7 +5956,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L117",
+      "source_location": "L120",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi_prescriptionrowtomedication",
@@ -5400,10 +5968,22 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L280",
+      "source_location": "L428",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi_testresultrowtotestresult",
+      "target": "src_helpers_dates_textornull"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/scrapers/maccabi.ts",
+      "source_location": "L170",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_scrapers_maccabi_vaccinationrowtovaccination",
       "target": "src_helpers_dates_textornull"
     },
     {
@@ -5423,7 +6003,7 @@
       "context": "re-export",
       "confidence": "EXTRACTED",
       "source_file": "src/index.ts",
-      "source_location": "L66",
+      "source_location": "L68",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_index",
@@ -5435,7 +6015,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L19",
+      "source_location": "L20",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi",
@@ -5448,7 +6028,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L120",
+      "source_location": "L123",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi_prescriptionrowtomedication",
@@ -5460,10 +6040,22 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L281",
+      "source_location": "L429",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi_testresultrowtotestresult",
+      "target": "src_helpers_dates_parseisraelidate"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/scrapers/maccabi.ts",
+      "source_location": "L171",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_scrapers_maccabi_vaccinationrowtovaccination",
       "target": "src_helpers_dates_parseisraelidate"
     },
     {
@@ -5507,7 +6099,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L19",
+      "source_location": "L20",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi",
@@ -5520,7 +6112,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L173",
+      "source_location": "L313",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi_appointmentrowtoappointment",
@@ -5531,7 +6123,7 @@
       "context": "re-export",
       "confidence": "EXTRACTED",
       "source_file": "src/index.ts",
-      "source_location": "L66",
+      "source_location": "L68",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_index",
@@ -5555,7 +6147,7 @@
       "context": "re-export",
       "confidence": "EXTRACTED",
       "source_file": "src/index.ts",
-      "source_location": "L66",
+      "source_location": "L68",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_index",
@@ -5567,7 +6159,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L19",
+      "source_location": "L20",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi",
@@ -5580,7 +6172,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L121",
+      "source_location": "L124",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi_prescriptionrowtomedication",
@@ -5686,7 +6278,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L21",
+      "source_location": "L22",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi",
@@ -5770,7 +6362,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L21",
+      "source_location": "L22",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi",
@@ -5783,7 +6375,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L571",
+      "source_location": "L743",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi_maccabiscraper_fetchappointmentdetail",
@@ -5795,7 +6387,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L490",
+      "source_location": "L642",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi_maccabiscraper_fetchappointments",
@@ -5807,7 +6399,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L455",
+      "source_location": "L607",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi_maccabiscraper_fetchmedications",
@@ -5819,7 +6411,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L530",
+      "source_location": "L702",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi_maccabiscraper_fetchtestresults",
@@ -5831,7 +6423,19 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L394",
+      "source_location": "L680",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_scrapers_maccabi_maccabiscraper_fetchvaccinations",
+      "target": "src_helpers_debug_capturediagnostics"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/scrapers/maccabi.ts",
+      "source_location": "L542",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi_maccabiscraper_getloginoptions",
@@ -5920,7 +6524,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L20",
+      "source_location": "L21",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi",
@@ -5968,7 +6572,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L20",
+      "source_location": "L21",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi",
@@ -5981,7 +6585,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L584",
+      "source_location": "L756",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi_maccabiscraper_fetchappointmentdetail",
@@ -5993,7 +6597,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L489",
+      "source_location": "L641",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi_maccabiscraper_fetchappointments",
@@ -6005,7 +6609,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L454",
+      "source_location": "L606",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi_maccabiscraper_fetchmedications",
@@ -6017,7 +6621,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L529",
+      "source_location": "L701",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi_maccabiscraper_fetchtestresults",
@@ -6029,7 +6633,19 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L381",
+      "source_location": "L679",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_scrapers_maccabi_maccabiscraper_fetchvaccinations",
+      "target": "src_helpers_elements_elementexists"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/scrapers/maccabi.ts",
+      "source_location": "L529",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi_maccabiscraper_getloginoptions",
@@ -6076,7 +6692,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L20",
+      "source_location": "L21",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi",
@@ -6089,7 +6705,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L391",
+      "source_location": "L539",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi_maccabiscraper_getloginoptions",
@@ -6196,7 +6812,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L20",
+      "source_location": "L21",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi",
@@ -6209,7 +6825,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L388",
+      "source_location": "L536",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi_maccabiscraper_getloginoptions",
@@ -6256,7 +6872,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L20",
+      "source_location": "L21",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi",
@@ -6269,7 +6885,19 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L569",
+      "source_location": "L280",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_scrapers_maccabi_expandvaccinationdetails",
+      "target": "src_helpers_elements_waituntil"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/scrapers/maccabi.ts",
+      "source_location": "L741",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi_maccabiscraper_fetchappointmentdetail",
@@ -6281,7 +6909,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L494",
+      "source_location": "L646",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi_maccabiscraper_fetchappointments",
@@ -6293,7 +6921,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L462",
+      "source_location": "L614",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi_maccabiscraper_fetchmedications",
@@ -6305,7 +6933,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L536",
+      "source_location": "L708",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi_maccabiscraper_fetchtestresults",
@@ -6317,7 +6945,19 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L379",
+      "source_location": "L683",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_scrapers_maccabi_maccabiscraper_fetchvaccinations",
+      "target": "src_helpers_elements_waituntil"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/scrapers/maccabi.ts",
+      "source_location": "L527",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi_maccabiscraper_getloginoptions",
@@ -6384,7 +7024,7 @@
       "context": "export",
       "confidence": "EXTRACTED",
       "source_file": "src/index.ts",
-      "source_location": "L68",
+      "source_location": "L70",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_index",
@@ -6420,7 +7060,7 @@
       "context": "re-export",
       "confidence": "EXTRACTED",
       "source_file": "src/index.ts",
-      "source_location": "L68",
+      "source_location": "L70",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_index",
@@ -6480,7 +7120,7 @@
       "context": "re-export",
       "confidence": "EXTRACTED",
       "source_file": "src/index.ts",
-      "source_location": "L68",
+      "source_location": "L70",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_index",
@@ -6492,7 +7132,7 @@
       "context": "re-export",
       "confidence": "EXTRACTED",
       "source_file": "src/index.ts",
-      "source_location": "L68",
+      "source_location": "L70",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_index",
@@ -6594,7 +7234,7 @@
       "context": "export",
       "confidence": "EXTRACTED",
       "source_file": "src/index.ts",
-      "source_location": "L67",
+      "source_location": "L69",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_index",
@@ -6642,7 +7282,7 @@
       "context": "re-export",
       "confidence": "EXTRACTED",
       "source_file": "src/index.ts",
-      "source_location": "L67",
+      "source_location": "L69",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_index",
@@ -6678,7 +7318,7 @@
       "context": "re-export",
       "confidence": "EXTRACTED",
       "source_file": "src/index.ts",
-      "source_location": "L67",
+      "source_location": "L69",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_index",
@@ -6738,7 +7378,7 @@
       "context": "re-export",
       "confidence": "EXTRACTED",
       "source_file": "src/index.ts",
-      "source_location": "L67",
+      "source_location": "L69",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_index",
@@ -7244,7 +7884,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L12",
+      "source_location": "L13",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi",
@@ -7268,7 +7908,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "test/scrapers/maccabi.test.ts",
-      "source_location": "L13",
+      "source_location": "L15",
       "weight": 1.0,
       "_origin": "ast",
       "source": "test_scrapers_maccabi_test",
@@ -7280,7 +7920,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L12",
+      "source_location": "L13",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi",
@@ -7304,7 +7944,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "test/scrapers/maccabi.test.ts",
-      "source_location": "L13",
+      "source_location": "L15",
       "weight": 1.0,
       "_origin": "ast",
       "source": "test_scrapers_maccabi_test",
@@ -7340,7 +7980,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L12",
+      "source_location": "L13",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi",
@@ -7400,7 +8040,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L12",
+      "source_location": "L13",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi",
@@ -7412,7 +8052,7 @@
       "context": "return_type",
       "confidence": "EXTRACTED",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L360",
+      "source_location": "L508",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi_maccabiscraper_getloginoptions",
@@ -7424,7 +8064,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "test/scrapers/maccabi.test.ts",
-      "source_location": "L13",
+      "source_location": "L15",
       "weight": 1.0,
       "_origin": "ast",
       "source": "test_scrapers_maccabi_test",
@@ -7436,7 +8076,7 @@
       "context": "return_type",
       "confidence": "EXTRACTED",
       "source_file": "test/scrapers/maccabi.test.ts",
-      "source_location": "L28",
+      "source_location": "L31",
       "weight": 1.0,
       "_origin": "ast",
       "source": "test_scrapers_maccabi_test_testablemaccabiscraper_loginoptions",
@@ -7484,7 +8124,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "test/scrapers/maccabi.test.ts",
-      "source_location": "L13",
+      "source_location": "L15",
       "weight": 1.0,
       "_origin": "ast",
       "source": "test_scrapers_maccabi_test",
@@ -7642,7 +8282,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L12",
+      "source_location": "L13",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi",
@@ -7654,7 +8294,7 @@
       "context": "type",
       "confidence": "EXTRACTED",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L359",
+      "source_location": "L507",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi_maccabiscraper",
@@ -8063,7 +8703,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L18",
+      "source_location": "L19",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi",
@@ -8133,7 +8773,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L18",
+      "source_location": "L19",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi",
@@ -8419,7 +9059,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L172",
+      "source_location": "L312",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi",
@@ -8430,7 +9070,18 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L335",
+      "source_location": "L259",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_scrapers_maccabi",
+      "target": "src_scrapers_maccabi_expandvaccinationdetails",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/scrapers/maccabi.ts",
+      "source_location": "L483",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi",
@@ -8441,7 +9092,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L359",
+      "source_location": "L507",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi",
@@ -8452,7 +9103,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L113",
+      "source_location": "L116",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi",
@@ -8463,7 +9114,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L231",
+      "source_location": "L375",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi",
@@ -8474,7 +9125,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L200",
+      "source_location": "L340",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi",
@@ -8485,7 +9136,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L155",
+      "source_location": "L295",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi",
@@ -8496,7 +9147,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L96",
+      "source_location": "L99",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi",
@@ -8507,7 +9158,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L263",
+      "source_location": "L411",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi",
@@ -8518,7 +9169,18 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L138",
+      "source_location": "L161",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_scrapers_maccabi",
+      "target": "src_scrapers_maccabi_scrapedvaccinationrow",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/scrapers/maccabi.ts",
+      "source_location": "L141",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi",
@@ -8529,7 +9191,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L303",
+      "source_location": "L451",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi",
@@ -8540,7 +9202,18 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L46",
+      "source_location": "L194",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_scrapers_maccabi",
+      "target": "src_scrapers_maccabi_scrapevaccinationrows",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/scrapers/maccabi.ts",
+      "source_location": "L48",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi",
@@ -8551,7 +9224,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L279",
+      "source_location": "L427",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi",
@@ -8562,7 +9235,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L36",
+      "source_location": "L37",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi",
@@ -8570,13 +9243,24 @@
       "confidence_score": 1.0
     },
     {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/scrapers/maccabi.ts",
+      "source_location": "L169",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_scrapers_maccabi",
+      "target": "src_scrapers_maccabi_vaccinationrowtovaccination",
+      "confidence_score": 1.0
+    },
+    {
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L29",
+      "source_location": "L30",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "src_scrapers_maccabi_rationale_29",
+      "source": "src_scrapers_maccabi_rationale_30",
       "target": "src_scrapers_maccabi",
       "confidence_score": 1.0
     },
@@ -8621,7 +9305,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L466",
+      "source_location": "L618",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi_maccabiscraper_fetchmedications",
@@ -8657,7 +9341,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L465",
+      "source_location": "L617",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi_maccabiscraper_fetchmedications",
@@ -8670,7 +9354,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L146",
+      "source_location": "L153",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi_scrapeprescriptionrows",
@@ -8697,6 +9381,126 @@
       "weight": 1.0,
       "_origin": "ast",
       "source": "test_scrapers_maccabi_test",
+      "target": "src_scrapers_maccabi_scrapedvaccinationrow",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/scrapers/maccabi.ts",
+      "source_location": "L686",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_scrapers_maccabi_maccabiscraper_fetchvaccinations",
+      "target": "src_scrapers_maccabi_vaccinationrowtovaccination",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "test/scrapers/maccabi-dom.test.ts",
+      "source_location": "L7",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "test_scrapers_maccabi_dom_test",
+      "target": "src_scrapers_maccabi_vaccinationrowtovaccination",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "test/scrapers/maccabi.test.ts",
+      "source_location": "L4",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "test_scrapers_maccabi_test",
+      "target": "src_scrapers_maccabi_vaccinationrowtovaccination",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/scrapers/maccabi.ts",
+      "source_location": "L685",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_scrapers_maccabi_maccabiscraper_fetchvaccinations",
+      "target": "src_scrapers_maccabi_scrapevaccinationrows",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/scrapers/maccabi.ts",
+      "source_location": "L209",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_scrapers_maccabi_scrapevaccinationrows",
+      "target": "src_scrapers_maccabi_scrapedtestresultrow"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "test/scrapers/maccabi-dom.test.ts",
+      "source_location": "L7",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "test_scrapers_maccabi_dom_test",
+      "target": "src_scrapers_maccabi_scrapevaccinationrows",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/scrapers/maccabi.ts",
+      "source_location": "L273",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_scrapers_maccabi_expandvaccinationdetails",
+      "target": "src_scrapers_maccabi_scrapedtestresultrow"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/scrapers/maccabi.ts",
+      "source_location": "L684",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_scrapers_maccabi_maccabiscraper_fetchvaccinations",
+      "target": "src_scrapers_maccabi_expandvaccinationdetails",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "test/scrapers/maccabi-dom.test.ts",
+      "source_location": "L7",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "test_scrapers_maccabi_dom_test",
+      "target": "src_scrapers_maccabi_expandvaccinationdetails",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "test/scrapers/maccabi.test.ts",
+      "source_location": "L4",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "test_scrapers_maccabi_test",
       "target": "src_scrapers_maccabi_scrapedappointmentrow",
       "confidence_score": 1.0
     },
@@ -8705,7 +9509,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L509",
+      "source_location": "L661",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi_maccabiscraper_fetchappointments",
@@ -8741,7 +9545,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L496",
+      "source_location": "L648",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi_maccabiscraper_fetchappointments",
@@ -8754,7 +9558,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L211",
+      "source_location": "L355",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi_scrapeappointmentrows",
@@ -8777,7 +9581,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L586",
+      "source_location": "L758",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi_maccabiscraper_fetchappointmentdetail",
@@ -8802,7 +9606,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L315",
+      "source_location": "L463",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi_scrapetestresultrows",
@@ -8825,7 +9629,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L540",
+      "source_location": "L712",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi_maccabiscraper_fetchtestresults",
@@ -8861,7 +9665,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L539",
+      "source_location": "L711",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi_maccabiscraper_fetchtestresults",
@@ -8885,7 +9689,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L537",
+      "source_location": "L709",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi_maccabiscraper_fetchtestresults",
@@ -8908,7 +9712,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L427",
+      "source_location": "L575",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi_maccabiscraper",
@@ -8919,7 +9723,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L563",
+      "source_location": "L735",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi_maccabiscraper",
@@ -8930,7 +9734,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L485",
+      "source_location": "L637",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi_maccabiscraper",
@@ -8941,7 +9745,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L450",
+      "source_location": "L602",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi_maccabiscraper",
@@ -8952,7 +9756,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L525",
+      "source_location": "L697",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi_maccabiscraper",
@@ -8963,7 +9767,18 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L360",
+      "source_location": "L676",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_scrapers_maccabi_maccabiscraper",
+      "target": "src_scrapers_maccabi_maccabiscraper_fetchvaccinations",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/scrapers/maccabi.ts",
+      "source_location": "L508",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi_maccabiscraper",
@@ -8987,7 +9802,7 @@
       "context": "type",
       "confidence": "EXTRACTED",
       "source_file": "test/scrapers/maccabi.test.ts",
-      "source_location": "L27",
+      "source_location": "L30",
       "weight": 1.0,
       "_origin": "ast",
       "source": "test_scrapers_maccabi_test_testablemaccabiscraper",
@@ -8999,7 +9814,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L439",
+      "source_location": "L587",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi_maccabiscraper_fetchaccounts",
@@ -9011,7 +9826,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L435",
+      "source_location": "L583",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi_maccabiscraper_fetchaccounts",
@@ -9023,7 +9838,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L443",
+      "source_location": "L591",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi_maccabiscraper_fetchaccounts",
@@ -9035,7 +9850,19 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "src/scrapers/maccabi.ts",
-      "source_location": "L503",
+      "source_location": "L595",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_scrapers_maccabi_maccabiscraper_fetchaccounts",
+      "target": "src_scrapers_maccabi_maccabiscraper_fetchvaccinations",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/scrapers/maccabi.ts",
+      "source_location": "L655",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_scrapers_maccabi_maccabiscraper_fetchappointments",
@@ -9124,7 +9951,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "test/scrapers/maccabi-dom.test.ts",
-      "source_location": "L17",
+      "source_location": "L20",
       "weight": 1.0,
       "_origin": "ast",
       "source": "test_scrapers_maccabi_dom_test",
@@ -9148,7 +9975,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "test/scrapers/maccabi-dom.test.ts",
-      "source_location": "L17",
+      "source_location": "L20",
       "weight": 1.0,
       "_origin": "ast",
       "source": "test_scrapers_maccabi_dom_test",
@@ -9192,7 +10019,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "test/scrapers/maccabi-dom.test.ts",
-      "source_location": "L32",
+      "source_location": "L35",
       "weight": 1.0,
       "_origin": "ast",
       "source": "test_scrapers_maccabi_dom_test",
@@ -9203,7 +10030,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "test/scrapers/maccabi-dom.test.ts",
-      "source_location": "L31",
+      "source_location": "L34",
       "weight": 1.0,
       "_origin": "ast",
       "source": "test_scrapers_maccabi_dom_test",
@@ -9214,7 +10041,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "test/scrapers/maccabi-dom.test.ts",
-      "source_location": "L30",
+      "source_location": "L33",
       "weight": 1.0,
       "_origin": "ast",
       "source": "test_scrapers_maccabi_dom_test",
@@ -9225,7 +10052,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "test/scrapers/maccabi-dom.test.ts",
-      "source_location": "L29",
+      "source_location": "L32",
       "weight": 1.0,
       "_origin": "ast",
       "source": "test_scrapers_maccabi_dom_test",
@@ -9236,7 +10063,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "test/scrapers/maccabi-dom.test.ts",
-      "source_location": "L35",
+      "source_location": "L39",
       "weight": 1.0,
       "_origin": "ast",
       "source": "test_scrapers_maccabi_dom_test",
@@ -9247,7 +10074,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "test/scrapers/maccabi-dom.test.ts",
-      "source_location": "L33",
+      "source_location": "L36",
       "weight": 1.0,
       "_origin": "ast",
       "source": "test_scrapers_maccabi_dom_test",
@@ -9257,8 +10084,19 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
+      "source_file": "test/scrapers/maccabi-dom.test.ts",
+      "source_location": "L37",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "test_scrapers_maccabi_dom_test",
+      "target": "test_scrapers_maccabi_dom_test_vaccinationsfixture",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
       "source_file": "test/scrapers/maccabi.test.ts",
-      "source_location": "L105",
+      "source_location": "L108",
       "weight": 1.0,
       "_origin": "ast",
       "source": "test_scrapers_maccabi_test",
@@ -9269,7 +10107,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "test/scrapers/maccabi.test.ts",
-      "source_location": "L25",
+      "source_location": "L28",
       "weight": 1.0,
       "_origin": "ast",
       "source": "test_scrapers_maccabi_test",
@@ -9280,7 +10118,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "test/scrapers/maccabi.test.ts",
-      "source_location": "L48",
+      "source_location": "L51",
       "weight": 1.0,
       "_origin": "ast",
       "source": "test_scrapers_maccabi_test",
@@ -9291,7 +10129,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "test/scrapers/maccabi.test.ts",
-      "source_location": "L27",
+      "source_location": "L30",
       "weight": 1.0,
       "_origin": "ast",
       "source": "test_scrapers_maccabi_test",
@@ -9302,7 +10140,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "test/scrapers/maccabi.test.ts",
-      "source_location": "L173",
+      "source_location": "L176",
       "weight": 1.0,
       "_origin": "ast",
       "source": "test_scrapers_maccabi_test",
@@ -9313,7 +10151,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "test/scrapers/maccabi.test.ts",
-      "source_location": "L28",
+      "source_location": "L31",
       "weight": 1.0,
       "_origin": "ast",
       "source": "test_scrapers_maccabi_test_testablemaccabiscraper",
@@ -9588,6 +10426,116 @@
       "_origin": "ast",
       "source": "tsconfig_exclude",
       "target": "tsconfig_json_ref_dist",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/CLAUDE.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "claude_claude",
+      "target": "claude_claude_claude_md",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/CLAUDE.md",
+      "source_location": "L7",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "claude_claude_claude_md",
+      "target": "claude_claude_codebase_intelligence_for_israeli_health_scrapers_repowise",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/CLAUDE.md",
+      "source_location": "L31",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "claude_claude_codebase_intelligence_for_israeli_health_scrapers_repowise",
+      "target": "claude_claude_architecture",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/CLAUDE.md",
+      "source_location": "L58",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "claude_claude_codebase_intelligence_for_israeli_health_scrapers_repowise",
+      "target": "claude_claude_code_health",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/CLAUDE.md",
+      "source_location": "L67",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "claude_claude_codebase_intelligence_for_israeli_health_scrapers_repowise",
+      "target": "claude_claude_commands",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/CLAUDE.md",
+      "source_location": "L43",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "claude_claude_codebase_intelligence_for_israeli_health_scrapers_repowise",
+      "target": "claude_claude_entry_points",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/CLAUDE.md",
+      "source_location": "L51",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "claude_claude_codebase_intelligence_for_israeli_health_scrapers_repowise",
+      "target": "claude_claude_files_that_need_care_bug_fix_history_first_then_churn_check_get_risk_before_editing",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/CLAUDE.md",
+      "source_location": "L10",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "claude_claude_codebase_intelligence_for_israeli_health_scrapers_repowise",
+      "target": "claude_claude_how_to_work_in_this_repo",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/CLAUDE.md",
+      "source_location": "L35",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "claude_claude_codebase_intelligence_for_israeli_health_scrapers_repowise",
+      "target": "claude_claude_key_modules",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/CLAUDE.md",
+      "source_location": "L16",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "claude_claude_codebase_intelligence_for_israeli_health_scrapers_repowise",
+      "target": "claude_claude_tools",
       "confidence_score": 1.0
     },
     {
@@ -10206,5 +11154,5 @@
       "source_file": "test/fixtures/maccabi/medications.html"
     }
   ],
-  "built_at_commit": "94281bbf45892b233f48cb697afd46b593322a6c"
+  "built_at_commit": "121c4ddb6183f126cd4c1326b11ef70f909a99dd"
 }
