@@ -87,7 +87,19 @@ export interface ScraperOptions {
   onProgress?: (companyId: HealthFundId, type: ScraperProgressTypes) => void;
 }
 
-export type FetchTarget = 'medications' | 'appointments' | 'messages' | 'testResults' | 'vaccinations';
+/**
+ * The fetchable parts of an account. A runtime array, not just a type, so callers
+ * outside this module (the calibration tool's manifest) can enumerate the closed set
+ * instead of hand-duplicating it.
+ */
+export const FETCH_TARGETS = [
+  'medications',
+  'appointments',
+  'messages',
+  'testResults',
+  'vaccinations',
+] as const;
+export type FetchTarget = (typeof FETCH_TARGETS)[number];
 
 /* -------------------------------------------------------------------------- */
 /* The unified data model                                                      */

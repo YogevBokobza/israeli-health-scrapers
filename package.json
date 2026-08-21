@@ -29,9 +29,10 @@
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "prepare": "npm run build",
-    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "typecheck": "tsc -p tsconfig.json --noEmit && tsc -p tools/tsconfig.json --noEmit",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "calibrate": "tsx tools/calibrate/cli.ts"
   },
   "dependencies": {
     "playwright": "^1.50.0",
@@ -39,6 +40,7 @@
   },
   "devDependencies": {
     "@types/node": "^22.10.0",
+    "tsx": "^4.19.0",
     "typescript": "^5.7.0",
     "vitest": "^2.1.0"
   }
