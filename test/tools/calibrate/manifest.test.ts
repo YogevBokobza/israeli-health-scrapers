@@ -41,6 +41,11 @@ describe('buildManifestEntry', () => {
       url: 'https://example.test/medications',
       capturedAt: '2026-08-21T10:00:00.000Z',
       provisional: false,
+      role: {
+        kind: 'before-after',
+        position: 'after',
+        counterpartLabel: 'medications--collapsed',
+      },
     });
   });
 
@@ -53,6 +58,7 @@ describe('buildManifestEntry', () => {
     });
 
     expect(entry.provisional).toBe(false);
+    expect(entry.role).toEqual({ kind: 'ordered-login', position: 1 });
   });
 
   it('marks a target outside the known set as provisional', () => {
@@ -64,6 +70,50 @@ describe('buildManifestEntry', () => {
     });
 
     expect(entry.provisional).toBe(true);
+    expect(entry.role).toEqual({
+      kind: 'before-after',
+      position: 'before',
+      counterpartLabel: 'form17--expanded',
+    });
+  });
+
+  it.each([
+    ['collapsed', 'before', 'vaccinations--expanded'],
+    ['expanded', 'after', 'vaccinations--collapsed'],
+  ] as const)('links the %s state into a before/after pair', (state, position, counterpartLabel) => {
+    const entry = buildManifestEntry({
+      label: `vaccinations--${state}`,
+      target: 'vaccinations',
+      state,
+      url: 'https://example.test/vaccinations',
+    });
+
+    expect(entry.role).toEqual({ kind: 'before-after', position, counterpartLabel });
+  });
+
+  it.each([
+    ['list', 'list', 'appointments--detail'],
+    ['detail', 'detail', 'appointments--list'],
+  ] as const)('links the %s state into a list/detail pair', (state, position, counterpartLabel) => {
+    const entry = buildManifestEntry({
+      label: `appointments--${state}`,
+      target: 'appointments',
+      state,
+      url: 'https://example.test/appointments',
+    });
+
+    expect(entry.role).toEqual({ kind: 'list-detail', position, counterpartLabel });
+  });
+
+  it('records a custom non-login state as standalone', () => {
+    const entry = buildManifestEntry({
+      label: 'medications--archived',
+      target: 'medications',
+      state: 'archived',
+      url: 'https://example.test/medications',
+    });
+
+    expect(entry.role).toEqual({ kind: 'standalone' });
   });
 
   it('defaults capturedAt to now when not given', () => {
@@ -120,5 +170,44 @@ describe('mergeManifestEntry', () => {
     expect(merged).toContainEqual(recaptured);
     expect(merged).not.toContainEqual(first);
     expect(merged).toContainEqual(second);
+  });
+
+  it('orders login screens by first capture and keeps that order when one is recaptured', () => {
+    const idScreen = buildManifestEntry({
+      label: 'login--id-screen',
+      target: 'login',
+      state: 'id-screen',
+      url: 'https://example.test/login/id',
+      capturedAt: '2026-08-21T10:00:00.000Z',
+    });
+    const otpScreen = buildManifestEntry({
+      label: 'login--otp-screen',
+      target: 'login',
+      state: 'otp-screen',
+      url: 'https://example.test/login/otp',
+      capturedAt: '2026-08-21T10:01:00.000Z',
+    });
+
+    const captured = mergeManifestEntry(mergeManifestEntry([], idScreen), otpScreen);
+
+    expect(captured.map((entry) => entry.role)).toEqual([
+      { kind: 'ordered-login', position: 1 },
+      { kind: 'ordered-login', position: 2 },
+    ]);
+
+    const recapturedIdScreen = buildManifestEntry({
+      label: 'login--id-screen',
+      target: 'login',
+      state: 'id-screen',
+      url: 'https://example.test/login/id?retry=1',
+      capturedAt: '2026-08-21T10:02:00.000Z',
+    });
+    const recaptured = mergeManifestEntry(captured, recapturedIdScreen);
+
+    expect(recaptured.map((entry) => entry.label)).toEqual(['login--id-screen', 'login--otp-screen']);
+    expect(recaptured.map((entry) => entry.role)).toEqual([
+      { kind: 'ordered-login', position: 1 },
+      { kind: 'ordered-login', position: 2 },
+    ]);
   });
 });

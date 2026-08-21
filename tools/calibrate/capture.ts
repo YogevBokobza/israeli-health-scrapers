@@ -38,7 +38,8 @@ export async function captureSnapshot(page: Page, request: CaptureRequest): Prom
   await fs.writeFile(path.join(dir, `${label}.url.txt`), url, { encoding: 'utf8', mode: 0o600 });
 
   const entry = buildManifestEntry({ label, target: request.target, state: request.state, url });
-  await writeManifest(dir, mergeManifestEntry(await readManifest(dir), entry));
+  const manifest = mergeManifestEntry(await readManifest(dir), entry);
+  await writeManifest(dir, manifest);
 
-  return entry;
+  return manifest.find((manifestEntry) => manifestEntry.label === label)!;
 }

@@ -135,10 +135,12 @@ strengthens them without touching test code.
 
 `npm run calibrate -- <fund>` opens a headed browser scoped to a fund, with a floating
 capture button on the page itself — pick a target (a `FetchTarget`, `login`, or a
-free-text provisional slug like `form17`) and a state (`collapsed`/`expanded`/`list`/
-`detail`), then click Capture. The button survives SPA route changes, so one session can
+free-text provisional slug like `form17`) and enter a state (with `collapsed`/`expanded`/
+`list`/`detail` suggestions, or a distinct label such as `otp-screen`), then click Capture.
+The button survives SPA route changes, so one session can
 capture every target — login screens included — without leaving the browser. Each click
-writes a labelled snapshot (stripped HTML + screenshot + URL + a manifest entry) to
+writes a labelled snapshot (stripped HTML + screenshot + URL + a manifest entry whose
+role links before/after and list/detail pairs or orders login screens) to
 gitignored `data/captures/<fund>/`. The tool reuses a stored session when one exists;
 otherwise log in by hand — it never depends on that fund's scraper code existing. See
 `docs/adr/0001-user-driven-capture-and-agent-reconstruction.md` and `CONTEXT.md` for the
