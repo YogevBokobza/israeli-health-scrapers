@@ -64,13 +64,16 @@ describe.skipIf(!browserAvailable)('binding resolver', () => {
     const selector = '[data-testid="missing-prescription-row"]';
     const resolution = await resolveSnapshotBindings(page, medicationsFixture, {
       bindings: [{ field: 'rows', selector, valueFromResult: (rows) => rows }],
-      parse: (snapshotPage) => snapshotPage.locator(selector).allTextContents(),
+      parse: async (fixturePage) => {
+        expect(await fixturePage.locator('[data-testid="prescription-row"]').count()).toBe(4);
+        return ['parser fallback'];
+      },
     });
 
     expect(resolution).toEqual({
       status: 'resolved',
-      bindings: [{ field: 'rows', selector, matchCount: 0, value: [] }],
-      result: [],
+      bindings: [{ field: 'rows', selector, matchCount: 0, value: null }],
+      result: ['parser fallback'],
     });
   });
 

@@ -16,7 +16,8 @@ export interface ResolvedBinding<TField extends string = string> {
   field: TField;
   selector: string;
   matchCount: number;
-  value: unknown;
+  /** Null is the explicit drift signal when `selector` matches nothing. */
+  value: unknown | null;
 }
 
 export type BindingResolution<TResult, TField extends string = string> =
@@ -39,11 +40,12 @@ export async function resolveSnapshotBindings<
   const result = await definition.parse(page);
   const bindings = await Promise.all(
     definition.bindings.map(async (binding): Promise<ResolvedBinding<TField>> => {
+      const matchCount = await page.locator(binding.selector).count();
       return {
         field: binding.field,
         selector: binding.selector,
-        matchCount: await page.locator(binding.selector).count(),
-        value: binding.valueFromResult(result),
+        matchCount,
+        value: matchCount === 0 ? null : binding.valueFromResult(result),
       };
     }),
   );

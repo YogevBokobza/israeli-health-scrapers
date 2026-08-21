@@ -2572,7 +2572,7 @@
       "label": "BindingResolution",
       "file_type": "code",
       "source_file": "tools/calibrate/binding-resolver.ts",
-      "source_location": "L22",
+      "source_location": "L23",
       "_origin": "ast",
       "id": "tools_calibrate_binding_resolver_bindingresolution",
       "community": 13,
@@ -2583,7 +2583,7 @@
       "label": "resolveSnapshotBindings()",
       "file_type": "code",
       "source_file": "tools/calibrate/binding-resolver.ts",
-      "source_location": "L27",
+      "source_location": "L28",
       "_origin": "ast",
       "id": "tools_calibrate_binding_resolver_resolvesnapshotbindings",
       "community": 13,
@@ -11987,7 +11987,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "tools/calibrate/binding-resolver.ts",
-      "source_location": "L22",
+      "source_location": "L23",
       "weight": 1.0,
       "_origin": "ast",
       "source": "tools_calibrate_binding_resolver",
@@ -12009,7 +12009,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "tools/calibrate/binding-resolver.ts",
-      "source_location": "L27",
+      "source_location": "L28",
       "weight": 1.0,
       "_origin": "ast",
       "source": "tools_calibrate_binding_resolver",
@@ -14235,5 +14235,5 @@
       "source_file": "test/fixtures/maccabi/medications.html"
     }
   ],
-  "built_at_commit": "c7c9dfbfa564a3648ca7b8079126039ce66879d3"
+  "built_at_commit": "e42e098086358d09ccafd478585b702e88d60701"
 }
