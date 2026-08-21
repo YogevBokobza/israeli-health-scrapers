@@ -13,6 +13,7 @@ import {
 import {
   BaseScraperWithBrowser,
   LoginResults,
+  matchLoginResult,
   type LoginOptions,
   type LoginField,
 } from './base-scraper-with-browser.js';
@@ -98,6 +99,9 @@ const selectors = {
   testResultRow: ['[role="listitem"][data-hook="TimeLineItem"]'],
   vaccinationRow: ['[data-testid="vaccination-row"]'],
 } as const;
+
+const firstSelector = (selectorList: readonly string[]): string => selectorList[0]!;
+const anySelector = (selectorList: readonly string[]): string => selectorList.join(', ');
 
 /* -------------------------------------------------------------------------- */
 /* Pure parsing — exported so it can be tested without a browser or an account */
@@ -304,6 +308,27 @@ export async function scrapeVaccinationRows(page: Page): Promise<ScrapedVaccinat
   }, selectors.vaccinationRow[0]);
 }
 
+export const maccabiVaccinationBindingDefinition = {
+  bindings: [
+    {
+      field: 'rows',
+      selector: firstSelector(selectors.vaccinationRow),
+      valueFromResult: (rows: ScrapedVaccinationRow[]) => rows,
+    },
+    {
+      field: 'vaccineName',
+      selector: `${firstSelector(selectors.vaccinationRow)} [data-hook="VaccineName"], ${firstSelector(selectors.vaccinationRow)} [class*="VaccinationsList-TimelineRow-TimelineRow__timlinearrowRow"] > div > div`,
+      valueFromResult: (rows: ScrapedVaccinationRow[]) => rows.map((row) => row.vaccineName),
+    },
+    {
+      field: 'administeredOn',
+      selector: `${firstSelector(selectors.vaccinationRow)} [data-hook="VaccinationDate"], ${firstSelector(selectors.vaccinationRow)} [data-hook="TimeLineDate"], ${firstSelector(selectors.vaccinationRow)} [class*="date" i]`,
+      valueFromResult: (rows: ScrapedVaccinationRow[]) => rows.map((row) => row.administeredOn),
+    },
+  ],
+  parse: scrapeVaccinationRows,
+} as const;
+
 /** Opens each vaccine group so every dated administration is present in the DOM. */
 export async function expandVaccinationDetails(page: Page): Promise<void> {
   const arrowSelector =
@@ -420,6 +445,32 @@ export async function scrapeAppointmentRows(page: Page): Promise<ScrapedAppointm
   }, selectors.appointmentRow[0]);
 }
 
+export const maccabiAppointmentBindingDefinition = {
+  bindings: [
+    {
+      field: 'rows',
+      selector: firstSelector(selectors.appointmentRow),
+      valueFromResult: (rows: ScrapedAppointmentRow[]) => rows,
+    },
+    {
+      field: 'dateTime',
+      selector: `${firstSelector(selectors.appointmentRow)} [data-hook="TimeLineDate"]`,
+      valueFromResult: (rows: ScrapedAppointmentRow[]) => rows.map(({ date, time }) => ({ date, time })),
+    },
+    {
+      field: 'doctorName',
+      selector: `${firstSelector(selectors.appointmentRow)} [class*="providerName"]`,
+      valueFromResult: (rows: ScrapedAppointmentRow[]) => rows.map((row) => row.doctorName),
+    },
+    {
+      field: 'specialty',
+      selector: `${firstSelector(selectors.appointmentRow)} [class*="providerServiceType"]`,
+      valueFromResult: (rows: ScrapedAppointmentRow[]) => rows.map((row) => row.specialty),
+    },
+  ],
+  parse: scrapeAppointmentRows,
+} as const;
+
 /** Reads the clinic address and pre-visit instructions off an appointment's detail page. */
 export async function scrapeAppointmentDetail(
   page: Page,
@@ -455,6 +506,22 @@ export async function scrapeAppointmentDetail(
     },
   );
 }
+
+export const maccabiAppointmentDetailBindingDefinition = {
+  bindings: [
+    {
+      field: 'clinic',
+      selector: firstSelector(selectors.appointmentAddressItem),
+      valueFromResult: (result: Awaited<ReturnType<typeof scrapeAppointmentDetail>>) => result.clinic,
+    },
+    {
+      field: 'instructions',
+      selector: firstSelector(selectors.appointmentInstructionItem),
+      valueFromResult: (result: Awaited<ReturnType<typeof scrapeAppointmentDetail>>) => result.instructions,
+    },
+  ],
+  parse: scrapeAppointmentDetail,
+} as const;
 
 /** One test-result row as read straight from the DOM, before interpretation. */
 export interface ScrapedTestResultRow {
@@ -527,6 +594,71 @@ export async function scrapeTestResultRows(page: Page): Promise<ScrapedTestResul
     });
   }, selectors.testResultRow[0]);
 }
+
+export const maccabiTestResultBindingDefinition = {
+  bindings: [
+    {
+      field: 'rows',
+      selector: firstSelector(selectors.testResultRow),
+      valueFromResult: (rows: ScrapedTestResultRow[]) => rows,
+    },
+    {
+      field: 'testName',
+      selector: `${firstSelector(selectors.testResultRow)} [data-hook="HeaderTimeLineItem"], ${firstSelector(selectors.testResultRow)} [data-hook="CategoryList_item"]`,
+      valueFromResult: (rows: ScrapedTestResultRow[]) => rows.map((row) => row.testName),
+    },
+    {
+      field: 'date',
+      selector: `${firstSelector(selectors.testResultRow)} [data-hook="TestExecuteDate"], ${firstSelector(selectors.testResultRow)} [data-hook="TimeLineDate"]`,
+      valueFromResult: (rows: ScrapedTestResultRow[]) => rows.map((row) => row.date),
+    },
+  ],
+  parse: scrapeTestResultRows,
+} as const;
+
+const maccabiLoginOptions = (): LoginOptions => ({
+  loginUrl: urls.login,
+  fields: () => [],
+  submitButtonSelectors: selectors.submitButton,
+  otpFieldSelectors: selectors.otpInput,
+  possibleResults: {
+    [LoginResults.AccountBlocked]: [(page) => elementExists(page, selectors.blocked)],
+    [LoginResults.TwoFactorRequired]: [(page) => elementExists(page, selectors.otpInput)],
+    [LoginResults.Success]: [
+      /\/sonline\/homepage\//i,
+      (page) => elementExists(page, selectors.loggedInMarker),
+    ],
+    [LoginResults.InvalidPassword]: [(page) => elementExists(page, selectors.invalidCredentials)],
+  },
+});
+
+export const maccabiLoginBindingDefinition = {
+  bindings: [
+    {
+      field: 'idInput',
+      selector: anySelector(selectors.idInput),
+      valueFromResult: (result: { outcome: LoginResults | null }) => result.outcome,
+    },
+    {
+      field: 'passwordInput',
+      selector: anySelector(selectors.passwordInput),
+      valueFromResult: (result: { outcome: LoginResults | null }) => result.outcome,
+    },
+    {
+      field: 'otpInput',
+      selector: anySelector(selectors.otpInput),
+      valueFromResult: (result: { outcome: LoginResults | null }) => result.outcome,
+    },
+    {
+      field: 'loggedInMarker',
+      selector: anySelector(selectors.loggedInMarker),
+      valueFromResult: (result: { outcome: LoginResults | null }) => result.outcome,
+    },
+  ],
+  parse: async (page: Page, sourceUrl?: string) => ({
+    outcome: await matchLoginResult(maccabiLoginOptions().possibleResults, page, sourceUrl),
+  }),
+} as const;
 
 /** Scrolls the lazy timeline until another scroll no longer appends rows. */
 export async function loadAllTestResultRows(
