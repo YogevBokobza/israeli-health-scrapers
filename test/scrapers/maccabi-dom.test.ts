@@ -6,11 +6,15 @@ import type { Browser, Page } from 'playwright';
 
 import {
   appointmentRowToAppointment,
+  expandForm17Details,
   expandVaccinationDetails,
+  form17RowToRequest,
   prescriptionRowToMedication,
   scrapeAppointmentDetail,
   scrapeAppointmentRows,
+  scrapeForm17Rows,
   loadAllTestResultRows,
+  loadAllForm17Rows,
   scrapePrescriptionRows,
   scrapeTestResultRows,
   testResultRowToTestResult,
@@ -35,6 +39,8 @@ const appointmentsFixture = fs.readFileSync(path.join(fixturesDir, 'appointments
 const appointmentDetailFixture = fs.readFileSync(path.join(fixturesDir, 'appointment-detail.html'), 'utf8');
 const testResultsFixture = fs.readFileSync(path.join(fixturesDir, 'testResults.html'), 'utf8');
 const vaccinationsFixture = fs.readFileSync(path.join(fixturesDir, 'vaccinations.html'), 'utf8');
+const form17ListFixture = fs.readFileSync(path.join(fixturesDir, 'form17/list.html'), 'utf8');
+const form17ExpandedFixture = fs.readFileSync(path.join(fixturesDir, 'form17/expanded.html'), 'utf8');
 
 const NOW = new Date('2026-07-26T12:00:00Z');
 
@@ -363,5 +369,129 @@ describe.skipIf(!browserAvailable)('maccabi test-result extraction', () => {
     `);
 
     await expect(scrapeTestResultRows(page)).resolves.toHaveLength(1);
+  });
+});
+
+describe.skipIf(!browserAvailable)('maccabi Form 17 extraction', () => {
+  let browser: Browser;
+  let page: Page;
+
+  beforeAll(async () => {
+    const launched = await launchTestBrowser();
+    if (!launched) throw new Error('A browser binary was found but would not launch.');
+    browser = launched;
+    page = await browser.newPage();
+  });
+
+  afterAll(async () => {
+    await browser?.close().catch(() => {});
+  });
+
+  it('reads list fields without collecting the member name or unrelated page text', async () => {
+    await page.setContent(`${form17ListFixture}<div data-hook="TimeLineDate">31/12/99</div>`);
+    const rows = await scrapeForm17Rows(page);
+
+    expect(rows).toHaveLength(3);
+    expect(rows[0]?.id).toBe('request-example-1');
+    expect(rows[0]?.requestType).toBe('בקשת התחייבות לדוגמה');
+    expect(rows[0]?.status).toBe('אושרה');
+    expect(rows[0]?.statusUpdatedOn).toBe('15/03/25');
+    expect(rows[0]?.providerName).toBe('מרכז רפואי בדיוני');
+    expect(rows[0]?.appointmentOn).toBeNull();
+    expect(rows[0]?.documentLabels).toEqual([]);
+    expect(rows[0]?.canChangeAppointment).toBe(false);
+    expect(rows[0]?.requiresAdditionalInfo).toBe(false);
+    expect(rows[0]?.submittedOn).toContain('14/03/25');
+    expect(rows[1]).toMatchObject({
+      providerName: null,
+      appointmentOn: null,
+      documentLabels: [],
+      requiresAdditionalInfo: true,
+    });
+    expect(rows.map(form17RowToRequest).filter(Boolean)).toHaveLength(2);
+  });
+
+  it('reads document and appointment details from an expanded reconstruction', async () => {
+    await page.setContent(form17ExpandedFixture);
+    const [row] = await scrapeForm17Rows(page);
+    expect(row).toMatchObject({
+      appointmentOn: '20/03/25',
+      documentLabels: ['התחייבות', 'סיכום בקשה'],
+      canChangeAppointment: true,
+    });
+  });
+
+  it('opens each collapsed row before extraction', async () => {
+    await page.setContent(form17ListFixture);
+    await page.locator('[role="listitem"] [aria-expanded]').evaluateAll((triggers) => {
+      for (const trigger of triggers) {
+        trigger.addEventListener('click', () => {
+          trigger.setAttribute('aria-expanded', 'true');
+          if (!trigger.parentElement?.querySelector('[role="region"]')) {
+            const detail = document.createElement('div');
+            detail.setAttribute('role', 'region');
+            detail.className = 'ExpandedItem__wrapExpandedItem';
+            trigger.parentElement?.append(detail);
+          }
+        });
+      }
+    });
+
+    await expandForm17Details(page);
+
+    expect(await page.locator('[role="listitem"] [aria-expanded="true"]').count()).toBe(3);
+  });
+
+  it('waits for asynchronously rendered detail regions', async () => {
+    await page.setContent(`
+      <div data-hook="LazyLoading" role="list">
+        <div role="listitem" id="delayed-form17">
+          <button aria-expanded="false">expand</button>
+        </div>
+      </div>
+    `);
+    let resolved = false;
+    const expansion = expandForm17Details(page).then(() => {
+      resolved = true;
+    });
+    await new Promise((resolve) => setTimeout(resolve, 300));
+    expect(resolved).toBe(false);
+    await page.evaluate(`(function () {
+      var button = document.querySelector('#delayed-form17 button');
+      button.setAttribute('aria-expanded', 'true');
+      var detail = document.createElement('div');
+      detail.setAttribute('role', 'region');
+      detail.className = 'ExpandedItem__wrapExpandedItem';
+      document.querySelector('#delayed-form17').append(detail);
+    })()`);
+
+    await expansion;
+
+    expect(await page.locator('#delayed-form17 [role="region"]').count()).toBe(1);
+  });
+
+  it('loads every lazy Form 17 timeline batch before extraction', async () => {
+    await page.setContent(`
+      <div data-hook="LazyLoading" role="list"><div role="listitem">first</div></div>
+      <script>
+        let batch = 1;
+        let loading = false;
+        window.scrollTo = () => {
+          if (loading || batch > 2) return;
+          loading = true;
+          setTimeout(() => {
+            const row = document.createElement('div');
+            row.setAttribute('role', 'listitem');
+            row.textContent = String(++batch);
+            document.querySelector('[data-hook="LazyLoading"]').appendChild(row);
+            setTimeout(() => { loading = false; }, 20);
+          }, 20);
+        };
+      </script>
+    `);
+
+    await loadAllForm17Rows(page, 100, 2_000);
+
+    expect(await page.locator('[data-hook="LazyLoading"] > [role="listitem"]').count()).toBe(3);
   });
 });

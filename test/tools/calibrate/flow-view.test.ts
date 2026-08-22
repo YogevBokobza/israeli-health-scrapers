@@ -21,7 +21,11 @@ describe('calibration flow view', () => {
       ],
       result: [{ name: 'PLACEHOLDER DRUG' }],
     },
-    form17: { status: 'pending', bindings: [], result: null },
+    form17: {
+      status: 'resolved',
+      bindings: [{ field: 'rows', selector: '[role="listitem"]', matchCount: 1, value: [] }],
+      result: [],
+    },
   };
 
   beforeEach(async () => {
@@ -60,7 +64,7 @@ describe('calibration flow view', () => {
     await fs.rm(dataDir, { recursive: true, force: true });
   });
 
-  it('renders all captured targets with resolved bindings and provisional pending state', async () => {
+  it('renders all captured targets, including a promoted provisional capture', async () => {
     const reportPath = await buildFlowView('maccabi', undefined, async (entry) => resolutions[entry.target]!);
     const report = await fs.readFile(reportPath, 'utf8');
 
@@ -68,7 +72,8 @@ describe('calibration flow view', () => {
     expect(report).toContain('[data-testid=&quot;prescription-row&quot;]');
     expect(report).toContain('PLACEHOLDER DRUG');
     expect(report).toContain('<h2>form17</h2>');
-    expect(report).toContain('Pending reconstruction');
+    expect(report).toContain('[role=&quot;listitem&quot;]');
+    expect(report).not.toContain('Pending reconstruction');
   });
 
   it('renders only the requested target', async () => {
@@ -78,5 +83,17 @@ describe('calibration flow view', () => {
     expect(path.basename(reportPath)).toBe('flow-view--medications.html');
     expect(report).toContain('<h2>medications</h2>');
     expect(report).not.toContain('<h2>form17</h2>');
+  });
+
+  it('places the capture beside its parsed evidence on desktop', async () => {
+    const reportPath = await buildFlowView('maccabi', 'form17', async (entry) => resolutions[entry.target]!);
+    const report = await fs.readFile(reportPath, 'utf8');
+
+    expect(report).toContain('.shell{width:100%;max-width:none');
+    expect(report).toContain('.columns{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(420px,1fr);align-items:start');
+    expect(report).toContain('img{display:block;width:100%;height:auto;max-height:none');
+    expect(report).toContain('class="full-size"');
+    expect(report).toContain('Open full-size screenshot');
+    expect(report).toContain('@media(max-width:1100px){.columns{grid-template-columns:1fr}');
   });
 });

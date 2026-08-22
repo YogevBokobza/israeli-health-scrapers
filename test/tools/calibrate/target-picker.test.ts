@@ -13,6 +13,7 @@ describe('CAPTURE_TARGETS', () => {
     expect(CAPTURE_TARGETS).toContain('login');
     expect(CAPTURE_TARGETS).toContain('medications');
     expect(CAPTURE_TARGETS).toContain('vaccinations');
+    expect(CAPTURE_TARGETS).toContain('form17');
   });
 });
 
@@ -31,8 +32,8 @@ describe('isKnownTarget', () => {
     expect(isKnownTarget('login')).toBe(true);
   });
 
-  it('rejects a target outside the known set', () => {
-    expect(isKnownTarget('form17')).toBe(false);
+  it('accepts a promoted target', () => {
+    expect(isKnownTarget('form17')).toBe(true);
   });
 });
 
@@ -64,7 +65,7 @@ describe('validateCaptureTarget', () => {
   });
 
   it('accepts a lowerCamel provisional target', () => {
-    expect(validateCaptureTarget('form17')).toEqual({ ok: true });
+    expect(validateCaptureTarget('futureTarget')).toEqual({ ok: true });
   });
 
   it('rejects a blank target', () => {

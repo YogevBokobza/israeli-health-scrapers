@@ -7,6 +7,7 @@ import { HealthFundTypes, type HealthFundId } from '../../src/definitions.js';
 import { resolveSnapshotBindings } from './binding-resolver.js';
 import { buildFlowView } from './flow-view.js';
 import { bindingDefinitionFor } from './fund-bindings.js';
+import { newFlowViewPage } from './view-browser.js';
 
 const VIEWABLE_FUNDS: HealthFundId[] = Object.values(HealthFundTypes).filter(
   (fund) => fund !== HealthFundTypes.mock,
@@ -25,8 +26,9 @@ async function main(): Promise<void> {
   const browser = await chromium.launch({
     headless: false,
     executablePath: process.env.IHS_CHROMIUM_PATH,
+    args: ['--start-maximized'],
   });
-  const page = await browser.newPage();
+  const page = await newFlowViewPage(browser);
 
   try {
     const reportPath = await buildFlowView(fund, target, (entry, html) =>

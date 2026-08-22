@@ -37,11 +37,13 @@ export {
   HealthFundTypes,
   ScraperErrorTypes,
   ScraperProgressTypes,
+  FETCH_TARGETS,
   medicationSchema,
   appointmentSchema,
   messageSchema,
   testResultSchema,
   vaccinationSchema,
+  form17RequestSchema,
   healthAccountSchema,
   providerIdSchema,
 } from './definitions.js';
@@ -59,6 +61,7 @@ export type {
   Message,
   TestResult,
   Vaccination,
+  Form17Request,
   FetchTarget,
   LoginMethod,
 } from './definitions.js';

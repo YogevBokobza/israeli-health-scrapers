@@ -1,3 +1,5 @@
+import { execFileSync } from 'node:child_process';
+import path from 'node:path';
 import { afterAll, afterEach, beforeAll, describe, expect, it } from 'vitest';
 import type { Browser, Page } from 'playwright';
 
@@ -50,6 +52,34 @@ describe.skipIf(!browserAvailable)('capture button', () => {
     const page = await pageWithButton();
 
     expect(await page.locator('#ihs-calibrate-capture-button').isVisible()).toBe(true);
+  });
+
+  it('injects the button after navigation when installed on the initial blank page', async () => {
+    page = await browser.newPage();
+    await page.route('**/fund-page', (route) =>
+      route.fulfill({ contentType: 'text/html', body: '<html><body><h1>fund page</h1></body></html>' }),
+    );
+    await page.exposeFunction('__ihsCapture', async () => ({ ok: true, label: 'login--list' }));
+
+    await injectCaptureButton(page);
+    await page.goto('https://calibrate.test/fund-page');
+
+    expect(await page.locator('#ihs-calibrate-capture-button').isVisible()).toBe(true);
+  });
+
+  it('keeps the browser bootstrap executable when compiled by tsx', () => {
+    execFileSync(
+      process.execPath,
+      [
+        '--import',
+        'tsx',
+        '--eval',
+        `import { captureButtonScript } from './tools/calibrate/capture-button.ts';
+         const script = captureButtonScript({ targets: ['login'], states: ['list'] });
+         new Function(script);`,
+      ],
+      { cwd: path.resolve(import.meta.dirname, '../../..'), encoding: 'utf8' },
+    );
   });
 
   it('offers the known targets plus login and an "other" escape', async () => {

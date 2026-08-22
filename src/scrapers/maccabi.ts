@@ -4,6 +4,7 @@ import type { Locator, Page } from 'playwright';
 import {
   HealthFundTypes,
   type Appointment,
+  type Form17Request,
   type HealthAccount,
   type Medication,
   type ScraperCredentials,
@@ -28,7 +29,7 @@ import { captureDiagnostics } from '../helpers/debug.js';
  * Every Maccabi-specific URL and selector lives in this file. The site will change —
  * that is a certainty, not a risk — and when it does this is the only file to edit.
  *
- * NOTE: login, medications, appointments, and test-results selectors are calibrated
+ * NOTE: login, medications, appointments, test-results, vaccinations, and Form 17 selectors are calibrated
  * against a live account (see git history). On failure the scraper writes an HTML dump
  * under data/diagnostics, and the fix belongs in the constants below.
  */
@@ -44,6 +45,7 @@ const urls = {
   appointments: `${BASE_URL}/sonline/appointmentOrder/FutureAppointments/Lobby/`,
   testResults: `${BASE_URL}/sonline/testsResults/TestsResults/lobby/`,
   vaccinations: `${BASE_URL}/sonline/medicalfile/vaccinations/Lobby/`,
+  form17: `${BASE_URL}/sonline/requestsAndApprovals/StatusRequest/Lobby/?caseFilter=53,1,2`,
 } as const;
 
 export const maccabiMedicationSelectors = {
@@ -98,6 +100,7 @@ const selectors = {
   // only semantic list entries so one visible result is not extracted twice.
   testResultRow: ['[role="listitem"][data-hook="TimeLineItem"]'],
   vaccinationRow: ['[data-testid="vaccination-row"]'],
+  form17Row: ['[data-hook="LazyLoading"] > [role="listitem"]'],
 } as const;
 
 const firstSelector = (selectorList: readonly string[]): string => selectorList[0]!;
@@ -616,6 +619,136 @@ export const maccabiTestResultBindingDefinition = {
   parse: scrapeTestResultRows,
 } as const;
 
+export interface ScrapedForm17Row {
+  id: string | null;
+  requestType: string | null;
+  status: string | null;
+  submittedOn: string | null;
+  statusUpdatedOn: string | null;
+  providerName: string | null;
+  appointmentOn: string | null;
+  documentLabels: string[];
+  canChangeAppointment: boolean;
+  requiresAdditionalInfo: boolean;
+}
+
+export function form17RowToRequest(row: ScrapedForm17Row): Form17Request | null {
+  const id = textOrNull(row.id);
+  const requestType = textOrNull(row.requestType);
+  const status = textOrNull(row.status);
+  if (!id || !requestType || !status) return null;
+
+  return {
+    id,
+    requestType,
+    status,
+    submittedOn: parseIsraeliDate(row.submittedOn),
+    statusUpdatedOn: parseIsraeliDate(row.statusUpdatedOn),
+    providerName: textOrNull(row.providerName),
+    appointmentOn: parseIsraeliDate(row.appointmentOn),
+    documentLabels: row.documentLabels.map(textOrNull).filter((label): label is string => label !== null),
+    canChangeAppointment: row.canChangeAppointment,
+    requiresAdditionalInfo: row.requiresAdditionalInfo,
+    provider: HealthFundTypes.maccabi,
+  };
+}
+
+export async function scrapeForm17Rows(page: Page): Promise<ScrapedForm17Row[]> {
+  // A string is intentional: the calibration CLI runs through tsx, whose esbuild
+  // transform can add a private __name helper to serialized browser callbacks.
+  return page.evaluate<ScrapedForm17Row[]>(`(() => {
+    const rowSelector = ${JSON.stringify(selectors.form17Row[0])};
+    const text = (el) => {
+      const value = (el?.textContent ?? '')
+        .replace(/[‎‏‪-‮⁦-⁩]/g, '')
+        .replace(/ /g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+      return value.length > 0 ? value : null;
+    };
+
+    return Array.from(document.querySelectorAll(rowSelector)).map((row) => {
+      const summary = row.querySelector(':scope [aria-expanded] > [data-hook^="TimeLineItem__timeLineRow"]');
+      const hook = summary?.getAttribute('data-hook') ?? '';
+      const submittedText = Array.from(summary?.querySelectorAll('div') ?? [])
+        .map(text)
+        .find((value) => value?.startsWith('תאריך הגשה:'));
+      const expanded = row.querySelector(':scope [aria-expanded="true"]')?.parentElement;
+      const appointmentWrap = expanded?.querySelector('[class*="CaseAppointmentDate__caseAppointDateWrap"]');
+
+      return {
+        id: hook.replace(/^TimeLineItem__timeLineRow/, '') || null,
+        requestType: text(summary?.querySelector('[class*="TimeLineItem-module__header"]') ?? null),
+        status: text(summary?.querySelector('[class*="TimelineRow__statusstyle"]') ?? null),
+        submittedOn: submittedText?.replace(/^תאריך הגשה:\s*/, '') ?? null,
+        statusUpdatedOn: text(summary?.querySelector('[data-hook="TimeLineDate"]') ?? null),
+        providerName: text(summary?.querySelector('[data-hook^="providername"]') ?? null),
+        appointmentOn: text(appointmentWrap?.querySelector('p:last-child') ?? null),
+        documentLabels: Array.from(
+          expanded?.querySelectorAll('[data-hook^="Button__ButtonDocument__"]') ?? [],
+        ).map(text).filter((label) => label !== null),
+        canChangeAppointment: Boolean(
+          expanded?.querySelector('[data-hook^="Button__editDates"]'),
+        ),
+        requiresAdditionalInfo:
+          summary?.querySelector('[data-hook^="Badge__-IconAttention"]') !== null ||
+          Boolean(expanded?.querySelector('[data-hook="ExpandedItem__uploadFiles"]')),
+      };
+    });
+  })()`);
+}
+
+function form17RowsToRequests(rows: ScrapedForm17Row[]): Form17Request[] {
+  return rows
+    .map(form17RowToRequest)
+    .filter((request): request is Form17Request => request !== null)
+    .sort((a, b) => (b.statusUpdatedOn ?? '').localeCompare(a.statusUpdatedOn ?? ''));
+}
+
+export const maccabiForm17BindingDefinition = {
+  bindings: [
+    {
+      field: 'rows',
+      selector: firstSelector(selectors.form17Row),
+      valueFromResult: (rows: ScrapedForm17Row[]) => rows,
+    },
+    {
+      field: 'requestType',
+      selector: `${firstSelector(selectors.form17Row)} [class*="TimeLineItem-module__header"]`,
+      valueFromResult: (rows: ScrapedForm17Row[]) => rows.map((row) => row.requestType),
+    },
+    {
+      field: 'statusUpdatedOn',
+      selector: `${firstSelector(selectors.form17Row)} [data-hook="TimeLineDate"]`,
+      valueFromResult: (rows: ScrapedForm17Row[]) => rows.map((row) => row.statusUpdatedOn),
+    },
+    {
+      field: 'expandedDetails',
+      selector: `${firstSelector(selectors.form17Row)} [role="region"][class*="ExpandedItem__wrapExpandedItem"]`,
+      valueFromResult: (rows: ScrapedForm17Row[]) =>
+        rows.map(({ appointmentOn, documentLabels }) => ({ appointmentOn, documentLabels })),
+    },
+  ],
+  parse: scrapeForm17Rows,
+} as const;
+
+/** Opens every request whose detail panel is still collapsed. */
+export async function expandForm17Details(page: Page): Promise<void> {
+  const rows = page.locator(selectors.form17Row[0]);
+  const count = await rows.count();
+  for (let index = 0; index < count; index += 1) {
+    const row = rows.nth(index);
+    const trigger = row.locator('[aria-expanded]').first();
+    if ((await trigger.count()) > 0 && (await trigger.getAttribute('aria-expanded')) !== 'true') {
+      await trigger.click();
+      await row
+        .locator('[role="region"][class*="ExpandedItem__wrapExpandedItem"]')
+        .first()
+        .waitFor({ state: 'attached' });
+    }
+  }
+}
+
 const maccabiLoginOptions = (): LoginOptions => ({
   loginUrl: urls.login,
   fields: () => [],
@@ -675,6 +808,30 @@ export async function loadAllTestResultRows(
     await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
     await new Promise((resolve) => setTimeout(resolve, 100));
 
+    const nextCount = await rows.count();
+    if (nextCount > count) {
+      count = nextCount;
+      lastGrowth = Date.now();
+    } else if (Date.now() - lastGrowth >= quietMs) {
+      return;
+    }
+  }
+}
+
+/** Scrolls the Form 17 lazy timeline until another scroll no longer appends rows. */
+export async function loadAllForm17Rows(
+  page: Page,
+  quietMs = 2_000,
+  timeoutMs = 30_000,
+): Promise<void> {
+  const rows = page.locator(selectors.form17Row[0]);
+  const deadline = Date.now() + timeoutMs;
+  let count = await rows.count();
+  let lastGrowth = Date.now();
+
+  while (count > 0 && Date.now() < deadline) {
+    await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
+    await new Promise((resolve) => setTimeout(resolve, 100));
     const nextCount = await rows.count();
     if (nextCount > count) {
       count = nextCount;
@@ -774,6 +931,10 @@ export class MaccabiScraper extends BaseScraperWithBrowser {
 
     if (targets.includes('vaccinations')) {
       account.vaccinations = await this.fetchVaccinations();
+    }
+
+    if (targets.includes('form17')) {
+      account.form17 = await this.fetchForm17();
     }
 
     return [account];
@@ -905,6 +1066,25 @@ export class MaccabiScraper extends BaseScraperWithBrowser {
     testResults.sort((a, b) => (b.performedOn ?? '').localeCompare(a.performedOn ?? ''));
 
     return testResults;
+  }
+
+  /** Reads Form 17 commitment requests, newest status update first. */
+  private async fetchForm17(): Promise<Form17Request[]> {
+    const page = this.activePage;
+    await page.goto(urls.form17, { waitUntil: 'domcontentloaded' });
+    if (await elementExists(page, selectors.passwordInput)) {
+      const diagnostics = await captureDiagnostics(page, this.options.companyId, 'form17-logged-out');
+      throw new SelectorDriftError('a logged-in Form 17 requests page', diagnostics);
+    }
+    await waitUntil(async () => elementExists(page, selectors.form17Row), 8_000);
+    await loadAllForm17Rows(page);
+    await expandForm17Details(page);
+    const requests = form17RowsToRequests(await scrapeForm17Rows(page));
+    if (requests.length === 0) {
+      const diagnostics = await captureDiagnostics(page, this.options.companyId, 'form17-empty');
+      this.log('no Form 17 request rows found', { diagnostics });
+    }
+    return requests;
   }
 
   /**

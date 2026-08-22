@@ -122,16 +122,16 @@ openssl rand -base64 32   # IHS_SESSION_KEY
 
 ## Calibration
 
-The Maccabi selectors were written against the site's expected structure but **have not
-been verified against a live logged-in account** — that needs a real member login. Treat
-your first run as a calibration pass.
+The implemented Maccabi targets have been calibrated against live page structure. Treat
+the first run after any site change as a recalibration pass.
 
 On a parsing failure the scraper writes the page HTML and a screenshot to
 `data/diagnostics/`, and every Maccabi URL and selector lives at the top of
 `src/scrapers/maccabi.ts`. That is the only file to edit when the site changes.
 
-Parser tests run off `test/fixtures/`, so replacing a fixture with a real redacted dump
-strengthens them without touching test code.
+Parser tests run off hand-authored reconstructions in `test/fixtures/`. Never replace
+one with a real redacted dump: raw captures can contain medical data and stay only in
+gitignored `data/`.
 
 `npm run calibrate -- <fund>` opens a headed browser scoped to a fund, with a floating
 capture button on the page itself — pick a target (a `FetchTarget`, `login`, or a
@@ -181,9 +181,9 @@ pinned one is not installed.
 
 ## Roadmap
 
-Maccabi appointments are scaffolded but uncalibrated (need a live account pass, same as
-medications originally did — see `src/scrapers/maccabi.ts`). Still open: messages,
-commitment forms (טופס 17), and the remaining funds.
+Maccabi medications, appointments, test results, vaccinations, and commitment requests
+(טופס 17) have calibrated selectors and fixture coverage. Still open: messages and the
+remaining funds.
 
 Longer term: Israel's Medical Data Portability Law (2024) requires the funds to expose
 certified FHIR R4 APIs, on a programme running to 2029. When one lands it joins as

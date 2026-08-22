@@ -32,6 +32,7 @@ function bootstrapCaptureButton({ targets, states }: BootstrapArgs): void {
   const OTHER = '__other__';
 
   function build(): void {
+    if (!document.body) return;
     if (document.getElementById(ROOT_ID)) return;
 
     const root = document.createElement('form');
@@ -129,34 +130,49 @@ function bootstrapCaptureButton({ targets, states }: BootstrapArgs): void {
     });
   }
 
-  build();
+  function start(): void {
+    build();
 
-  new MutationObserver(() => build()).observe(document.documentElement, {
-    childList: true,
-    subtree: true,
-  });
+    new MutationObserver(() => build()).observe(document.documentElement, {
+      childList: true,
+      subtree: true,
+    });
 
-  // Defense in depth: a route change that never touches the button's own subtree (an
-  // SPA that mounts an entirely separate detail view alongside it) still runs this.
-  const recheck = (): void => {
-    setTimeout(build, 0);
-  };
-  for (const method of ['pushState', 'replaceState'] as const) {
-    const original = history[method].bind(history);
-    history[method] = ((...args: Parameters<History['pushState']>) => {
-      const result = original(...args);
-      recheck();
-      return result;
-    }) as History[typeof method];
+    // Defense in depth: a route change that never touches the button's own subtree (an
+    // SPA that mounts an entirely separate detail view alongside it) still runs this.
+    const recheck = (): void => {
+      setTimeout(build, 0);
+    };
+    for (const method of ['pushState', 'replaceState'] as const) {
+      const original = history[method].bind(history);
+      history[method] = ((...args: Parameters<History['pushState']>) => {
+        const result = original(...args);
+        recheck();
+        return result;
+      }) as History[typeof method];
+    }
+    window.addEventListener('popstate', recheck);
   }
-  window.addEventListener('popstate', recheck);
+
+  if (document.documentElement) start();
+  else window.addEventListener('DOMContentLoaded', start, { once: true });
+}
+
+/**
+ * Produces browser JavaScript without relying on Playwright stringifying a function
+ * transformed by tsx. Esbuild decorates nested named functions with its private
+ * `__name` helper, so the serialized script supplies the same identity helper.
+ */
+export function captureButtonScript(args: BootstrapArgs): string {
+  return `const __name = (target) => target; (${bootstrapCaptureButton.toString()})(${JSON.stringify(args)})`;
 }
 
 /** Injects the floating capture button. Assumes `window.__ihsCapture` is already exposed. */
 export async function injectCaptureButton(page: Page): Promise<void> {
   const args: BootstrapArgs = { targets: CAPTURE_TARGETS, states: CAPTURE_STATES };
-  await page.addInitScript(bootstrapCaptureButton, args);
-  await page.evaluate(bootstrapCaptureButton, args);
+  const script = captureButtonScript(args);
+  await page.addInitScript({ content: script });
+  await page.evaluate(script);
 }
 
 /**
