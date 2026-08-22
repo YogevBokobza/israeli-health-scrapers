@@ -85,14 +85,15 @@ describe('calibration flow view', () => {
     expect(report).not.toContain('<h2>form17</h2>');
   });
 
-  it('shows each full-page capture at the full report width', async () => {
+  it('places the capture beside its parsed evidence on desktop', async () => {
     const reportPath = await buildFlowView('maccabi', 'form17', async (entry) => resolutions[entry.target]!);
     const report = await fs.readFile(reportPath, 'utf8');
 
     expect(report).toContain('.shell{width:100%;max-width:none');
-    expect(report).toContain('.columns{display:flex;flex-direction:column');
+    expect(report).toContain('.columns{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(420px,1fr);align-items:start');
     expect(report).toContain('img{display:block;width:100%;height:auto;max-height:none');
     expect(report).toContain('class="full-size"');
     expect(report).toContain('Open full-size screenshot');
+    expect(report).toContain('@media(max-width:1100px){.columns{grid-template-columns:1fr}');
   });
 });
