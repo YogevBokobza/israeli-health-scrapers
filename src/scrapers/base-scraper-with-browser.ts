@@ -399,6 +399,7 @@ export abstract class BaseScraperWithBrowser extends BaseScraper {
       await fillFirst(page, field.selectors, field.value);
     }
     await clickFirst(page, loginOptions.submitButtonSelectors);
+    await loginOptions.afterSubmit?.(page, credentials);
 
     const result = await this.awaitLoginResult(loginOptions);
 
