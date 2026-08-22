@@ -6,6 +6,7 @@ import { HealthFundTypes, type HealthFundId } from '../../src/definitions.js';
 import { BROWSER_LOCALE, BROWSER_TIMEZONE, VIEWPORT } from '../../src/constants.js';
 import { isExpired, loadSession } from '../../src/helpers/session.js';
 import { installCaptureButton } from './capture-button.js';
+import { fundStartUrl } from './fund-start-urls.js';
 
 /** Real funds only — `mock` is a fixture-backed id with no site to calibrate against. */
 const CALIBRATABLE_FUNDS: HealthFundId[] = Object.values(HealthFundTypes).filter(
@@ -52,6 +53,7 @@ async function main(): Promise<void> {
   );
 
   await installCaptureButton(page, fund);
+  await page.goto(fundStartUrl(fund), { waitUntil: 'domcontentloaded' });
 
   const rl = readline.createInterface({ input: stdin, output: stdout });
 

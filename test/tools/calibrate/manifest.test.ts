@@ -63,8 +63,8 @@ describe('buildManifestEntry', () => {
 
   it('marks a target outside the known set as provisional', () => {
     const entry = buildManifestEntry({
-      label: 'form17--collapsed',
-      target: 'form17',
+      label: 'futureTarget--collapsed',
+      target: 'futureTarget',
       state: 'collapsed',
       url: 'https://example.test/forms/17',
     });
@@ -73,7 +73,7 @@ describe('buildManifestEntry', () => {
     expect(entry.role).toEqual({
       kind: 'before-after',
       position: 'before',
-      counterpartLabel: 'form17--expanded',
+      counterpartLabel: 'futuretarget--expanded',
     });
   });
 

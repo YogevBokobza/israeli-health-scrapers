@@ -6,10 +6,12 @@ import type { Browser, Page } from 'playwright';
 
 import {
   maccabiLoginBindingDefinition,
+  maccabiForm17BindingDefinition,
   maccabiMedicationBindingDefinition,
 } from '../../../src/scrapers/maccabi.js';
 import { LoginResults } from '../../../src/scrapers/base-scraper-with-browser.js';
 import { resolveSnapshotBindings } from '../../../tools/calibrate/binding-resolver.js';
+import { bindingDefinitionFor } from '../../../tools/calibrate/fund-bindings.js';
 import { browserAvailable, launchTestBrowser } from '../../browser.js';
 
 const fixturesDir = path.join(
@@ -17,6 +19,7 @@ const fixturesDir = path.join(
   '../../fixtures/maccabi',
 );
 const medicationsFixture = fs.readFileSync(path.join(fixturesDir, 'medications.html'), 'utf8');
+const form17Fixture = fs.readFileSync(path.join(fixturesDir, 'form17/expanded.html'), 'utf8');
 
 describe.skipIf(!browserAvailable)('binding resolver', () => {
   let browser: Browser;
@@ -79,6 +82,26 @@ describe.skipIf(!browserAvailable)('binding resolver', () => {
       bindings: [{ field: 'rows', selector, matchCount: 0, value: null }],
       result: ['parser fallback'],
     });
+  });
+
+  it('resolves the promoted Form 17 target against its reconstruction', async () => {
+    const definition = bindingDefinitionFor('maccabi', {
+      label: 'form17--expanded',
+      target: 'form17',
+      state: 'expanded',
+      url: 'https://example.test/form17',
+      capturedAt: '2026-08-22T00:00:00.000Z',
+      provisional: true,
+      role: { kind: 'standalone' },
+    });
+    expect(definition).toBeDefined();
+    const resolution = await resolveSnapshotBindings(page, form17Fixture, definition);
+    expect(resolution.status).toBe('resolved');
+    if (resolution.status !== 'resolved') return;
+    expect(resolution.bindings.every((binding) => binding.matchCount > 0)).toBe(true);
+    expect(resolution.result).toEqual([
+      expect.objectContaining({ id: 'request-example-1', documentLabels: ['התחייבות', 'סיכום בקשה'] }),
+    ]);
   });
 
   it('marks a target with no reconstructed code as pending', async () => {

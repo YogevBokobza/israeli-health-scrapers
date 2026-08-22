@@ -21,7 +21,11 @@ describe('calibration flow view', () => {
       ],
       result: [{ name: 'PLACEHOLDER DRUG' }],
     },
-    form17: { status: 'pending', bindings: [], result: null },
+    form17: {
+      status: 'resolved',
+      bindings: [{ field: 'rows', selector: '[role="listitem"]', matchCount: 1, value: [] }],
+      result: [],
+    },
   };
 
   beforeEach(async () => {
@@ -60,7 +64,7 @@ describe('calibration flow view', () => {
     await fs.rm(dataDir, { recursive: true, force: true });
   });
 
-  it('renders all captured targets with resolved bindings and provisional pending state', async () => {
+  it('renders all captured targets, including a promoted provisional capture', async () => {
     const reportPath = await buildFlowView('maccabi', undefined, async (entry) => resolutions[entry.target]!);
     const report = await fs.readFile(reportPath, 'utf8');
 
@@ -68,7 +72,8 @@ describe('calibration flow view', () => {
     expect(report).toContain('[data-testid=&quot;prescription-row&quot;]');
     expect(report).toContain('PLACEHOLDER DRUG');
     expect(report).toContain('<h2>form17</h2>');
-    expect(report).toContain('Pending reconstruction');
+    expect(report).toContain('[role=&quot;listitem&quot;]');
+    expect(report).not.toContain('Pending reconstruction');
   });
 
   it('renders only the requested target', async () => {

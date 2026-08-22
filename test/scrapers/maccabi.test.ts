@@ -4,10 +4,12 @@ import { describe, expect, it } from 'vitest';
 import {
   MaccabiScraper,
   appointmentRowToAppointment,
+  form17RowToRequest,
   prescriptionRowToMedication,
   testResultRowToTestResult,
   vaccinationRowToVaccination,
   type ScrapedAppointmentRow,
+  type ScrapedForm17Row,
   type ScrapedPrescriptionRow,
   type ScrapedTestResultRow,
   type ScrapedVaccinationRow,
@@ -19,6 +21,7 @@ import {
 } from '../../src/scrapers/base-scraper-with-browser.js';
 import {
   HealthFundTypes,
+  form17RequestSchema,
   appointmentSchema,
   medicationSchema,
   testResultSchema,
@@ -274,5 +277,51 @@ describe('vaccinationRowToVaccination', () => {
     expect(vaccinationRowToVaccination({ ...vaccinationRow })).toEqual(first);
     expect(vaccinationRowToVaccination({ ...vaccinationRow, dose: 'מנה 2' })?.id).not.toBe(first.id);
     expect(vaccinationRowToVaccination({ ...vaccinationRow, location: 'מרפאה אחרת' })?.id).toBe(first.id);
+  });
+});
+
+describe('form17RowToRequest', () => {
+  const row: ScrapedForm17Row = {
+    id: 'request-example-1',
+    requestType: 'בקשת התחייבות לדוגמה',
+    status: 'אושרה',
+    submittedOn: '14/03/25',
+    statusUpdatedOn: '15/03/2025',
+    providerName: 'מרכז רפואי בדיוני',
+    appointmentOn: '20/03/25',
+    documentLabels: ['התחייבות', 'סיכום בקשה'],
+    canChangeAppointment: true,
+    requiresAdditionalInfo: false,
+  };
+
+  it('normalizes a Form 17 row into the public schema', () => {
+    const request = form17RowToRequest(row);
+    expect(() => form17RequestSchema.parse(request)).not.toThrow();
+    expect(request).toMatchObject({
+      id: 'request-example-1',
+      submittedOn: '2025-03-14',
+      statusUpdatedOn: '2025-03-15',
+      appointmentOn: '2025-03-20',
+      provider: HealthFundTypes.maccabi,
+    });
+  });
+
+  it('drops layout artifacts without identity, type, or status', () => {
+    expect(form17RowToRequest({ ...row, id: null })).toBeNull();
+    expect(form17RowToRequest({ ...row, requestType: null })).toBeNull();
+    expect(form17RowToRequest({ ...row, status: null })).toBeNull();
+  });
+
+  it('keeps optional dates nullable and removes blank document labels', () => {
+    expect(form17RowToRequest({
+      ...row,
+      submittedOn: 'not a date',
+      appointmentOn: null,
+      documentLabels: [' התחייבות ', ' -- '],
+    })).toMatchObject({
+      submittedOn: null,
+      appointmentOn: null,
+      documentLabels: ['התחייבות'],
+    });
   });
 });

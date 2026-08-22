@@ -3,6 +3,7 @@ import {
   maccabiAppointmentBindingDefinition,
   maccabiAppointmentDetailBindingDefinition,
   maccabiLoginBindingDefinition,
+  maccabiForm17BindingDefinition,
   maccabiMedicationBindingDefinition,
   maccabiTestResultBindingDefinition,
   maccabiVaccinationBindingDefinition,
@@ -29,6 +30,7 @@ const maccabiBindings: Record<string, TargetBindingDefinition<unknown>> = {
   appointments: eraseResultType(maccabiAppointmentBindingDefinition),
   testResults: eraseResultType(maccabiTestResultBindingDefinition),
   vaccinations: eraseResultType(maccabiVaccinationBindingDefinition),
+  form17: eraseResultType(maccabiForm17BindingDefinition),
   messages: {
     bindings: [],
     parse: async () => ({ status: 'not-implemented' }),
@@ -40,7 +42,7 @@ export function bindingDefinitionFor(
   fund: HealthFundId,
   entry: ManifestEntry,
 ): TargetBindingDefinition<unknown> | undefined {
-  if (fund !== 'maccabi' || entry.provisional) return undefined;
+  if (fund !== 'maccabi') return undefined;
   if (entry.target === 'appointments' && entry.state.trim().toLowerCase() === 'detail') {
     return eraseResultType(maccabiAppointmentDetailBindingDefinition);
   }

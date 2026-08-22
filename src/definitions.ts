@@ -98,6 +98,7 @@ export const FETCH_TARGETS = [
   'messages',
   'testResults',
   'vaccinations',
+  'form17',
 ] as const;
 export type FetchTarget = (typeof FETCH_TARGETS)[number];
 
@@ -189,6 +190,22 @@ export const vaccinationSchema = z.object({
 });
 export type Vaccination = z.infer<typeof vaccinationSchema>;
 
+export const form17RequestSchema = z.object({
+  id: z.string().min(1),
+  requestType: z.string().min(1),
+  status: z.string().min(1),
+  submittedOn: isoDateSchema.nullable(),
+  statusUpdatedOn: isoDateSchema.nullable(),
+  providerName: z.string().nullable(),
+  appointmentOn: isoDateSchema.nullable(),
+  documentLabels: z.array(z.string().min(1)),
+  canChangeAppointment: z.boolean().nullable(),
+  requiresAdditionalInfo: z.boolean().nullable(),
+  provider: providerIdSchema,
+  raw: z.record(z.unknown()).optional(),
+});
+export type Form17Request = z.infer<typeof form17RequestSchema>;
+
 /**
  * One member's account at one fund — the analogue of an `account` in the bank
  * scrapers, holding the collections we know how to read.
@@ -200,6 +217,7 @@ export const healthAccountSchema = z.object({
   messages: z.array(messageSchema).optional(),
   testResults: z.array(testResultSchema).optional(),
   vaccinations: z.array(vaccinationSchema).optional(),
+  form17: z.array(form17RequestSchema).optional(),
 });
 export type HealthAccount = z.infer<typeof healthAccountSchema>;
 
