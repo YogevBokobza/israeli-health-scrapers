@@ -160,8 +160,8 @@
     "semantic_hash": "e4f4213d90ae1f37cc7a11307e42ebe7"
   },
   ".claude/CLAUDE.md": {
-    "mtime": 1787388915.0900586,
-    "ast_hash": "7535fa72775ef0a923aae369292a8429",
+    "mtime": 1787389525.1432216,
+    "ast_hash": "859a10fcb873c19c9b54c7c7ad1443da",
     "semantic_hash": ""
   },
   "test/fixtures/maccabi/vaccinations.html": {
@@ -275,8 +275,8 @@
     "semantic_hash": ""
   },
   "tools/calibrate/view-cli.ts": {
-    "mtime": 1787385358.1667082,
-    "ast_hash": "79f5997ed0368f831c1432b045bd8d85",
+    "mtime": 1787389666.201567,
+    "ast_hash": "41eb1f998e82f1ed645e72d06d6548bd",
     "semantic_hash": ""
   },
   "test/tools/calibrate/fund-start-urls.test.ts": {
@@ -297,6 +297,16 @@
   "test/fixtures/maccabi/form17/list.html": {
     "mtime": 1787387327.1564498,
     "ast_hash": "6d74ecb1ef60615909726159b71ff0fb",
+    "semantic_hash": ""
+  },
+  "test/tools/calibrate/view-browser.test.ts": {
+    "mtime": 1787389648.9903963,
+    "ast_hash": "439255369b8bff90f8b0ec61d95c9f58",
+    "semantic_hash": ""
+  },
+  "tools/calibrate/view-browser.ts": {
+    "mtime": 1787389666.2000515,
+    "ast_hash": "648e0f93ad7f7fcad1372c73ee8075ea",
     "semantic_hash": ""
   }
 }
