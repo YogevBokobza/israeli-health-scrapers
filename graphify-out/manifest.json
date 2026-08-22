@@ -70,8 +70,8 @@
     "semantic_hash": "56216c69adc8f3c560ae823fdf0eb970"
   },
   "src/scrapers/maccabi.ts": {
-    "mtime": 1787388413.5737586,
-    "ast_hash": "09977bc9d8ce0f4772eb2a458ea07fb2",
+    "mtime": 1787388872.753683,
+    "ast_hash": "c107ac323be7f6e1e5230c4e3d50a8ca",
     "semantic_hash": ""
   },
   "src/scrapers/mock.ts": {
@@ -95,8 +95,8 @@
     "semantic_hash": "882dbf6583cc1cb242eec84e0ae72adb"
   },
   "test/scrapers/maccabi-dom.test.ts": {
-    "mtime": 1787388230.0585258,
-    "ast_hash": "4858ba28e5da3ff69b645347ead419a0",
+    "mtime": 1787388872.7583528,
+    "ast_hash": "33551f7b8e3423b72425d8ee82299148",
     "semantic_hash": ""
   },
   "test/scrapers/maccabi.test.ts": {
@@ -160,8 +160,8 @@
     "semantic_hash": "e4f4213d90ae1f37cc7a11307e42ebe7"
   },
   ".claude/CLAUDE.md": {
-    "mtime": 1787386006.4829204,
-    "ast_hash": "abdcea7ef842cab575539ab3a0e5cf44",
+    "mtime": 1787388562.6100678,
+    "ast_hash": "e8899a4bd12fa5d82afa943b8ecaa817",
     "semantic_hash": ""
   },
   "test/fixtures/maccabi/vaccinations.html": {

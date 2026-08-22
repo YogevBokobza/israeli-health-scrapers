@@ -1,16 +1,16 @@
 # Graph Report - israeli-health-scrapers  (2026-08-22)
 
 ## Corpus Check
-- 52 files · ~27,139 words
+- 52 files · ~27,159 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 438 nodes · 973 edges · 19 communities (17 shown, 2 thin omitted)
+- 438 nodes · 975 edges · 19 communities (17 shown, 2 thin omitted)
 - Extraction: 97% EXTRACTED · 3% INFERRED · 0% AMBIGUOUS · INFERRED: 25 edges (avg confidence: 0.8)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `03226945`
+- Built from commit: `cf931b42`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -22,7 +22,7 @@
 - Maccabi Valid Prescriptions Fixture
 - compilerOptions
 - Israeli Health Scrapers Project Instructions
-- fund-bindings.ts
+- flow-view.ts
 - compilerOptions
 - AES-256-GCM Session Storage
 - Codebase Intelligence for israeli-health-scrapers (Repowise)
@@ -73,8 +73,8 @@ Cohesion: 0.07
 Nodes (44): appointmentSchema, FetchTarget, form17RequestSchema, HealthAccount, healthAccountSchema, HealthFundTypes, isoDateSchema, LoginMethod (+36 more)
 
 ### Community 1 - "capture.ts"
-Cohesion: 0.13
-Nodes (26): FETCH_TARGETS, pageWithButton(), BootstrapArgs, CaptureButtonResult, captureButtonScript(), injectCaptureButton(), installCaptureButton(), captureSnapshot() (+18 more)
+Cohesion: 0.11
+Nodes (29): playwright, FETCH_TARGETS, chromiumExecutablePath(), launchTestBrowser(), pageWithButton(), BootstrapArgs, CaptureButtonResult, captureButtonScript() (+21 more)
 
 ### Community 2 - "package.json"
 Cohesion: 0.05
@@ -82,7 +82,7 @@ Nodes (40): dependencies, playwright, zod, description, devDependencies, tsx, @t
 
 ### Community 3 - "base-scraper-with-browser.ts"
 Cohesion: 0.14
-Nodes (17): clickFirst(), fillFirst(), typeFirst(), waitUntil(), BaseScraperWithBrowser, conditionMatches(), LOGIN_RESULT_ERRORS, LoginCondition (+9 more)
+Nodes (18): clickFirst(), elementExists(), fillFirst(), typeFirst(), waitUntil(), BaseScraperWithBrowser, conditionMatches(), LOGIN_RESULT_ERRORS (+10 more)
 
 ### Community 4 - "Maccabi Valid Prescriptions Fixture"
 Cohesion: 0.10
@@ -96,9 +96,9 @@ Nodes (24): node_modules, src/**/*.ts, test, compilerOptions, declaration, decla
 Cohesion: 0.10
 Nodes (22): BaseScraper Lifecycle, Scraper Contract Suite, Declarative Login State Machine, Encrypted Session Persistence, health-mcp Consumer, israeli-bank-scrapers, Maccabi Calibrated Scraper, Israeli Health Scrapers Project Instructions (+14 more)
 
-### Community 7 - "fund-bindings.ts"
-Cohesion: 0.10
-Nodes (31): playwright, maccabiAppointmentBindingDefinition, maccabiAppointmentDetailBindingDefinition, maccabiForm17BindingDefinition, maccabiLoginBindingDefinition, maccabiMedicationBindingDefinition, maccabiTestResultBindingDefinition, maccabiVaccinationBindingDefinition (+23 more)
+### Community 7 - "flow-view.ts"
+Cohesion: 0.23
+Nodes (15): BindingDefinition, BindingResolution, ResolvedBinding, resolveSnapshotBindings(), TargetBindingDefinition, buildFlowView(), escapeHtml(), FlowStep (+7 more)
 
 ### Community 8 - "compilerOptions"
 Cohesion: 0.12
@@ -109,8 +109,8 @@ Cohesion: 0.18
 Nodes (9): Architecture, Code health, Codebase Intelligence for israeli-health-scrapers (Repowise), Commands, Entry points, Files that need care (bug-fix history first, then churn — check `get_risk` before editing), How to work in this repo, Key modules (+1 more)
 
 ### Community 12 - "maccabi.ts"
-Cohesion: 0.08
-Nodes (47): Appointment, Form17Request, Medication, TestResult, Vaccination, deriveExpiry(), formatOffset(), isBlank() (+39 more)
+Cohesion: 0.06
+Nodes (59): Appointment, Form17Request, Medication, TestResult, Vaccination, deriveExpiry(), formatOffset(), isBlank() (+51 more)
 
 ### Community 13 - "cli.ts"
 Cohesion: 0.15
@@ -140,17 +140,17 @@ Nodes (4): Calibration by user-driven capture + agent reconstruction, Consequenc
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `playwright` connect `fund-bindings.ts` to `index.ts`, `capture.ts`, `package.json`, `base-scraper-with-browser.ts`, `maccabi.ts`, `cli.ts`?**
+- **Why does `playwright` connect `capture.ts` to `index.ts`, `package.json`, `base-scraper-with-browser.ts`, `flow-view.ts`, `maccabi.ts`, `cli.ts`?**
   _High betweenness centrality (0.149) - this node is a cross-community bridge._
-- **Why does `keywords` connect `package.json` to `fund-bindings.ts`?**
+- **Why does `keywords` connect `package.json` to `capture.ts`?**
   _High betweenness centrality (0.114) - this node is a cross-community bridge._
 - **What connects `name`, `version`, `description` to the rest of the system?**
   _134 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `index.ts` be split into smaller, more focused modules?**
   _Cohesion score 0.06846635367762129 - nodes in this community are weakly interconnected._
 - **Should `capture.ts` be split into smaller, more focused modules?**
-  _Cohesion score 0.12941176470588237 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.1141025641025641 - nodes in this community are weakly interconnected._
 - **Should `package.json` be split into smaller, more focused modules?**
   _Cohesion score 0.04878048780487805 - nodes in this community are weakly interconnected._
 - **Should `base-scraper-with-browser.ts` be split into smaller, more focused modules?**
-  _Cohesion score 0.14112903225806453 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.14204545454545456 - nodes in this community are weakly interconnected._

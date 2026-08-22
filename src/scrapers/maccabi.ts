@@ -737,9 +737,14 @@ export async function expandForm17Details(page: Page): Promise<void> {
   const rows = page.locator(selectors.form17Row[0]);
   const count = await rows.count();
   for (let index = 0; index < count; index += 1) {
-    const trigger = rows.nth(index).locator('[aria-expanded]').first();
+    const row = rows.nth(index);
+    const trigger = row.locator('[aria-expanded]').first();
     if ((await trigger.count()) > 0 && (await trigger.getAttribute('aria-expanded')) !== 'true') {
       await trigger.click();
+      await row
+        .locator('[role="region"][class*="ExpandedItem__wrapExpandedItem"]')
+        .first()
+        .waitFor({ state: 'attached' });
     }
   }
 }
@@ -1072,6 +1077,7 @@ export class MaccabiScraper extends BaseScraperWithBrowser {
       throw new SelectorDriftError('a logged-in Form 17 requests page', diagnostics);
     }
     await waitUntil(async () => elementExists(page, selectors.form17Row), 8_000);
+    await loadAllForm17Rows(page);
     await expandForm17Details(page);
     const requests = form17RowsToRequests(await scrapeForm17Rows(page));
     if (requests.length === 0) {

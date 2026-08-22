@@ -422,10 +422,20 @@ describe.skipIf(!browserAvailable)('maccabi Form 17 extraction', () => {
   });
 
   it('opens each collapsed row before extraction', async () => {
-    await page.setContent(form17ListFixture.replaceAll(
-      'role="button" aria-expanded="false"',
-      'role="button" aria-expanded="false" onclick="this.setAttribute(\'aria-expanded\', \'true\')"',
-    ));
+    await page.setContent(form17ListFixture);
+    await page.locator('[role="listitem"] [aria-expanded]').evaluateAll((triggers) => {
+      for (const trigger of triggers) {
+        trigger.addEventListener('click', () => {
+          trigger.setAttribute('aria-expanded', 'true');
+          if (!trigger.parentElement?.querySelector('[role="region"]')) {
+            const detail = document.createElement('div');
+            detail.setAttribute('role', 'region');
+            detail.className = 'ExpandedItem__wrapExpandedItem';
+            trigger.parentElement?.append(detail);
+          }
+        });
+      }
+    });
 
     await expandForm17Details(page);
 
@@ -440,8 +450,12 @@ describe.skipIf(!browserAvailable)('maccabi Form 17 extraction', () => {
         </div>
       </div>
     `);
-    const expansion = expandForm17Details(page);
+    let resolved = false;
+    const expansion = expandForm17Details(page).then(() => {
+      resolved = true;
+    });
     await new Promise((resolve) => setTimeout(resolve, 300));
+    expect(resolved).toBe(false);
     await page.evaluate(`(function () {
       var button = document.querySelector('#delayed-form17 button');
       button.setAttribute('aria-expanded', 'true');
