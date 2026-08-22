@@ -4035,7 +4035,7 @@
       "label": "Commands",
       "file_type": "document",
       "source_file": ".claude/CLAUDE.md",
-      "source_location": "L59",
+      "source_location": "L60",
       "_origin": "ast",
       "id": "claude_claude_commands",
       "community": 11,
@@ -15442,7 +15442,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": ".claude/CLAUDE.md",
-      "source_location": "L59",
+      "source_location": "L60",
       "weight": 1.0,
       "_origin": "ast",
       "source": "claude_claude_codebase_intelligence_for_israeli_health_scrapers_repowise",
@@ -16340,5 +16340,5 @@
       "source_file": "test/fixtures/maccabi/medications.html"
     }
   ],
-  "built_at_commit": "cf931b4254d5e9f71f7e9f69974b5c4e72a56ce4"
+  "built_at_commit": "be06098ad7fcabdaacb1b73985ddbc88b5d1fac5"
 }
