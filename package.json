@@ -1,6 +1,6 @@
 {
   "name": "israeli-health-scrapers",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Scrapers for Israeli health funds (kupot holim) — read your own medical account data with a uniform, typed API.",
   "license": "MIT",
   "type": "module",
