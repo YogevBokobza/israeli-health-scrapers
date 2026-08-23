@@ -582,6 +582,24 @@ function memberPath(base: string, member: MaccabiMember): string {
 }
 
 /**
+ * The member id as the visit-history body wants it — a JSON number — or `null` when the
+ * id could not survive that conversion.
+ *
+ * `memberId` is a string everywhere else in this file: the URL path (`memberPath`) and
+ * the document query (`documentUrl`) both send it verbatim. Only the visit-history body
+ * names the member as a number, and a bare `Number()` there is a trap. A non-numeric id
+ * becomes `NaN` and a leading-zero id becomes the wrong integer — both silently — and
+ * `JSON.stringify` then writes `NaN` out as `null`. The endpoint answers that malformed
+ * body with an opaque 400 that reads like the bearer token drifted, pointing diagnosis at
+ * exactly the wrong thing. Accepting only a canonical run of digits lets the caller fail
+ * loudly, at the real cause, instead. (Israeli member ids are nine digits, well inside
+ * `Number.MAX_SAFE_INTEGER`, so the conversion is lossless once the shape is known good.)
+ */
+export function numericMemberId(memberId: string): number | null {
+  return /^[1-9][0-9]*$/.test(memberId) ? Number(memberId) : null;
+}
+
+/**
  * Who the API calls are about, plus the bearer token they are authorized with.
  *
  * The site's cookies alone get a 401 from this API: the SPA fetches a short-lived JWT
@@ -1727,13 +1745,27 @@ export class MaccabiScraper extends BaseScraperWithBrowser {
   /** The whole lobby in one call — no scrolling, no per-row clicking. */
   private async fetchPastVisitEntries(member: MaccabiMember): Promise<MaccabiVisitEntry[]> {
     const page = this.activePage;
+
+    // Every other call site sends memberId as the string it is; only this body wants a
+    // number. Guard the conversion so a non-numeric or leading-zero id fails here — in
+    // the error envelope, with a dump — instead of going out as a `null` member and
+    // coming back as an opaque 400 that would read like the token had drifted.
+    const memberId = numericMemberId(member.memberId);
+    if (memberId === null) {
+      const diagnostics = await captureDiagnostics(page, this.options.companyId, 'pastvisits-member-id');
+      throw new SelectorDriftError(
+        'a numeric member id for the past visits request (session storage held a non-numeric one)',
+        diagnostics,
+      );
+    }
+
     const response = await this.apiRequest('the past visits list', () =>
       page.request.post(api.visitHistory(member), {
         headers: this.apiHeaders(member),
         data: {
           // The site names the member in the body as well as in the URL. Sent the same
           // way rather than working out which of the two the endpoint actually reads.
-          members: [{ member_id_code: member.memberIdCode, member_id: Number(member.memberId) }],
+          members: [{ member_id_code: member.memberIdCode, member_id: memberId }],
         },
       }),
     );

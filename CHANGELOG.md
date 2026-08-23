@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased]
+
+### Fixed
+- Maccabi past visits no longer coerce the member id with a bare `Number()` when building the visit-history request body. `memberId` is a string everywhere else (URL path, document query); only this body sent it as a number, and a non-numeric or leading-zero id would have become `NaN`/a wrong integer silently — `JSON.stringify` writing `NaN` out as `null` — so the API would answer an opaque 400 that reads like the bearer token drifted. A new `numericMemberId` guard rejects any non-canonical id up front, failing loudly in the error envelope (with diagnostics) instead. ([#42](https://github.com/YogevBokobza/israeli-health-scrapers/issues/42))
+
 ## [0.5.0] - 2026-08-23
 
 ### Added

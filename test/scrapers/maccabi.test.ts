@@ -8,6 +8,7 @@ import {
   documentUrl,
   form17RowToRequest,
   labValueToTestResultValue,
+  numericMemberId,
   prescriptionRowToMedication,
   testEntryToTestResult,
   vaccinationRowToVaccination,
@@ -26,7 +27,7 @@ import {
   matchLoginResult,
   type LoginOptions,
 } from '../../src/scrapers/base-scraper-with-browser.js';
-import { requestFailure } from '../../src/scrapers/errors.js';
+import { SelectorDriftError, requestFailure } from '../../src/scrapers/errors.js';
 import {
   HealthFundTypes,
   ScraperErrorTypes,
@@ -49,6 +50,11 @@ class TestableMaccabiScraper extends MaccabiScraper {
   labValues(member: MaccabiMember, entry: MaccabiTestEntry) {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return (this as any).fetchLabValues(member, entry);
+  }
+
+  pastVisitEntries(member: MaccabiMember) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return (this as any).fetchPastVisitEntries(member);
   }
 }
 
@@ -673,6 +679,93 @@ describe('visitEntryToPastVisit', () => {
     })!;
     expect(visit.doctorName).toBe('דר שרונה לב-ארי');
     expect(visit.specialty).toBe('רפואת משפחה');
+  });
+});
+
+describe('numericMemberId', () => {
+  it('returns the number for a canonical all-digits id', () => {
+    expect(numericMemberId('999999999')).toBe(999999999);
+    expect(numericMemberId('7')).toBe(7);
+  });
+
+  it('rejects a non-numeric id rather than coercing it to NaN', () => {
+    // Number('12a') is NaN, which JSON.stringify would then write out as `null`.
+    for (const bad of ['12a', '', ' 12', '12 ', '1.5', 'NaN', '-7', '1e3']) {
+      expect(numericMemberId(bad)).toBeNull();
+    }
+  });
+
+  it('rejects a leading-zero id rather than dropping the zero', () => {
+    // Number('007') is 7 — a different, wrong member — so this must not slip through.
+    expect(numericMemberId('007')).toBeNull();
+    expect(numericMemberId('0')).toBeNull();
+  });
+});
+
+/**
+ * The visit-history body is the one place a member id is sent as a JSON number instead
+ * of the string every other call site uses. The guard makes a malformed id fail here,
+ * loudly, instead of going out as a `null` member the API answers with an opaque 400.
+ */
+describe('fetchPastVisitEntries member id guard', () => {
+  function scraperRecording(response: unknown) {
+    const scraper = new TestableMaccabiScraper({ companyId: HealthFundTypes.maccabi });
+    const calls: Array<{ url: string; data: unknown }> = [];
+    const post = async (url: string, opts: { data: unknown }) => {
+      calls.push({ url, data: opts.data });
+      if (response instanceof Error) throw response;
+      return response;
+    };
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (scraper as any).page = { request: { post } };
+    return { scraper, calls };
+  }
+
+  function jsonResponse(body: unknown, { ok = true, status = 200 } = {}) {
+    return {
+      ok: () => ok,
+      status: () => status,
+      headers: () => ({ 'content-type': 'application/json' }),
+      json: async () => body,
+    };
+  }
+
+  const member: MaccabiMember = {
+    token: 'fictional.jwt.value',
+    memberId: '999999999',
+    memberIdCode: '0',
+    gender: 'ז',
+  };
+
+  it('sends the member id as a JSON number when it is canonical', async () => {
+    const { scraper, calls } = scraperRecording(jsonResponse({ results: [clinicVisitEntry] }));
+
+    await expect(scraper.pastVisitEntries(member)).resolves.toEqual([clinicVisitEntry]);
+    expect(calls).toHaveLength(1);
+    expect(calls[0]?.data).toEqual({
+      members: [{ member_id_code: '0', member_id: 999999999 }],
+    });
+  });
+
+  it('fails loudly on a non-numeric id and never sends the request', async () => {
+    const { scraper, calls } = scraperRecording(jsonResponse({ results: [] }));
+
+    await expect(scraper.pastVisitEntries({ ...member, memberId: '12a' })).rejects.toMatchObject({
+      errorType: ScraperErrorTypes.SelectorDrift,
+    });
+    await expect(scraper.pastVisitEntries({ ...member, memberId: '12a' })).rejects.toBeInstanceOf(
+      SelectorDriftError,
+    );
+    expect(calls).toHaveLength(0);
+  });
+
+  it('fails loudly on a leading-zero id rather than sending a different member', async () => {
+    const { scraper, calls } = scraperRecording(jsonResponse({ results: [] }));
+
+    await expect(scraper.pastVisitEntries({ ...member, memberId: '007' })).rejects.toBeInstanceOf(
+      SelectorDriftError,
+    );
+    expect(calls).toHaveLength(0);
   });
 });
 
