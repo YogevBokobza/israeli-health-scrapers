@@ -5,7 +5,6 @@ import {
   maccabiLoginBindingDefinition,
   maccabiForm17BindingDefinition,
   maccabiMedicationBindingDefinition,
-  maccabiTestResultBindingDefinition,
   maccabiVaccinationBindingDefinition,
 } from '../../src/scrapers/maccabi.js';
 import type { TargetBindingDefinition } from './binding-resolver.js';
@@ -28,9 +27,18 @@ const maccabiBindings: Record<string, TargetBindingDefinition<unknown>> = {
   login: eraseResultType(maccabiLoginBindingDefinition),
   medications: eraseResultType(maccabiMedicationBindingDefinition),
   appointments: eraseResultType(maccabiAppointmentBindingDefinition),
-  testResults: eraseResultType(maccabiTestResultBindingDefinition),
   vaccinations: eraseResultType(maccabiVaccinationBindingDefinition),
   form17: eraseResultType(maccabiForm17BindingDefinition),
+  // Read through the page's own JSON API rather than the DOM (see maccabi.ts), so there
+  // is no rendered element for the capture tool to bind a selector to.
+  testResults: {
+    bindings: [],
+    parse: async () => ({ status: 'not-dom-bound' }),
+  },
+  testResultDetails: {
+    bindings: [],
+    parse: async () => ({ status: 'not-dom-bound' }),
+  },
   messages: {
     bindings: [],
     parse: async () => ({ status: 'not-implemented' }),

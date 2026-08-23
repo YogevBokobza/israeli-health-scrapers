@@ -61,7 +61,7 @@ export abstract class BaseScraper implements Scraper {
   async scrape(credentials: ScraperCredentials): Promise<ScraperScrapingResult> {
     this.emitProgress(ScraperProgressTypes.StartScraping);
 
-    let result: ScraperScrapingResult;
+    let result: ScraperScrapingResult | undefined;
 
     try {
       this.emitProgress(ScraperProgressTypes.Initializing);
@@ -85,7 +85,11 @@ export abstract class BaseScraper implements Scraper {
       result = { success: false, ...toErrorResult(error) };
     } finally {
       this.emitProgress(ScraperProgressTypes.Terminating);
-      await this.terminate(false).catch(() => {});
+      // Passing the real outcome, not a constant `false`: terminate treats failure as
+      // the signal to dump the page, and a successful run does not need a copy of a
+      // logged-in medical page written to disk. An unset result means we never got
+      // past initialize, which is a failure.
+      await this.terminate(result?.success === true).catch(() => {});
     }
 
     this.emitProgress(ScraperProgressTypes.EndScraping);

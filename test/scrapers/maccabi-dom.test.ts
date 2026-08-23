@@ -13,11 +13,8 @@ import {
   scrapeAppointmentDetail,
   scrapeAppointmentRows,
   scrapeForm17Rows,
-  loadAllTestResultRows,
   loadAllForm17Rows,
   scrapePrescriptionRows,
-  scrapeTestResultRows,
-  testResultRowToTestResult,
   scrapeVaccinationRows,
   vaccinationRowToVaccination,
 } from '../../src/scrapers/maccabi.js';
@@ -37,7 +34,6 @@ const fixturesDir = path.join(path.dirname(fileURLToPath(import.meta.url)), '../
 const fixture = fs.readFileSync(path.join(fixturesDir, 'medications.html'), 'utf8');
 const appointmentsFixture = fs.readFileSync(path.join(fixturesDir, 'appointments.html'), 'utf8');
 const appointmentDetailFixture = fs.readFileSync(path.join(fixturesDir, 'appointment-detail.html'), 'utf8');
-const testResultsFixture = fs.readFileSync(path.join(fixturesDir, 'testResults.html'), 'utf8');
 const vaccinationsFixture = fs.readFileSync(path.join(fixturesDir, 'vaccinations.html'), 'utf8');
 const form17ListFixture = fs.readFileSync(path.join(fixturesDir, 'form17/list.html'), 'utf8');
 const form17ExpandedFixture = fs.readFileSync(path.join(fixturesDir, 'form17/expanded.html'), 'utf8');
@@ -171,7 +167,7 @@ describe.skipIf(!browserAvailable)('maccabi appointment detail extraction', () =
   });
 });
 
-describe.skipIf(!browserAvailable)('maccabi test-result extraction', () => {
+describe.skipIf(!browserAvailable)('maccabi vaccination extraction', () => {
   let browser: Browser;
   let page: Page;
 
@@ -181,7 +177,7 @@ describe.skipIf(!browserAvailable)('maccabi test-result extraction', () => {
 
     browser = launched;
     page = await browser.newPage();
-    await page.setContent(testResultsFixture);
+    await page.setContent(vaccinationsFixture);
   });
 
   afterAll(async () => {
@@ -295,86 +291,6 @@ describe.skipIf(!browserAvailable)('maccabi test-result extraction', () => {
 
     expect(rows).toHaveLength(2);
     expect(rows.map((row) => row.administeredOn)).toEqual(['09/09/2021', '08/08/2020']);
-  });
-
-  it('reads every timeline entry off the page', async () => {
-    await page.setContent(testResultsFixture);
-    const rows = await scrapeTestResultRows(page);
-    expect(rows).toHaveLength(3);
-  });
-
-  it('extracts the laboratory category, execution date, and referring doctor', async () => {
-    const rows = await scrapeTestResultRows(page);
-    expect(rows[0]).toEqual({
-      testName: 'מעבדה',
-      date: 'תאריך הבדיקה: 20/12/24',
-      timelineDate: '21/12/24',
-      orderingDoctor: 'דר דוגמה רונית',
-    });
-  });
-
-  it('combines a category and subtype into the timeline result name', async () => {
-    const rows = await scrapeTestResultRows(page);
-    expect(rows[1]?.testName).toBe('קרדיולוגיה | תוצאת בדיקה לדוגמה');
-  });
-
-  it('prefers the execution date and falls back to the timeline date', async () => {
-    const rows = await scrapeTestResultRows(page);
-    const testResults = rows.map((row) => testResultRowToTestResult(row));
-
-    expect(testResults[0]?.performedOn).toBe('2024-12-20');
-    expect(testResults[2]?.performedOn).toBe('2024-06-08');
-  });
-
-  it('loads every lazy timeline batch before extraction', async () => {
-    await page.setContent(`
-      <div data-hook="LazyLoading">
-        <div role="listitem" data-hook="TimeLineItem">first</div>
-        <div id="sentinel"></div>
-      </div>
-      <script>
-        let batch = 1;
-        let loading = false;
-        window.scrollTo = () => {
-          if (loading || batch > 2) return;
-          loading = true;
-          setTimeout(() => {
-            const row = document.createElement('div');
-            row.role = 'listitem';
-            row.dataset.hook = 'TimeLineItem';
-            row.textContent = String(++batch);
-            document.querySelector('[data-hook="LazyLoading"]').insertBefore(
-              row,
-              document.querySelector('#sentinel'),
-            );
-            setTimeout(() => { loading = false; }, 20);
-          }, 20);
-        };
-      </script>
-    `);
-
-    await loadAllTestResultRows(page, 30, 1_000);
-
-    expect(await page.locator('[role="listitem"][data-hook="TimeLineItem"]').count()).toBe(3);
-  });
-
-  it('ignores a matching component wrapper around a real timeline list item', async () => {
-    await page.setContent(`
-      <div role="list" data-hook="LazyLoading">
-        <div data-hook="TimeLineItem">
-          <div role="listitem" data-hook="TimeLineItem">
-            <div data-hook="TimeLineDate">21/12/24</div>
-            <div data-hook="HeaderTimeLineItem">קטגוריה לדוגמה</div>
-            <ul role="presentation">
-              <li data-hook="TestExecuteDate"><span>תאריך הבדיקה: 20/12/24</span></li>
-              <li><span>רופא מפנה: דר דוגמה רונית</span></li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    `);
-
-    await expect(scrapeTestResultRows(page)).resolves.toHaveLength(1);
   });
 });
 

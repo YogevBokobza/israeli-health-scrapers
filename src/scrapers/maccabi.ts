@@ -1,14 +1,17 @@
 import { createHash } from 'node:crypto';
-import type { Locator, Page } from 'playwright';
+import type { APIResponse, Locator, Page } from 'playwright';
 
 import {
   HealthFundTypes,
   type Appointment,
   type Form17Request,
   type HealthAccount,
+  type HealthDocument,
   type Medication,
   type ScraperCredentials,
   type TestResult,
+  type TestResultKind,
+  type TestResultValue,
   type Vaccination,
 } from '../definitions.js';
 import {
@@ -18,8 +21,15 @@ import {
   type LoginOptions,
   type LoginField,
 } from './base-scraper-with-browser.js';
-import { SelectorDriftError } from './errors.js';
-import { deriveExpiry, parseIsraeliDate, parseIsraeliDateTime, textOrNull } from '../helpers/dates.js';
+import { requestFailure, SelectorDriftError } from './errors.js';
+import {
+  deriveExpiry,
+  normalizeText,
+  parseIsraeliDate,
+  parseIsraeliDateTime,
+  textOrNull,
+} from '../helpers/dates.js';
+import { deriveReferenceStatus } from '../helpers/ranges.js';
 import { clickFirst, elementExists, fillFirst, waitUntil } from '../helpers/elements.js';
 import { captureDiagnostics } from '../helpers/debug.js';
 
@@ -29,9 +39,11 @@ import { captureDiagnostics } from '../helpers/debug.js';
  * Every Maccabi-specific URL and selector lives in this file. The site will change —
  * that is a certainty, not a risk — and when it does this is the only file to edit.
  *
- * NOTE: login, medications, appointments, test-results, vaccinations, and Form 17 selectors are calibrated
- * against a live account (see git history). On failure the scraper writes an HTML dump
- * under data/diagnostics, and the fix belongs in the constants below.
+ * NOTE: login, medications, appointments, vaccinations, and Form 17 selectors are
+ * calibrated against a live account (see git history). On failure the scraper writes an
+ * HTML dump under data/diagnostics, and the fix belongs in the constants below. Test
+ * results are the exception: they are read through the page's own JSON API instead of
+ * the rendered markup, for the reasons set out above that section.
  */
 
 const BASE_URL = 'https://online.maccabi4u.co.il';
@@ -96,9 +108,6 @@ const selectors = {
   appointmentAddressValue: ['[class*="ProviderDetails__providerInfo"]'],
   /** "הנחיות לפני ביקור" (pre-visit instructions), also only on the detail page. */
   appointmentInstructionItem: ['[class*="VisitInstructions__instructionItem"]'],
-  // The component can render a TimeLineItem wrapper around the actual list item. Match
-  // only semantic list entries so one visible result is not extracted twice.
-  testResultRow: ['[role="listitem"][data-hook="TimeLineItem"]'],
   vaccinationRow: ['[data-testid="vaccination-row"]'],
   form17Row: ['[data-hook="LazyLoading"] > [role="listitem"]'],
 } as const;
@@ -528,98 +537,301 @@ export const maccabiAppointmentDetailBindingDefinition = {
   parse: scrapeAppointmentDetail,
 } as const;
 
-/** One test-result row as read straight from the DOM, before interpretation. */
-export interface ScrapedTestResultRow {
-  testName: string | null;
-  /** The performance date shown on the row (e.g. "09/08/26"). */
-  date: string | null;
-  /** The date of the timeline entry, which can differ from the performance date. */
-  timelineDate: string | null;
-  orderingDoctor: string | null;
+/**
+ * Test results are read through the page's own JSON API, not the DOM.
+ *
+ * The rendered timeline carries a name and a date and nothing else — no ids, no
+ * per-entry authorization pair. The values and the document both hang off fields
+ * (`request_id`, `doc_id`, `time_stamp`, `hash`) that exist only in the API response
+ * the SPA itself calls, so there is no rendered element to select in the first place.
+ */
+const TEST_RESULTS_API = `${BASE_URL}/sonline/TestResultsAPI/webapi/mac`;
+
+const api = {
+  /** Every entry on the timeline, in one call. */
+  tests: (member: MaccabiMember): string => `${memberPath(TEST_RESULTS_API, member)}/tests`,
+  /** The measured values behind one laboratory entry. */
+  resultsById: (member: MaccabiMember): string =>
+    `${memberPath(TEST_RESULTS_API, member)}/getresultsbyid`,
+  /** One entry's result document. See documentUrl for the query it needs. */
+  document: `${TEST_RESULTS_API}/pdf/openfile`,
+} as const;
+
+function memberPath(base: string, member: MaccabiMember): string {
+  return `${base}/v1/members/${member.memberIdCode}/${member.memberId}`;
 }
 
 /**
- * Turns one scraped row into a `TestResult`.
+ * Who the API calls are about, plus the bearer token they are authorized with.
  *
- * Returns null when the row carries no parseable name or date — `testName` and
- * `performedOn` are the two fields that locate a result on a timeline, so a row we
- * cannot place is not one we can report.
+ * The site's cookies alone get a 401 from this API: the SPA fetches a short-lived JWT
+ * at start-up and sends it as `Authorization`. It keeps that token, the member id and
+ * the member's sex in `sessionStorage`, which is where these are read from — the
+ * alternative, decoding the JWT's own claims, would mean depending on the shape of a
+ * token that is explicitly none of our business.
+ *
+ * Sex is not cosmetic here: the fund returns sex-specific reference ranges, so sending
+ * the wrong one would return correct values against the wrong normal range.
  */
-export function testResultRowToTestResult(row: ScrapedTestResultRow): TestResult | null {
-  const testName = textOrNull(row.testName);
-  const performedOn = parseIsraeliDate(row.date);
-  if (!testName || !performedOn) return null;
+export interface MaccabiMember {
+  token: string;
+  memberId: string;
+  memberIdCode: string;
+  gender: string;
+}
 
-  const orderingDoctor = textOrNull(row.orderingDoctor);
+/** One entry as the timeline API returns it. Only the fields we read are declared. */
+export interface MaccabiTestEntry {
+  test_name?: string[] | null;
+  test_category?: string[] | null;
+  doc_id?: string | null;
+  doc_type_name?: string | null;
+  execute_date?: string | null;
+  result_date?: string | null;
+  category_name?: string | null;
+  is_partial?: boolean | null;
+  referrer_name?: string | null;
+  request_id?: string | null;
+  executing_institute?: string | null;
+  type?: string | null;
+  /** Present, non-empty, exactly when a downloadable document exists for the entry. */
+  result_files?: { result_file?: string | null }[] | null;
+  /** Together with `hash`, authorizes the document download. Minted per list response. */
+  time_stamp?: string | null;
+  hash?: string | null;
+}
 
-  // No stable id is exposed by the page, so one is derived from the fields that together
-  // identify a single result — stable across re-fetches, distinct from any other row.
-  const id = createHash('sha1')
-    .update([performedOn, parseIsraeliDate(row.timelineDate), testName, orderingDoctor].join('|'))
-    .digest('hex')
-    .slice(0, 16);
+/** One measured value as the per-result API returns it. */
+export interface MaccabiLabValue {
+  test_id?: string | null;
+  test_desc?: string | null;
+  min_lim?: number | null;
+  max_lim?: number | null;
+  result?: number | null;
+  units?: string | null;
+  message?: string | null;
+  is_vitek?: boolean | null;
+  vitek_row?: unknown[] | null;
+  message_list?: unknown[] | null;
+  lab_date?: string | null;
+}
+
+export interface MaccabiLabResultGroup {
+  group_name?: string | null;
+  group_values?: MaccabiLabValue[] | null;
+}
+
+/**
+ * How each `type` the timeline reports maps onto what can be read from the entry.
+ *
+ * `imaging_study` is the one that needs saying out loud: it is the films themselves,
+ * held in a viewer on another site, and it carries no `result_files`. Its report — the
+ * radiologist's פיענוח — arrives as a *separate* `imaging_result` entry on the same
+ * day, which is the one that has a PDF.
+ */
+const TEST_RESULT_KINDS: Record<string, TestResultKind> = {
+  lab_result: 'lab',
+  imaging_result: 'document',
+  external_test_result: 'document',
+  imaging_study: 'imaging',
+};
+
+/** Takes the date out of the API's `2026-08-02T08:32:00` / `…+03:00` timestamps. */
+function isoDateOf(value: string | null | undefined): string | null {
+  const match = /^(\d{4}-\d{2}-\d{2})/.exec(normalizeText(value));
+  return match?.[1] ?? null;
+}
+
+/**
+ * Turns one timeline entry into a `TestResult`.
+ *
+ * Returns null for an entry with neither a name nor a category to call it by, or with
+ * no identity to key it on — there is nothing useful to store about a result we can
+ * neither name nor recognize again on the next fetch.
+ */
+export function testEntryToTestResult(entry: MaccabiTestEntry): TestResult | null {
+  const type = textOrNull(entry.type);
+  const requestId = textOrNull(entry.request_id);
+  if (!type || !requestId) return null;
+
+  // The fund's own identity for the result, minus the member-id segment of `doc_id`
+  // (which adds nothing here and would put an id number in every stored row). Stable
+  // across fetches and unique per result, which a hash of name+date+doctor was not:
+  // two lab batches drawn on the same day for the same referrer are indistinguishable
+  // that way and would silently collapse into one row.
+  const id = `${type}::${requestId}`;
+
+  // What the member sees on the row: the broad name, then the specific procedure —
+  // "U.S | US כליות ודרכי שתן". Lab entries have only the broad name.
+  const testName =
+    [...(entry.test_name ?? []), ...(entry.test_category ?? [])]
+      .map((part) => textOrNull(part))
+      .filter((part): part is string => part !== null)
+      .join(' | ') ||
+    textOrNull(entry.category_name) ||
+    textOrNull(entry.doc_type_name);
+  if (!testName) return null;
 
   return {
     id,
     testName,
-    performedOn,
-    orderingDoctor,
+    performedOn: isoDateOf(entry.execute_date),
+    resultedOn: isoDateOf(entry.result_date),
+    orderingDoctor: textOrNull(entry.referrer_name),
+    category: textOrNull(entry.category_name),
+    kind: TEST_RESULT_KINDS[type] ?? 'other',
+    isPartial: entry.is_partial === true,
+    institute: textOrNull(entry.executing_institute),
+    documentAvailable: (entry.result_files ?? []).length > 0,
     provider: HealthFundTypes.maccabi,
+    raw: { type, requestId },
   };
 }
 
-/** Reads every test-result row off the page as plain strings. */
-export async function scrapeTestResultRows(page: Page): Promise<ScrapedTestResultRow[]> {
-  return page.evaluate((rowSelector) => {
-    const text = (el: Element | null) => {
-      const value = (el?.textContent ?? '')
-        .replace(/[‎‏‪-‮⁦-⁩]/g, '')
-        .replace(/\s+/g, ' ')
-        .trim();
-      return value.length > 0 ? value : null;
-    };
+/**
+ * Turns one measured value into a `TestResultValue`.
+ *
+ * Returns null for a value with no analyte name — the name is what makes a number
+ * mean anything, and a row without one cannot be compared to its own history.
+ */
+export function labValueToTestResultValue(
+  value: MaccabiLabValue,
+  groupName: string | null,
+): TestResultValue | null {
+  const name = textOrNull(value.test_desc);
+  if (!name) return null;
 
-    return Array.from(document.querySelectorAll(rowSelector)).map((row) => {
-      const titleParts = [
-        text(row.querySelector('[data-hook="HeaderTimeLineItem"]')),
-        ...Array.from(row.querySelectorAll('[data-hook="CategoryList_item"]')).map(text),
-      ].filter((part): part is string => part !== null);
-      const referringDoctor = Array.from(row.querySelectorAll('li, span'))
-        .map(text)
-        .find((value) => value?.startsWith('רופא מפנה:'));
+  // 0 and 0 is how this fund says "no reference range for this analyte" (eGFR, for
+  // instance). A genuine range that starts at zero still has a non-zero upper bound,
+  // so only the pair being zero means absent — a lone `min_lim: 0` is kept.
+  const bothZero = value.min_lim === 0 && value.max_lim === 0;
+  const referenceMin = bothZero ? null : numberOrNull(value.min_lim);
+  const referenceMax = bothZero ? null : numberOrNull(value.max_lim);
 
-      return {
-        testName: titleParts.length > 0 ? titleParts.join(' | ') : null,
-        date:
-          text(row.querySelector('[data-hook="TestExecuteDate"]')) ??
-          text(row.querySelector('[data-hook="TimeLineDate"]')),
-        timelineDate: text(row.querySelector('[data-hook="TimeLineDate"]')),
-        orderingDoctor: referringDoctor?.replace(/^רופא מפנה:\s*/, '') ?? null,
-      };
-    });
-  }, selectors.testResultRow[0]);
+  // Qualitative analytes (urine dipsticks, mostly) come back as a message with the
+  // numeric field left at 0. Reporting that 0 as the value would put a fabricated
+  // measurement into every trend the analyte appears in.
+  const text = textOrNull(value.message);
+  const numeric = numberOrNull(value.result);
+  const measured = text !== null && numeric === 0 ? null : numeric;
+
+  const vitek = value.is_vitek === true ? value.vitek_row ?? [] : [];
+  const messages = value.message_list ?? [];
+
+  return {
+    code: textOrNull(value.test_id),
+    name,
+    group: textOrNull(groupName),
+    value: measured,
+    text,
+    unit: textOrNull(value.units),
+    referenceMin,
+    referenceMax,
+    status: deriveReferenceStatus(measured, referenceMin, referenceMax),
+    measuredOn: isoDateOf(value.lab_date),
+    // Culture and sensitivity panels report a table this model has no shape for; it is
+    // kept verbatim rather than flattened into something that reads like a measurement.
+    ...(vitek.length > 0 || messages.length > 0
+      ? { raw: { ...(vitek.length > 0 ? { vitek } : {}), ...(messages.length > 0 ? { messages } : {}) } }
+      : {}),
+  };
 }
 
-export const maccabiTestResultBindingDefinition = {
-  bindings: [
-    {
-      field: 'rows',
-      selector: firstSelector(selectors.testResultRow),
-      valueFromResult: (rows: ScrapedTestResultRow[]) => rows,
-    },
-    {
-      field: 'testName',
-      selector: `${firstSelector(selectors.testResultRow)} [data-hook="HeaderTimeLineItem"], ${firstSelector(selectors.testResultRow)} [data-hook="CategoryList_item"]`,
-      valueFromResult: (rows: ScrapedTestResultRow[]) => rows.map((row) => row.testName),
-    },
-    {
-      field: 'date',
-      selector: `${firstSelector(selectors.testResultRow)} [data-hook="TestExecuteDate"], ${firstSelector(selectors.testResultRow)} [data-hook="TimeLineDate"]`,
-      valueFromResult: (rows: ScrapedTestResultRow[]) => rows.map((row) => row.date),
-    },
-  ],
-  parse: scrapeTestResultRows,
-} as const;
+function numberOrNull(value: unknown): number | null {
+  return typeof value === 'number' && Number.isFinite(value) ? value : null;
+}
+
+/**
+ * Builds the download URL for an entry's document.
+ *
+ * Two details are load-bearing and were both learned the hard way against the live
+ * site. `hash` arrives from the API already percent-encoded, so it is passed through
+ * untouched — encoding it again yields a 400. `doc_id` goes in verbatim, `::` and all.
+ * The hash is bound to that exact document: swapping in another `doc_id` while keeping
+ * the pair is refused.
+ */
+export function documentUrl(member: MaccabiMember, entry: MaccabiTestEntry): string | null {
+  const docId = textOrNull(entry.doc_id);
+  const timeStamp = textOrNull(entry.time_stamp);
+  const hash = textOrNull(entry.hash);
+  if (!docId || !timeStamp || !hash) return null;
+
+  return (
+    `${api.document}?memberidcode=${member.memberIdCode}&memberid=${member.memberId}` +
+    `&data=${docId}&t=${timeStamp}&hash=${encodeOnce(hash)}` +
+    `&loggedInUserGender=1&currentUsergender=1` +
+    `&memberIdForHeader=${member.memberId}&memberIdCodeForHeader=${member.memberIdCode}`
+  );
+}
+
+/**
+ * Percent-encodes a value the fund may already have percent-encoded.
+ *
+ * The document endpoint hands back a `hash` that is already encoded, and rejects a
+ * doubly-encoded one with a 400. Encoding only what is not yet encoded keeps that from
+ * being re-learned once.
+ */
+function encodeOnce(value: string): string {
+  return /%[0-9A-Fa-f]{2}/.test(value) ? value : encodeURIComponent(value);
+}
+
+/** A sensible suggested file name for a downloaded document: dated, named, safe on every OS. */
+function pdfFileName(date: string | null, label: string): string {
+  const slug = label
+    .replace(/[/\\?%*:|"<>]/g, '-')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .slice(0, 60);
+
+  return `${date ?? 'undated'} ${slug}.pdf`;
+}
+
+export function documentFileName(result: TestResult): string {
+  return pdfFileName(result.performedOn, result.testName);
+}
+
+/**
+ * Reads the member and bearer token the API calls need out of the SPA's session
+ * storage. Returns null until the app has finished booting and put them there.
+ */
+export async function readMaccabiMember(page: Page): Promise<MaccabiMember | null> {
+  let raw: { token: string | null; customer: string | null };
+  try {
+    raw = await page.evaluate(() => ({
+      token: window.sessionStorage.getItem('token'),
+      customer: window.sessionStorage.getItem('customerData'),
+    }));
+  } catch {
+    // A page mid-navigation, or one on an origin with no accessible storage, is not a
+    // page that has the token yet. Reported as "not ready" so the caller keeps waiting
+    // and ends on its own clear timeout rather than on a DOM exception from in here.
+    return null;
+  }
+
+  if (!raw.token || !raw.customer) return null;
+
+  let info: Record<string, unknown>;
+  try {
+    info =
+      (JSON.parse(raw.customer) as { current_customer_info?: Record<string, unknown> })
+        .current_customer_info ?? {};
+  } catch {
+    return null;
+  }
+
+  const memberId = info.member_id;
+  const memberIdCode = info.member_id_code;
+  if (memberId === undefined || memberId === null || memberIdCode === undefined || memberIdCode === null) {
+    return null;
+  }
+
+  return {
+    token: raw.token,
+    memberId: String(memberId),
+    memberIdCode: String(memberIdCode),
+    gender: typeof info.sex === 'string' ? info.sex : '',
+  };
+}
 
 export interface ScrapedForm17Row {
   id: string | null;
@@ -795,31 +1007,6 @@ export const maccabiLoginBindingDefinition = {
   }),
 } as const;
 
-/** Scrolls the lazy timeline until another scroll no longer appends rows. */
-export async function loadAllTestResultRows(
-  page: Page,
-  quietMs = 2_000,
-  timeoutMs = 30_000,
-): Promise<void> {
-  const rows = page.locator(selectors.testResultRow[0]);
-  const deadline = Date.now() + timeoutMs;
-  let count = await rows.count();
-  let lastGrowth = Date.now();
-
-  while (count > 0 && Date.now() < deadline) {
-    await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
-    await new Promise((resolve) => setTimeout(resolve, 100));
-
-    const nextCount = await rows.count();
-    if (nextCount > count) {
-      count = nextCount;
-      lastGrowth = Date.now();
-    } else if (Date.now() - lastGrowth >= quietMs) {
-      return;
-    }
-  }
-}
-
 /** Scrolls the Form 17 lazy timeline until another scroll no longer appends rows. */
 export async function loadAllForm17Rows(
   page: Page,
@@ -927,8 +1114,10 @@ export class MaccabiScraper extends BaseScraperWithBrowser {
       account.appointments = await this.fetchAppointments();
     }
 
-    if (targets.includes('testResults')) {
-      account.testResults = await this.fetchTestResults();
+    // testResultDetails is testResults plus a per-entry fetch, so asking for both is
+    // asking for the expensive one — not for the same timeline twice.
+    if (targets.includes('testResults') || targets.includes('testResultDetails')) {
+      account.testResults = await this.fetchTestResults(targets.includes('testResultDetails'));
     }
 
     if (targets.includes('vaccinations')) {
@@ -1037,8 +1226,14 @@ export class MaccabiScraper extends BaseScraperWithBrowser {
     return vaccinations;
   }
 
-  /** Reads past test results, newest first. */
-  private async fetchTestResults(): Promise<TestResult[]> {
+  /**
+   * Reads past test results, newest first.
+   *
+   * With `withDetails`, each laboratory entry's measured values and each entry's
+   * result document are fetched too — one request per result, so tens of requests
+   * rather than one. That is why it is a separate fetch target.
+   */
+  private async fetchTestResults(withDetails: boolean): Promise<TestResult[]> {
     const page = this.activePage;
     await page.goto(urls.testResults, { waitUntil: 'domcontentloaded' });
 
@@ -1047,27 +1242,255 @@ export class MaccabiScraper extends BaseScraperWithBrowser {
       throw new SelectorDriftError('a logged-in test results page', diagnostics);
     }
 
-    // This SPA route renders its rows client-side after the data request resolves;
-    // domcontentloaded fires before that — same race fetchMedications waits out.
-    await waitUntil(async () => elementExists(page, selectors.testResultRow), 8_000);
-    await loadAllTestResultRows(page);
+    // The app writes its bearer token to session storage while booting; domcontentloaded
+    // fires well before that — the same race the rendered rows had.
+    let member: MaccabiMember | null = null;
+    await waitUntil(async () => {
+      member = await readMaccabiMember(page);
+      return member !== null;
+    }, 15_000);
 
-    const testResults = (await scrapeTestResultRows(page))
-      .map((row) => testResultRowToTestResult(row))
-      .filter((testResult): testResult is TestResult => testResult !== null);
+    if (!member) {
+      const diagnostics = await captureDiagnostics(page, this.options.companyId, 'testresults-no-token');
+      throw new SelectorDriftError(
+        "the test-results API token in the page's session storage",
+        diagnostics,
+      );
+    }
+
+    // Each result is kept paired with the entry it came from: the detail fetch needs
+    // that entry's request/document parameters, and pairing them here is what keeps the
+    // two from being re-matched later by re-deriving the id a second way.
+    const scraped = (await this.fetchTestResultEntries(member))
+      .map((entry) => ({ entry, result: testEntryToTestResult(entry) }))
+      .filter((pair): pair is { entry: MaccabiTestEntry; result: TestResult } => pair.result !== null);
+
+    const testResults = scraped.map((pair) => pair.result);
 
     if (testResults.length === 0) {
-      // Same reasoning as fetchMedications: an empty list and a page we failed to read
-      // look identical, so a dump is kept without treating "none" as an error.
+      // Same reasoning as fetchMedications: an empty history and a response we failed to
+      // read look identical, so a dump is kept without treating "none" as an error.
       const diagnostics = await captureDiagnostics(page, this.options.companyId, 'testresults-empty');
-      this.log('no test result rows found', { diagnostics });
+      this.log('no test results returned', { diagnostics });
     }
 
     // Newest first — that is the order the question is actually asked in. Unknown dates
     // sort last rather than masquerading as recent.
     testResults.sort((a, b) => (b.performedOn ?? '').localeCompare(a.performedOn ?? ''));
 
+    if (withDetails) await this.fetchTestResultDetails(member, scraped);
+
     return testResults;
+  }
+
+  /** The whole timeline in one call — no scrolling, no per-row clicking. */
+  private async fetchTestResultEntries(member: MaccabiMember): Promise<MaccabiTestEntry[]> {
+    const page = this.activePage;
+    const response = await this.apiRequest('the test-results list', () =>
+      page.request.post(api.tests(member), {
+        headers: this.apiHeaders(member),
+        data: {
+          members: [],
+          categories: [],
+          logged_user_gender: member.gender,
+          current_user_gender: member.gender,
+        },
+      }),
+    );
+
+    if (!response.ok()) {
+      const diagnostics = await captureDiagnostics(page, this.options.companyId, 'testresults-list-failed');
+      throw new SelectorDriftError(
+        `a test-results list (the API answered ${response.status()})`,
+        diagnostics,
+      );
+    }
+
+    const body = (await response.json().catch(() => null)) as {
+      tests?: MaccabiTestEntry[];
+    } | null;
+
+    // A 200 whose body is not a list of tests is drift, not an empty history. Saying so
+    // is the difference between "you have no test results" and "we could not read them".
+    if (!Array.isArray(body?.tests)) {
+      const diagnostics = await captureDiagnostics(page, this.options.companyId, 'testresults-list-shape');
+      throw new SelectorDriftError('a `tests` array in the test-results API response', diagnostics);
+    }
+
+    return body.tests;
+  }
+
+  /**
+   * Fills in each result's values and document, in place.
+   *
+   * Best-effort per result, like the appointment detail page: one lab batch the fund
+   * refuses to expand, or one document that will not download, is logged and skipped
+   * rather than losing the other seventy. The entries are walked one at a time — this
+   * is a member's own account, and firing sixty concurrent requests at it to save a
+   * minute on a fetch nobody is watching is not a trade worth making.
+   */
+  private async fetchTestResultDetails(
+    member: MaccabiMember,
+    scraped: { entry: MaccabiTestEntry; result: TestResult }[],
+  ): Promise<void> {
+    const since = this.options.testResultDetailsSince;
+
+    for (const { entry, result } of scraped) {
+      if (since && (result.performedOn ?? '') < since) continue;
+
+      if (result.kind === 'lab') {
+        const values = await this.fetchLabValues(member, entry);
+        if (values) result.values = values;
+      }
+
+      if (result.documentAvailable) {
+        const document = await this.fetchTestResultDocument(member, entry, result);
+        if (document) result.document = document;
+      }
+    }
+  }
+
+  private async fetchLabValues(
+    member: MaccabiMember,
+    entry: MaccabiTestEntry,
+  ): Promise<TestResultValue[] | null> {
+    // Best-effort, as the caller's comment promises: a transport failure on one batch
+    // skips that batch rather than aborting a fetch that has already collected seventy.
+    const response = await this.apiRequest('a lab result', () =>
+      this.activePage.request.post(api.resultsById(member), {
+        headers: this.apiHeaders(member),
+        data: {
+          request_id: entry.request_id,
+          doc_id: entry.doc_id,
+          logged_user_gender: member.gender,
+          current_user_gender: member.gender,
+        },
+      }),
+    ).catch((error: unknown) => {
+      this.log('could not reach a lab result', {
+        requestId: entry.request_id,
+        reason: error instanceof Error ? error.message : String(error),
+      });
+      return null;
+    });
+
+    if (!response) return null;
+
+    if (!response.ok()) {
+      this.log('could not read a lab result', {
+        requestId: entry.request_id,
+        status: response.status(),
+      });
+      return null;
+    }
+
+    const body = (await response.json().catch(() => null)) as {
+      results?: MaccabiLabResultGroup[];
+    } | null;
+
+    // Only an actual array of groups means "this is the fund's answer". A 200 carrying
+    // something else — a renamed or re-nested field, an error object, the browser-facing
+    // error page this endpoint's sibling is known to return with a 200 — must report
+    // "not read", never an empty list: a consumer is entitled to treat an empty list as
+    // "the fund has no values for this batch" and drop the ones it already had.
+    if (!Array.isArray(body?.results)) {
+      this.log('a lab result came back in an unrecognized shape', {
+        requestId: entry.request_id,
+        status: response.status(),
+        contentType: response.headers()['content-type'],
+      });
+      return null;
+    }
+
+    return body.results.flatMap((group) =>
+      (group.group_values ?? [])
+        .map((value) => labValueToTestResultValue(value, group.group_name ?? null))
+        .filter((value): value is TestResultValue => value !== null),
+    );
+  }
+
+  private async fetchTestResultDocument(
+    member: MaccabiMember,
+    entry: MaccabiTestEntry,
+    result: TestResult,
+  ): Promise<HealthDocument | null> {
+    const url = documentUrl(member, entry);
+    if (!url) {
+      this.log('a result document has no download parameters', { id: result.id });
+      return null;
+    }
+
+    return this.fetchPdf('a result document', url, member, documentFileName(result), {
+      id: result.id,
+    });
+  }
+
+  /**
+   * Downloads one document and decides whether what came back is one.
+   *
+   * The trap here is that the endpoint answers a browser-facing error page with a 200
+   * for a rejected hash, so the file's own magic number decides whether this is a
+   * document, not the status. Best-effort like every other per-entry fetch: one document
+   * that will not download is logged and skipped, not raised over the whole run.
+   */
+  private async fetchPdf(
+    what: string,
+    url: string,
+    member: MaccabiMember,
+    fileName: string,
+    context: Record<string, unknown>,
+  ): Promise<HealthDocument | null> {
+    const response = await this.apiRequest(what, () =>
+      this.activePage.request.get(url, { headers: { authorization: `Bearer ${member.token}` } }),
+    ).catch((error: unknown) => {
+      this.log(`could not reach ${what}`, {
+        ...context,
+        reason: error instanceof Error ? error.message : String(error),
+      });
+      return null;
+    });
+
+    if (!response) return null;
+
+    const body = response.ok() ? await response.body() : Buffer.alloc(0);
+
+    if (body.subarray(0, 5).toString('latin1') !== '%PDF-') {
+      this.log(`${what} did not come back as a PDF`, {
+        ...context,
+        status: response.status(),
+        contentType: response.headers()['content-type'],
+      });
+      return null;
+    }
+
+    return {
+      fileName,
+      contentType: 'application/pdf',
+      byteLength: body.length,
+      content: body.toString('base64'),
+    };
+  }
+
+  /**
+   * Sends one API request, converting a transport failure into an error stripped of the
+   * credentials Playwright puts in its call log (see `requestFailure`). Every
+   * authenticated request in this file goes through here — the bearer token is in each
+   * one's headers, and the member id is in each one's URL.
+   */
+  private async apiRequest(what: string, send: () => Promise<APIResponse>): Promise<APIResponse> {
+    try {
+      return await send();
+    } catch (error) {
+      throw requestFailure(what, error);
+    }
+  }
+
+  private apiHeaders(member: MaccabiMember): Record<string, string> {
+    return {
+      authorization: `Bearer ${member.token}`,
+      'content-type': 'application/json',
+      accept: 'application/json, text/plain, */*',
+    };
   }
 
   /** Reads Form 17 commitment requests, newest status update first. */

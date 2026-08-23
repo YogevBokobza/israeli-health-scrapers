@@ -84,6 +84,14 @@ export interface ScraperOptions {
   /** Which parts of the account to fetch. Defaults to medications only. */
   fetch?: FetchTarget[];
 
+  /**
+   * With `testResultDetails`, only fetch the values and documents of results performed
+   * on or after this ISO date. The timeline itself is always returned in full — this
+   * bounds only the expensive per-result work, so a caller refreshing weekly does not
+   * re-download a decade of history every time.
+   */
+  testResultDetailsSince?: string;
+
   onProgress?: (companyId: HealthFundId, type: ScraperProgressTypes) => void;
 }
 
@@ -97,6 +105,13 @@ export const FETCH_TARGETS = [
   'appointments',
   'messages',
   'testResults',
+  /**
+   * The timeline plus, per entry, the measured values (lab results) or the result
+   * document (imaging and other report-backed results). Its own target rather than a
+   * flag on `testResults` because it costs one request per result instead of one in
+   * total.
+   */
+  'testResultDetails',
   'vaccinations',
   'form17',
 ] as const;
@@ -169,17 +184,95 @@ export const messageSchema = z.object({
 export type Message = z.infer<typeof messageSchema>;
 
 /**
- * One dated entry on a fund's test-results timeline. It may represent a laboratory batch,
- * imaging report, or another category rather than an individual laboratory analyte.
- * Detail-page fields such as values, units, and reference ranges are outside this model.
+ * Where a measured value sits relative to its reference range.
+ *
+ * Derived in a shared helper (`deriveReferenceStatus`) rather than per fund, for the
+ * same reason `deriveExpiry` is shared: "was this result abnormal" has to mean the same
+ * thing everywhere, and no caller should be comparing numbers to parse a range itself.
+ */
+export const referenceStatusSchema = z.enum(['below', 'within', 'above', 'unknown']);
+export type ReferenceStatus = z.infer<typeof referenceStatusSchema>;
+
+/** One measured quantity inside a laboratory result — an analyte and its value. */
+export const testResultValueSchema = z.object({
+  /** The fund's own code for this analyte, stable across results. Null when unnamed. */
+  code: z.string().nullable(),
+  name: z.string().min(1),
+  /** The panel this analyte was reported under ("כימיה בדם"). */
+  group: z.string().nullable(),
+  /** The measured number, when the result is numeric. */
+  value: z.number().nullable(),
+  /**
+   * The result as text, for qualitative analytes ("NEGATIVE") and for anything the fund
+   * reports as a note rather than a number. Kept separate from `value` so a qualitative
+   * result is never mistaken for a numeric zero.
+   */
+  text: z.string().nullable(),
+  unit: z.string().nullable(),
+  referenceMin: z.number().nullable(),
+  referenceMax: z.number().nullable(),
+  status: referenceStatusSchema,
+  /** ISO date this individual analyte was measured; can differ from the batch's date. */
+  measuredOn: isoDateSchema.nullable(),
+  raw: z.record(z.unknown()).optional(),
+});
+export type TestResultValue = z.infer<typeof testResultValueSchema>;
+
+/**
+ * A record a fund hands back as a file rather than as fields — an imaging report, a
+ * bone density report, any result document.
+ *
+ * Carried as bytes, not written to disk: this library owns no storage beyond session
+ * cookies, so where a member's medical documents end up is the consumer's decision.
+ */
+export const documentSchema = z.object({
+  fileName: z.string().min(1),
+  contentType: z.string().min(1),
+  byteLength: z.number().int().positive(),
+  /** base64-encoded file content. */
+  content: z.string().min(1),
+});
+export type HealthDocument = z.infer<typeof documentSchema>;
+
+/**
+ * What kind of result an entry is, which decides what can be read from it.
+ *
+ * `lab` carries measured values; `document` is a report available as a file; `imaging`
+ * is a study (the films themselves) that the fund only shows in its own viewer, so it
+ * has a date and a name but nothing this library can hand back; `other` is an entry
+ * whose kind the scraper did not recognize, kept rather than dropped.
+ */
+export const testResultKindSchema = z.enum(['lab', 'document', 'imaging', 'other']);
+export type TestResultKind = z.infer<typeof testResultKindSchema>;
+
+/**
+ * One dated entry on a fund's test-results timeline: a laboratory batch, an imaging
+ * report, or another category rather than an individual laboratory analyte.
+ *
+ * `values` and `document` are populated only by the `testResultDetails` fetch target —
+ * absent means "not fetched", which is different from `documentAvailable: false`
+ * ("the fund has no file for this entry").
  */
 export const testResultSchema = z.object({
   id: z.string(),
   testName: z.string().min(1),
   /** ISO date (YYYY-MM-DD) the test was performed. */
   performedOn: isoDateSchema.nullable(),
+  /** ISO date the result was issued, which can be days after it was performed. */
+  resultedOn: isoDateSchema.nullable(),
   orderingDoctor: z.string().nullable(),
+  /** The fund's category for the entry ("מעבדה", "אולטרסאונד"). */
+  category: z.string().nullable(),
+  kind: testResultKindSchema,
+  /** The fund flags a batch whose remaining values have not been reported yet. */
+  isPartial: z.boolean(),
+  /** Who performed it, when the fund says (usually only for outsourced tests). */
+  institute: z.string().nullable(),
+  /** Whether a downloadable file exists for this entry, fetched or not. */
+  documentAvailable: z.boolean(),
   provider: providerIdSchema,
+  values: z.array(testResultValueSchema).optional(),
+  document: documentSchema.optional(),
   raw: z.record(z.unknown()).optional(),
 });
 export type TestResult = z.infer<typeof testResultSchema>;
