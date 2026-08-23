@@ -123,17 +123,18 @@ export interface ScrapedPrescriptionRow {
 /**
  * Turns one scraped row into a `Medication`.
  *
- * Returns null for a row with no drug name (a layout artifact) or without the
- * standing-medication badge — this fund's ValidPrescriptions view can include
- * one-off prescriptions alongside standing ones, and only the latter is what
- * "standing prescriptions + expiry" means.
+ * Returns null only for a row with no drug name (a layout artifact). This fund's
+ * ValidPrescriptions view lists one-off prescriptions alongside standing ones, and
+ * both are returned — `isStanding` carries the "תרופה קבועה" badge so a caller can
+ * filter to standing prescriptions itself rather than the scraper silently dropping
+ * the one-off ones.
  */
 export function prescriptionRowToMedication(
   row: ScrapedPrescriptionRow,
   now: Date = new Date(),
 ): Medication | null {
   const name = textOrNull(row.name);
-  if (!name || !row.isStanding) return null;
+  if (!name) return null;
 
   const validUntil = parseIsraeliDate(row.date);
   const { daysUntilExpiry, status } = deriveExpiry(validUntil, now);
@@ -148,6 +149,7 @@ export function prescriptionRowToMedication(
     refillsRemaining: null,
     daysUntilExpiry,
     status,
+    isStanding: row.isStanding,
     provider: HealthFundTypes.maccabi,
   };
 }

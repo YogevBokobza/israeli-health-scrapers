@@ -4,12 +4,12 @@
   Structurally captured from a real logged-in session (not the actual medical data —
   every drug name, doctor, and date below is invented). Each prescription is a card in
   a `[data-testid="prescription-row"]` list, not a <table>. A "תרופה קבועה" (standing
-  medication) badge distinguishes a standing prescription from a one-off; only the
-  former is a `Medication` we surface.
+  medication) badge distinguishes a standing prescription from a one-off; both become
+  a `Medication`, and the badge sets `isStanding`.
 
-  It deliberately includes: a standing row, a one-off row with no badge (must be
-  filtered out), a two-digit year, and a row missing its name (a layout artifact that
-  must not survive parsing).
+  It deliberately includes: a standing row, a one-off row with no badge (surfaced with
+  isStanding false), a two-digit year, and a row missing its name (a layout artifact
+  that must not survive parsing).
 -->
 <div role="list" data-hook="LazyLoading">
   <div role="listitem" data-testid="prescription-row">
@@ -31,7 +31,7 @@
   </div>
 
   <div role="listitem" data-testid="prescription-row">
-    <!-- No Badge: a one-off prescription, not a standing one. Must be dropped. -->
+    <!-- No Badge: a one-off prescription. Surfaced with isStanding false. -->
     <div data-hook="TimeLineDate">20/01/26</div>
     <div class="TimeLineItem-module__header___gW2KR">TESTOPRIL 100MG TAB 30</div>
     <div class="MedicationsTimelineRow__specializationRow___WuCpD">

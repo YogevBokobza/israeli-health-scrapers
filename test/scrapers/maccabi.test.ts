@@ -87,12 +87,22 @@ describe('prescriptionRowToMedication', () => {
     expect(medication.daysUntilExpiry).toBeLessThan(0);
   });
 
-  it('drops a one-off prescription that carries no standing badge', () => {
-    expect(prescriptionRowToMedication({ ...standingRow, isStanding: false }, NOW)).toBeNull();
+  it('flags a standing prescription with isStanding true', () => {
+    expect(prescriptionRowToMedication(standingRow, NOW)?.isStanding).toBe(true);
   });
 
-  it('drops a row with no drug name', () => {
+  it('keeps a one-off prescription that carries no standing badge, flagged isStanding false', () => {
+    const medication = prescriptionRowToMedication({ ...standingRow, isStanding: false }, NOW)!;
+    expect(medication).not.toBeNull();
+    expect(medication.isStanding).toBe(false);
+    expect(medication.name).toBe(standingRow.name);
+  });
+
+  it('drops a row with no drug name, standing or not', () => {
     expect(prescriptionRowToMedication({ ...standingRow, name: null }, NOW)).toBeNull();
+    expect(
+      prescriptionRowToMedication({ ...standingRow, name: null, isStanding: false }, NOW),
+    ).toBeNull();
   });
 
   it('tags every row with the fund it came from', () => {

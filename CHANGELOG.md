@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.3.0] - 2026-08-23
+
+### Added
+- Added `isStanding` to the `Medication` model, flagging whether a prescription is a standing one (תרופה קבועה) rather than a one-off.
+
+### Changed
+- Maccabi `fetchMedications` now returns **every** valid prescription on the ValidPrescriptions page — both standing and one-off — instead of silently dropping the one-off rows. `prescriptionRowToMedication` sets `isStanding` from the row's standing-medication badge and only drops rows that have no drug name. Filtering to standing prescriptions is now the caller's choice.
+
+[0.3.0]: https://github.com/YogevBokobza/israeli-health-scrapers/compare/v0.2.1...v0.3.0
+
 ## [0.2.1] - 2026-08-23
 
 ### Fixed
