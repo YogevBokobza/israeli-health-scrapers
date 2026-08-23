@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased]
+
+### Added
+- Added a `pastVisits` fetch target for Maccabi: the visits lobby (ביקורים שעברו) as a list — visit datetime, treating doctor, specialty, whether the visit was digital, and whether the fund holds a summary (סיכום ביקור) for it. List-only by design; the summary text itself is the later `visitSummaries` resource.
+- Maccabi past visits are read through the page's own JSON API (`AppointmentOrderAPI`), not the DOM: the rendered rows carry no id at all, while the API's `appointment_id` is the stable fund-native identity a re-fetch must recognize — the same rationale as the test-results API. The list spans roughly the last year of visits (the page's own widest filter); there is no older history behind it. The list carries no location — the API exposes only an opaque facility id with no name — so the model has none.
+- Added `PastVisit` to the shared model and `pastVisits` to `HealthAccount`.
+
 ## [0.4.0] - 2026-08-23
 
 ### Added
