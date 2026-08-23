@@ -46,6 +46,26 @@ export class TimeoutError extends ScraperError {
   }
 }
 
+/**
+ * Rebuilds a failed HTTP request as an error that carries no credentials.
+ *
+ * Playwright appends a call log to the message of a failed request, and that log
+ * contains the request's URL *and every request header* — so a DNS blip on an
+ * authenticated call produces an error message containing the member's live bearer
+ * token and their member id. Those messages do not stay inside the process: a consumer
+ * stores them (health-mcp writes them to a `sync_runs` row an agent can read back) and
+ * prints them. Only the first line, which names the transport failure, is kept.
+ */
+export function requestFailure(what: string, error: unknown): ScraperError {
+  const raw = error instanceof Error ? error.message : String(error);
+  const reason = (raw.split('\n')[0] ?? '').replace(/Bearer\s+\S+/gi, 'Bearer <redacted>').trim();
+
+  return new ScraperError(
+    `${what} failed: ${reason}`,
+    /timeout/i.test(reason) ? ScraperErrorTypes.Timeout : ScraperErrorTypes.Generic,
+  );
+}
+
 /** Maps an unknown thrown value onto the result envelope's error fields. */
 export function toErrorResult(error: unknown): {
   errorType: ScraperErrorTypes;

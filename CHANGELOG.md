@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.4.0] - 2026-08-23
+
+### Added
+- Added a `testResultDetails` fetch target for Maccabi: per-entry laboratory values (analyte, value, unit, reference range, in/out-of-range status) and result documents (imaging reports, bone density reports, etc.), fetched one request per timeline entry. Bounded by the new `testResultDetailsSince` scraper option so a caller can skip re-fetching history already collected.
+- Added `TestResultValue` (one measured analyte) and `HealthDocument` (a result carried as a file, base64-encoded — this library owns no storage) to the shared model, plus `TestResultKind` (`lab` / `document` / `imaging` / `other`) and a shared `deriveReferenceStatus` helper so "was this abnormal" means the same thing at every fund.
+- `TestResult` grows `resultedOn`, `category`, `kind`, `isPartial`, `institute`, `documentAvailable`, and the optional `values`/`document` populated only by `testResultDetails`.
+
+### Changed
+- **Breaking:** Maccabi test results are now read through the page's own JSON API instead of the DOM — the rendered timeline carries no stable id and no document-authorization pair, both of which exist only in the API response. `testResultRowToTestResult`/`scrapeTestResultRows`/`loadAllTestResultRows` are removed; `testEntryToTestResult` replaces them.
+- **Breaking:** A test result's `id` is now the fund's own `type::request_id`, replacing a hash of name/date/doctor. The old hash collapsed two same-day batches for the same referrer into one row; the new id does not.
+
+### Fixed
+- Bearer tokens are now redacted from request-failure error messages (`requestFailure` in `src/scrapers/errors.ts`) — a network blip during an API call no longer risks writing a live token into an error message a caller might log.
+- A successfully completed scrape no longer dumps the logged-in page's HTML to `data/diagnostics/`; `terminate` is now told the real outcome instead of a hardcoded `false`.
+
+[0.4.0]: https://github.com/YogevBokobza/israeli-health-scrapers/compare/v0.3.0...v0.4.0
+
 ## [0.3.0] - 2026-08-23
 
 ### Added

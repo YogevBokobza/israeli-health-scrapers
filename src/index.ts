@@ -41,6 +41,10 @@ export {
   medicationSchema,
   appointmentSchema,
   messageSchema,
+  referenceStatusSchema,
+  testResultValueSchema,
+  documentSchema,
+  testResultKindSchema,
   testResultSchema,
   vaccinationSchema,
   form17RequestSchema,
@@ -59,6 +63,10 @@ export type {
   MedicationStatus,
   Appointment,
   Message,
+  ReferenceStatus,
+  TestResultValue,
+  HealthDocument,
+  TestResultKind,
   TestResult,
   Vaccination,
   Form17Request,
@@ -69,5 +77,6 @@ export type {
 export { EXPIRING_SOON_DAYS } from './constants.js';
 
 export { deriveExpiry, parseIsraeliDate, parseInteger, normalizeText } from './helpers/dates.js';
+export { deriveReferenceStatus } from './helpers/ranges.js';
 export { loadSession, saveSession, clearSession } from './helpers/session.js';
 export { dataRoot, sessionPath, diagnosticsDir } from './helpers/paths.js';

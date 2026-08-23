@@ -4,14 +4,19 @@ import { describe, expect, it } from 'vitest';
 import {
   MaccabiScraper,
   appointmentRowToAppointment,
+  documentFileName,
+  documentUrl,
   form17RowToRequest,
+  labValueToTestResultValue,
   prescriptionRowToMedication,
-  testResultRowToTestResult,
+  testEntryToTestResult,
   vaccinationRowToVaccination,
+  type MaccabiLabValue,
+  type MaccabiMember,
+  type MaccabiTestEntry,
   type ScrapedAppointmentRow,
   type ScrapedForm17Row,
   type ScrapedPrescriptionRow,
-  type ScrapedTestResultRow,
   type ScrapedVaccinationRow,
 } from '../../src/scrapers/maccabi.js';
 import {
@@ -19,12 +24,15 @@ import {
   matchLoginResult,
   type LoginOptions,
 } from '../../src/scrapers/base-scraper-with-browser.js';
+import { requestFailure } from '../../src/scrapers/errors.js';
 import {
   HealthFundTypes,
+  ScraperErrorTypes,
   form17RequestSchema,
   appointmentSchema,
   medicationSchema,
   testResultSchema,
+  testResultValueSchema,
   vaccinationSchema,
 } from '../../src/definitions.js';
 
@@ -33,6 +41,11 @@ const NOW = new Date('2026-07-26T12:00:00Z');
 class TestableMaccabiScraper extends MaccabiScraper {
   loginOptions(): LoginOptions {
     return this.getLoginOptions();
+  }
+
+  labValues(member: MaccabiMember, entry: MaccabiTestEntry) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return (this as any).fetchLabValues(member, entry);
   }
 }
 
@@ -186,69 +199,370 @@ describe('appointmentRowToAppointment', () => {
   });
 });
 
-const testResultRow: ScrapedTestResultRow = {
-  testName: 'קרדיולוגיה | תוצאת בדיקה לדוגמה',
-  date: '20/12/24',
-  timelineDate: '21/12/24',
-  orderingDoctor: 'דר דוגמה רונית',
+const labEntry: MaccabiTestEntry = {
+  test_name: ['מעבדה'],
+  test_category: [],
+  doc_id: '2::lab_result::11111111::999999999::0',
+  doc_type_name: 'תוצאות בדיקה',
+  execute_date: '2024-12-20T08:32:00',
+  result_date: '2024-12-21T14:00:00+02:00',
+  category_name: 'מעבדה',
+  is_partial: false,
+  referrer_name: 'דר דוגמה רונית',
+  request_id: '11111111',
+  type: 'lab_result',
+  result_files: null,
+  time_stamp: '630000000000000000',
+  hash: 'AbCdEfGhIjKlMnOpQrSt%3D%3D',
 };
 
-describe('testResultRowToTestResult', () => {
+const imagingReportEntry: MaccabiTestEntry = {
+  ...labEntry,
+  test_name: ['U.S'],
+  test_category: ['בדיקה לדוגמה'],
+  doc_id: '2::imaging_result::22222222',
+  category_name: 'U.S',
+  request_id: '22222222',
+  type: 'imaging_result',
+  executing_institute: '   מכון דוגמה   ',
+  result_files: [{ result_file: 'ZmFrZS1ibG9i' }],
+};
+
+describe('testEntryToTestResult', () => {
   it('produces a value matching the shared schema', () => {
-    const testResult = testResultRowToTestResult(testResultRow);
-    expect(() => testResultSchema.parse(testResult)).not.toThrow();
+    expect(() => testResultSchema.parse(testEntryToTestResult(labEntry))).not.toThrow();
+    expect(() => testResultSchema.parse(testEntryToTestResult(imagingReportEntry))).not.toThrow();
   });
 
-  it('normalizes the date to ISO form, accepting both two- and four-digit years', () => {
-    expect(testResultRowToTestResult(testResultRow)?.performedOn).toBe('2024-12-20');
-    expect(testResultRowToTestResult({ ...testResultRow, date: '16/10/2024' })?.performedOn).toBe(
-      '2024-10-16',
+  it('takes the date out of the API timestamps, offset or not', () => {
+    const result = testEntryToTestResult(labEntry)!;
+    expect(result.performedOn).toBe('2024-12-20');
+    expect(result.resultedOn).toBe('2024-12-21');
+  });
+
+  it('reads a laboratory batch as a result with values and no document', () => {
+    const result = testEntryToTestResult(labEntry)!;
+    expect(result.kind).toBe('lab');
+    expect(result.documentAvailable).toBe(false);
+    expect(result.testName).toBe('מעבדה');
+    expect(result.orderingDoctor).toBe('דר דוגמה רונית');
+  });
+
+  it('reads an imaging report as a document, named category-then-procedure', () => {
+    const result = testEntryToTestResult(imagingReportEntry)!;
+    expect(result.kind).toBe('document');
+    expect(result.documentAvailable).toBe(true);
+    expect(result.testName).toBe('U.S | בדיקה לדוגמה');
+    expect(result.institute).toBe('מכון דוגמה');
+  });
+
+  it('marks an imaging study as having no file, because its films live elsewhere', () => {
+    const study = testEntryToTestResult({
+      ...imagingReportEntry,
+      doc_id: '2::imaging_study::1.2.840.99999',
+      request_id: '1.2.840.99999',
+      type: 'imaging_study',
+      result_files: null,
+    })!;
+
+    expect(study.kind).toBe('imaging');
+    expect(study.documentAvailable).toBe(false);
+  });
+
+  it('keeps an entry of an unrecognized type rather than dropping it', () => {
+    const other = testEntryToTestResult({ ...labEntry, type: 'something_new' })!;
+    expect(other.kind).toBe('other');
+  });
+
+  it('gives two batches on the same day for the same doctor distinct ids', () => {
+    const morning = testEntryToTestResult(labEntry)!;
+    const afternoon = testEntryToTestResult({ ...labEntry, request_id: '11111112' })!;
+
+    expect(afternoon.id).not.toBe(morning.id);
+    expect(testEntryToTestResult({ ...labEntry })!.id).toBe(morning.id);
+  });
+
+  it('keeps the member id out of the derived id', () => {
+    expect(testEntryToTestResult(labEntry)!.id).toBe('lab_result::11111111');
+  });
+
+  it('drops an entry it could not identify or name', () => {
+    expect(testEntryToTestResult({ ...labEntry, request_id: null })).toBeNull();
+    expect(testEntryToTestResult({ ...labEntry, type: null })).toBeNull();
+    expect(
+      testEntryToTestResult({
+        ...labEntry,
+        test_name: [],
+        test_category: [],
+        category_name: null,
+        doc_type_name: null,
+      }),
+    ).toBeNull();
+  });
+
+  it('carries the partial-results flag the fund sets on an incomplete batch', () => {
+    expect(testEntryToTestResult({ ...labEntry, is_partial: true })!.isPartial).toBe(true);
+    expect(testEntryToTestResult(labEntry)!.isPartial).toBe(false);
+  });
+});
+
+const glucose: MaccabiLabValue = {
+  test_id: '1111',
+  test_desc: 'Glucose (B)',
+  min_lim: 70,
+  max_lim: 100,
+  result: 90,
+  units: 'mg/dl',
+  message: '',
+  is_vitek: false,
+  vitek_row: [],
+  message_list: [],
+  lab_date: '2024-12-20T00:00:00',
+};
+
+describe('labValueToTestResultValue', () => {
+  it('produces a value matching the shared schema', () => {
+    expect(() =>
+      testResultValueSchema.parse(labValueToTestResultValue(glucose, 'כימיה בדם')),
+    ).not.toThrow();
+  });
+
+  it('keeps the measurement, its unit, its range, and the panel it came from', () => {
+    const value = labValueToTestResultValue(glucose, 'כימיה בדם')!;
+    expect(value).toMatchObject({
+      code: '1111',
+      name: 'Glucose (B)',
+      group: 'כימיה בדם',
+      value: 90,
+      unit: 'mg/dl',
+      referenceMin: 70,
+      referenceMax: 100,
+      status: 'within',
+      measuredOn: '2024-12-20',
+      text: null,
+    });
+  });
+
+  it('places a measurement outside its range', () => {
+    expect(labValueToTestResultValue({ ...glucose, result: 40 }, null)!.status).toBe('below');
+    expect(labValueToTestResultValue({ ...glucose, result: 140 }, null)!.status).toBe('above');
+  });
+
+  it('reads a zero-to-zero range as no range at all, not as a range of zero', () => {
+    const value = labValueToTestResultValue(
+      { ...glucose, test_desc: 'eGFR', min_lim: 0, max_lim: 0, result: 88 },
+      null,
+    )!;
+
+    expect(value.referenceMin).toBeNull();
+    expect(value.referenceMax).toBeNull();
+    expect(value.status).toBe('unknown');
+  });
+
+  it('keeps a genuine range that starts at zero', () => {
+    const value = labValueToTestResultValue({ ...glucose, min_lim: 0, max_lim: 5, result: 7 }, null)!;
+    expect(value.referenceMin).toBe(0);
+    expect(value.status).toBe('above');
+  });
+
+  it('reports a qualitative result as text, not as a measurement of zero', () => {
+    const value = labValueToTestResultValue(
+      { ...glucose, test_desc: 'Nitrit (U)', result: 0, units: '', message: 'NEGATIVE', min_lim: 0, max_lim: 0 },
+      'שתן-כללי',
+    )!;
+
+    expect(value.value).toBeNull();
+    expect(value.text).toBe('NEGATIVE');
+    expect(value.unit).toBeNull();
+    expect(value.status).toBe('unknown');
+  });
+
+  it('keeps both when a fund annotates a real measurement', () => {
+    const value = labValueToTestResultValue({ ...glucose, message: 'בוצע בשיטה חדשה' }, null)!;
+    expect(value.value).toBe(90);
+    expect(value.text).toBe('בוצע בשיטה חדשה');
+  });
+
+  it('keeps a culture panel verbatim, since this model has no shape for it', () => {
+    const value = labValueToTestResultValue(
+      { ...glucose, is_vitek: true, vitek_row: [{ antibiotic: 'דוגמה', sensitivity: 'S' }] },
+      null,
+    )!;
+
+    expect(value.raw).toEqual({ vitek: [{ antibiotic: 'דוגמה', sensitivity: 'S' }] });
+  });
+
+  it('drops a value with no analyte name', () => {
+    expect(labValueToTestResultValue({ ...glucose, test_desc: null }, null)).toBeNull();
+  });
+});
+
+const testResultMember: MaccabiMember = {
+  token: 'test-token',
+  memberId: '999999999',
+  memberIdCode: '0',
+  gender: 'ז',
+};
+
+describe('documentUrl', () => {
+  it('passes an already-encoded hash through untouched', () => {
+    // Encoding it a second time is what the live endpoint answers with a 400.
+    const url = documentUrl(testResultMember, imagingReportEntry)!;
+    expect(url).toContain('&hash=AbCdEfGhIjKlMnOpQrSt%3D%3D');
+    expect(url).not.toContain('%253D');
+  });
+
+  it('encodes a hash the fund did not encode', () => {
+    const url = documentUrl(testResultMember, { ...imagingReportEntry, hash: 'a+b/c==' })!;
+    expect(url).toContain('&hash=a%2Bb%2Fc%3D%3D');
+  });
+
+  it('sends the document id verbatim, separators and all', () => {
+    expect(documentUrl(testResultMember, imagingReportEntry)).toContain('&data=2::imaging_result::22222222');
+  });
+
+  it('returns null when the entry carries no download authorization', () => {
+    expect(documentUrl(testResultMember, { ...imagingReportEntry, hash: null })).toBeNull();
+    expect(documentUrl(testResultMember, { ...imagingReportEntry, time_stamp: null })).toBeNull();
+  });
+});
+
+describe('documentFileName', () => {
+  it('names a file by the date and the test, safely on any filesystem', () => {
+    const result = testEntryToTestResult({ ...imagingReportEntry, test_category: ['US כליות/שתן'] })!;
+    // "|" and "/" are both illegal in a Windows filename, so both become "-".
+    expect(documentFileName(result)).toBe('2024-12-20 U.S - US כליות-שתן.pdf');
+  });
+
+  it('says so rather than inventing a date when the fund gave none', () => {
+    const result = testEntryToTestResult({ ...imagingReportEntry, execute_date: null })!;
+    expect(documentFileName(result)).toContain('undated');
+  });
+});
+
+describe('requestFailure', () => {
+  it('drops the call log Playwright appends, which carries the bearer token', () => {
+    // The real shape: message, then a call log listing the URL and every header.
+    const error = new Error(
+      'apiRequestContext.get: connect ECONNREFUSED 127.0.0.1:9\n' +
+        'Call log:\n' +
+        '  - → GET https://example.test/openfile?memberid=111111111&hash=abc\n' +
+        '    - authorization: Bearer fictional.jwt.value\n',
+    );
+
+    const sanitized = requestFailure('a result document', error);
+
+    expect(sanitized.message).toBe(
+      'a result document failed: apiRequestContext.get: connect ECONNREFUSED 127.0.0.1:9',
+    );
+    expect(sanitized.message).not.toContain('fictional.jwt.value');
+    expect(sanitized.message).not.toContain('111111111');
+    expect(sanitized.message).not.toContain('Call log');
+  });
+
+  it('redacts a token that appears on the first line too', () => {
+    const sanitized = requestFailure('a lab result', new Error('401 for Bearer fictional.jwt.value'));
+
+    expect(sanitized.message).toContain('Bearer <redacted>');
+    expect(sanitized.message).not.toContain('fictional.jwt.value');
+  });
+
+  it('keeps a timeout recognizable as a timeout', () => {
+    expect(requestFailure('x', new Error('Request timeout of 30000ms exceeded')).errorType).toBe(
+      ScraperErrorTypes.Timeout,
+    );
+    expect(requestFailure('x', new Error('connect ECONNREFUSED')).errorType).toBe(
+      ScraperErrorTypes.Generic,
     );
   });
+});
 
-  it('extracts a date from the label used by the timeline', () => {
-    expect(
-      testResultRowToTestResult({ ...testResultRow, date: 'תאריך הבדיקה: 20/12/24' })?.performedOn,
-    ).toBe('2024-12-20');
+/**
+ * fetchLabValues is the one function whose return value is wired to a DELETE in the
+ * consumer: an empty array means "the fund reported no values, drop what you had",
+ * while null means "not read, keep what you had". Getting that distinction wrong
+ * destroys a member's stored history, so it is exercised against fake responses.
+ */
+describe('fetchLabValues', () => {
+  function scraperReturning(response: unknown) {
+    const scraper = new TestableMaccabiScraper({ companyId: HealthFundTypes.maccabi });
+    const post = async () => {
+      if (response instanceof Error) throw response;
+      return response;
+    };
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (scraper as any).page = { request: { post, get: post } };
+    return scraper;
+  }
+
+  function jsonResponse(body: unknown, { ok = true, status = 200 } = {}) {
+    return {
+      ok: () => ok,
+      status: () => status,
+      headers: () => ({ 'content-type': 'application/json' }),
+      json: async () => body,
+    };
+  }
+
+  const member: MaccabiMember = {
+    token: 'fictional.jwt.value',
+    memberId: '999999999',
+    memberIdCode: '0',
+    gender: 'ז',
+  };
+
+  it('maps the groups the fund returns', async () => {
+    const scraper = scraperReturning(
+      jsonResponse({
+        results: [
+          {
+            group_name: 'כימיה בדיונית',
+            group_values: [
+              { test_id: '1111', test_desc: 'Fictium (B)', min_lim: 10, max_lim: 50, result: 42, units: 'mg/dl' },
+            ],
+          },
+        ],
+      }),
+    );
+
+    await expect(scraper.labValues(member, labEntry)).resolves.toEqual([
+      expect.objectContaining({ name: 'Fictium (B)', value: 42, status: 'within' }),
+    ]);
   });
 
-  it('drops a row with no test name', () => {
-    expect(testResultRowToTestResult({ ...testResultRow, testName: null })).toBeNull();
+  it('reports an empty list only when the fund actually returned no groups', async () => {
+    const scraper = scraperReturning(jsonResponse({ results: [] }));
+    await expect(scraper.labValues(member, labEntry)).resolves.toEqual([]);
   });
 
-  it('drops a row with an unparseable date', () => {
-    expect(testResultRowToTestResult({ ...testResultRow, date: 'ממתין לתוצאות' })).toBeNull();
-    expect(testResultRowToTestResult({ ...testResultRow, date: null })).toBeNull();
+  it('reports "not read" — never an empty list — for a 200 it cannot make sense of', async () => {
+    // Each of these would otherwise become `[]`, which the store treats as "the fund
+    // withdrew these measurements" and deletes every stored value for the batch.
+    for (const body of [{}, { results: null }, { result_groups: [] }, { data: { results: [] } }, 'nope']) {
+      const scraper = scraperReturning(jsonResponse(body));
+      await expect(scraper.labValues(member, labEntry)).resolves.toBeNull();
+    }
   });
 
-  it('keeps a row whose only missing field is the ordering doctor', () => {
-    const testResult = testResultRowToTestResult({ ...testResultRow, orderingDoctor: null })!;
-    expect(testResult.orderingDoctor).toBeNull();
-    expect(testResult.testName).toBe('קרדיולוגיה | תוצאת בדיקה לדוגמה');
+  it('reports "not read" for a non-JSON body and for a refused request', async () => {
+    const notJson = {
+      ok: () => true,
+      status: () => 200,
+      headers: () => ({ 'content-type': 'text/html' }),
+      json: async () => {
+        throw new Error('Unexpected token < in JSON');
+      },
+    };
+    await expect(scraperReturning(notJson).labValues(member, labEntry)).resolves.toBeNull();
+
+    await expect(
+      scraperReturning(jsonResponse({}, { ok: false, status: 500 })).labValues(member, labEntry),
+    ).resolves.toBeNull();
   });
 
-  it('tags every row with the fund it came from', () => {
-    expect(testResultRowToTestResult(testResultRow)?.provider).toBe('maccabi');
-  });
-
-  it('derives a stable id from the same result, and a different one for another', () => {
-    const first = testResultRowToTestResult(testResultRow)!;
-    const again = testResultRowToTestResult({ ...testResultRow })!;
-    const other = testResultRowToTestResult({ ...testResultRow, date: '21/12/24' })!;
-
-    expect(again.id).toBe(first.id);
-    expect(other.id).not.toBe(first.id);
-  });
-
-  it('keeps entries with different stable timeline dates distinct', () => {
-    const first = testResultRowToTestResult(testResultRow)!;
-    const second = testResultRowToTestResult({ ...testResultRow, timelineDate: '22/12/24' })!;
-
-    expect(second.id).not.toBe(first.id);
-  });
-
-  it('does not set raw because the timeline maps no extra fields', () => {
-    expect(testResultRowToTestResult(testResultRow)?.raw).toBeUndefined();
+  it('skips one unreachable batch instead of failing the whole fetch', async () => {
+    const scraper = scraperReturning(new Error('apiRequestContext.post: connect ECONNREFUSED'));
+    await expect(scraper.labValues(member, labEntry)).resolves.toBeNull();
   });
 });
 

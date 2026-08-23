@@ -63,11 +63,36 @@ screen — and the medications data lives at `ValidPrescriptions` as a
 medications" tab) is a dispense *history* where the same drug reappears per purchase
 event, which is the wrong model for "standing prescriptions + expiry".
 
+**Test results are read through an API, not the DOM.** Not for elegance: the rendered
+timeline rows omit the `request_id`/`doc_id` that identify a result and the per-entry
+`hash`/`time_stamp` that authorize downloading its document, all of which live only in
+React state. A DOM-only scraper therefore reaches a lab result's values only by clicking
+each row in turn and reaches a document not at all. Through `TestResultsAPI` the whole
+timeline is one request, and each result's values or PDF is one more. Three things about
+it that cost real debugging time and are easy to get wrong again:
+
+- the API answers cookies alone with a 401. The SPA writes a short-lived JWT to
+  `sessionStorage.token`, and the member id and sex to `sessionStorage.customerData`;
+  `readMaccabiMember` reads both after navigating to the timeline. Sex is not cosmetic —
+  reference ranges are sex-specific, so sending the wrong one returns the right numbers
+  against the wrong normal range.
+- the entry `hash` arrives **already percent-encoded**. Encoding it again yields a 400.
+- an `imaging_study` entry has no `result_files` and no downloadable file: it is the
+  films, shown only in the fund's own viewer. Its report is a *separate*
+  `imaging_result` entry on the same day, and that one has the PDF. Asking the download
+  endpoint for a study returns an HTML page with a 200, which is why the PDF magic
+  number, not the status code, decides whether a document came back.
+
 **Shared parsing lives in `src/helpers/dates.ts`**: `parseIsraeliDate` (day-first
 formats, 2- or 4-digit years) and `deriveExpiry` (computes `daysUntilExpiry` and
 `status` from a `validUntil` ISO date against `EXPIRING_SOON_DAYS`, in `constants.ts`).
 Every fund is expected to funnel through `deriveExpiry` rather than compute its own
 status, so "is this about to run out" answers identically across funds.
+`src/helpers/ranges.ts` is the same idea for measurements: `deriveReferenceStatus`
+places a value against its reference range, so "was this result abnormal" also means one
+thing everywhere. A fund normalizes its own encoding of "no range given" to nulls before
+calling it — Maccabi's is `min_lim`/`max_lim` both zero — rather than each fund deciding
+for itself what counts as out of range.
 
 **The contract suite** (`test/contract/scrapers.test.ts`) runs against `MockScraper`
 (`src/scrapers/mock.ts`) — a fund that doesn't exist, implemented against the same
@@ -88,6 +113,13 @@ than silently storing cookies in the clear. A consumer wiring this up needs to s
 `IHS_SESSION_KEY` itself; the library never invents or falls back to a default.
 
 ## Tests and fixtures
+
+The test-results parsers need no browser and no HTML fixture: they map API payloads, so
+`test/scrapers/maccabi.test.ts` exercises them against invented JSON of the same shape.
+The same PII rule applies — the shapes are real, every value in them is not.
+`fetchLabValues` gets its own suite against fake responses because its return value
+decides what a consumer writes over stored data: null means "not read, keep what you
+had", and a wrong answer there deletes a member's history.
 
 DOM-level tests (`test/scrapers/maccabi-dom.test.ts`) run the real parsing functions
 against saved HTML fixtures (`test/fixtures/maccabi/`) in an actual launched Chromium,
