@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.2.1] - 2026-08-23
+
+### Fixed
+- Fixed Maccabi SMS/two-factor login getting stuck on the interim "how do you want to verify" screen when authenticating through `triggerTwoFactorAuth` — it now runs the same `afterSubmit` step as the one-shot `login()` path.
+
+[0.2.1]: https://github.com/YogevBokobza/israeli-health-scrapers/compare/v0.2.0...v0.2.1
+
 ## [0.2.0] - 2026-08-22
 
 ### Added
