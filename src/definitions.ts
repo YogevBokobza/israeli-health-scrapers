@@ -132,6 +132,13 @@ export const medicationSchema = z.object({
    */
   daysUntilExpiry: z.number().int().nullable(),
   status: medicationStatusSchema,
+  /**
+   * Whether this is a standing prescription (תרופה קבועה) rather than a one-off. A
+   * fund's valid-prescriptions view can list both; this flag lets a caller keep the
+   * one-off rows and filter to standing ones itself instead of the scraper dropping
+   * them. Funds with no such distinction report every prescription as standing.
+   */
+  isStanding: z.boolean(),
   provider: providerIdSchema,
   /** Source fields we did not map. For debugging; never relied on by callers. */
   raw: z.record(z.unknown()).optional(),

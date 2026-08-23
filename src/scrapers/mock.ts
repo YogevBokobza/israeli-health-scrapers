@@ -44,6 +44,7 @@ export class MockScraper extends BaseScraper {
             refillsRemaining: 2,
             daysUntilExpiry,
             status,
+            isStanding: true,
             provider: HealthFundTypes.mock,
           },
         ],

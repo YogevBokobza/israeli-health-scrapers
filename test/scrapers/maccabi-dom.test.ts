@@ -73,9 +73,9 @@ describe.skipIf(!browserAvailable)('maccabi DOM extraction', () => {
       .map((row) => prescriptionRowToMedication(row, NOW))
       .filter((medication) => medication !== null);
 
-    // Two standing rows have both a badge and a name; the one-off and the nameless
-    // row must not survive.
-    expect(medications).toHaveLength(2);
+    // Two standing rows and one one-off row all have a name and survive; only the
+    // nameless layout artifact is dropped.
+    expect(medications).toHaveLength(3);
     expect(medications.map((medication) => medication!.name)).toContain('SAMPLEXIN 250MG CAP');
   });
 
@@ -93,13 +93,19 @@ describe.skipIf(!browserAvailable)('maccabi DOM extraction', () => {
     expect(byName.get('SAMPLEXIN 250MG CAP')?.validUntil).toBe('2027-01-03');
   });
 
-  it('excludes the one-off prescription with no standing badge', async () => {
+  it('includes the one-off prescription with no standing badge, flagged isStanding false', async () => {
     const rows = await scrapePrescriptionRows(page);
-    const medications = rows
-      .map((row) => prescriptionRowToMedication(row, NOW))
-      .filter((medication) => medication !== null);
+    const byName = new Map(
+      rows
+        .map((row) => prescriptionRowToMedication(row, NOW))
+        .filter((medication) => medication !== null)
+        .map((medication) => [medication!.name, medication!]),
+    );
 
-    expect(medications.some((medication) => medication!.name.includes('TESTOPRIL'))).toBe(false);
+    const oneOff = byName.get('TESTOPRIL 100MG TAB 30');
+    expect(oneOff).toBeDefined();
+    expect(oneOff!.isStanding).toBe(false);
+    expect(byName.get('FICTAMOL 500MG TAB (20)')?.isStanding).toBe(true);
   });
 });
 
