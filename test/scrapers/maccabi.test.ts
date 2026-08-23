@@ -11,9 +11,11 @@ import {
   prescriptionRowToMedication,
   testEntryToTestResult,
   vaccinationRowToVaccination,
+  visitEntryToPastVisit,
   type MaccabiLabValue,
   type MaccabiMember,
   type MaccabiTestEntry,
+  type MaccabiVisitEntry,
   type ScrapedAppointmentRow,
   type ScrapedForm17Row,
   type ScrapedPrescriptionRow,
@@ -31,6 +33,7 @@ import {
   form17RequestSchema,
   appointmentSchema,
   medicationSchema,
+  pastVisitSchema,
   testResultSchema,
   testResultValueSchema,
   vaccinationSchema,
@@ -566,6 +569,112 @@ describe('fetchLabValues', () => {
   });
 });
 
+const clinicVisitEntry: MaccabiVisitEntry = {
+  appointment_id: '710020001',
+  appointment_date: '2026-07-14T09:30:00',
+  service_name: 'רפואת משפחה',
+  service_provider_name: 'שרונה לב-ארי',
+  service_provider_title: 'דר',
+  has_summery_file: true,
+  identification_method: 1,
+  facility_id: '40120001',
+};
+
+describe('visitEntryToPastVisit', () => {
+  it('produces a value matching the shared schema', () => {
+    expect(() => pastVisitSchema.parse(visitEntryToPastVisit(clinicVisitEntry))).not.toThrow();
+  });
+
+  it('carries the fund-native id and maps the visit fields', () => {
+    expect(visitEntryToPastVisit(clinicVisitEntry)).toMatchObject({
+      id: '710020001',
+      visitedAt: '2026-07-14T09:30:00+03:00',
+      doctorName: 'דר שרונה לב-ארי',
+      specialty: 'רפואת משפחה',
+      isDigital: false,
+      summaryAvailable: true,
+      provider: HealthFundTypes.maccabi,
+    });
+  });
+
+  it('drops seconds from the visit time, as the appointments model does', () => {
+    expect(
+      visitEntryToPastVisit({ ...clinicVisitEntry, appointment_date: '2026-07-14T09:30:41' })
+        ?.visitedAt,
+    ).toBe('2026-07-14T09:30:00+03:00');
+  });
+
+  it('keeps Israel wall-clock across DST: winter +02:00, summer +03:00', () => {
+    expect(
+      visitEntryToPastVisit({ ...clinicVisitEntry, appointment_date: '2026-01-11T08:15:00' })
+        ?.visitedAt,
+    ).toBe('2026-01-11T08:15:00+02:00');
+  });
+
+  it('flags a digital visit and keeps the fund code it was derived from', () => {
+    const visit = visitEntryToPastVisit({ ...clinicVisitEntry, identification_method: 4 })!;
+    expect(visit.isDigital).toBe(true);
+    expect(visit.raw).toEqual({ identificationMethod: 4, facilityId: '40120001' });
+  });
+
+  it('keeps the opaque facility id in raw — the only location datum the list carries', () => {
+    const withFacility = visitEntryToPastVisit(clinicVisitEntry)!;
+    expect(withFacility.raw).toEqual({ identificationMethod: 1, facilityId: '40120001' });
+    const withoutFacility = visitEntryToPastVisit({
+      ...clinicVisitEntry,
+      facility_id: null,
+    })!;
+    expect(withoutFacility.raw).toEqual({ identificationMethod: 1 });
+    const withNothing = visitEntryToPastVisit({
+      ...clinicVisitEntry,
+      facility_id: null,
+      identification_method: null,
+    })!;
+    expect(withNothing.raw).toBeUndefined();
+  });
+
+  it('reads summary availability from the fund-typo field, absent meaning no', () => {
+    expect(
+      visitEntryToPastVisit({ ...clinicVisitEntry, has_summery_file: false })?.summaryAvailable,
+    ).toBe(false);
+    expect(
+      visitEntryToPastVisit({ ...clinicVisitEntry, has_summery_file: null })?.summaryAvailable,
+    ).toBe(false);
+  });
+
+  it('drops an entry the fund gives no appointment id', () => {
+    expect(visitEntryToPastVisit({ ...clinicVisitEntry, appointment_id: null })).toBeNull();
+    expect(visitEntryToPastVisit({ ...clinicVisitEntry, appointment_id: '' })).toBeNull();
+  });
+
+  it('keeps a visit the fund gives no date for, with a null one', () => {
+    const visit = visitEntryToPastVisit({ ...clinicVisitEntry, appointment_date: null })!;
+    expect(visit.id).toBe('710020001');
+    expect(visit.visitedAt).toBeNull();
+  });
+
+  it('reports a doctor without a title as a bare name, and no doctor as null', () => {
+    const untitled = visitEntryToPastVisit({ ...clinicVisitEntry, service_provider_title: null });
+    expect(untitled?.doctorName).toBe('שרונה לב-ארי');
+    const nameless = visitEntryToPastVisit({
+      ...clinicVisitEntry,
+      service_provider_name: null,
+      service_provider_title: null,
+    })!;
+    expect(nameless.doctorName).toBeNull();
+    expect(nameless.id).toBe('710020001');
+  });
+
+  it('strips bidi control characters and collapsed whitespace from names', () => {
+    const visit = visitEntryToPastVisit({
+      ...clinicVisitEntry,
+      service_provider_name: '‏שרונה  לב-ארי ',
+      service_name: ' רפואת משפחה ',
+    })!;
+    expect(visit.doctorName).toBe('דר שרונה לב-ארי');
+    expect(visit.specialty).toBe('רפואת משפחה');
+  });
+});
 
 describe('vaccinationRowToVaccination', () => {
   const vaccinationRow: ScrapedVaccinationRow = {

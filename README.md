@@ -181,9 +181,10 @@ pinned one is not installed.
 
 ## Roadmap
 
-Maccabi medications, appointments, test results, vaccinations, and commitment requests
-(טופס 17) have calibrated selectors and fixture coverage. Still open: messages and the
-remaining funds.
+Maccabi medications, appointments, vaccinations, and commitment requests (טופס 17)
+have calibrated selectors and fixture coverage. Test results and past visits are read
+through the fund's own JSON APIs, which carry the stable ids and per-entry fields the
+rendered rows omit. Still open: messages, visit summaries, and the remaining funds.
 
 Longer term: Israel's Medical Data Portability Law (2024) requires the funds to expose
 certified FHIR R4 APIs, on a programme running to 2029. When one lands it joins as

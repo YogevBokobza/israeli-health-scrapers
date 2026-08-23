@@ -39,6 +39,10 @@ const maccabiBindings: Record<string, TargetBindingDefinition<unknown>> = {
     bindings: [],
     parse: async () => ({ status: 'not-dom-bound' }),
   },
+  pastVisits: {
+    bindings: [],
+    parse: async () => ({ status: 'not-dom-bound' }),
+  },
   messages: {
     bindings: [],
     parse: async () => ({ status: 'not-implemented' }),

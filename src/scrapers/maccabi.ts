@@ -8,6 +8,7 @@ import {
   type HealthAccount,
   type HealthDocument,
   type Medication,
+  type PastVisit,
   type ScraperCredentials,
   type TestResult,
   type TestResultKind,
@@ -42,8 +43,8 @@ import { captureDiagnostics } from '../helpers/debug.js';
  * NOTE: login, medications, appointments, vaccinations, and Form 17 selectors are
  * calibrated against a live account (see git history). On failure the scraper writes an
  * HTML dump under data/diagnostics, and the fix belongs in the constants below. Test
- * results are the exception: they are read through the page's own JSON API instead of
- * the rendered markup, for the reasons set out above that section.
+ * results and past visits are the exceptions: they are read through the pages' own JSON
+ * APIs instead of the rendered markup, for the reasons set out above those sections.
  */
 
 const BASE_URL = 'https://online.maccabi4u.co.il';
@@ -55,6 +56,7 @@ const urls = {
   // view this scraper models: one row per drug with its next refill deadline.
   medications: `${BASE_URL}/sonline/medicalfile/medications/ValidPrescriptions/`,
   appointments: `${BASE_URL}/sonline/appointmentOrder/FutureAppointments/Lobby/`,
+  pastVisits: `${BASE_URL}/sonline/appointmentOrder/PastVisits/Lobby/`,
   testResults: `${BASE_URL}/sonline/testsResults/TestsResults/lobby/`,
   vaccinations: `${BASE_URL}/sonline/medicalfile/vaccinations/Lobby/`,
   form17: `${BASE_URL}/sonline/requestsAndApprovals/StatusRequest/Lobby/?caseFilter=53,1,2`,
@@ -547,6 +549,21 @@ export const maccabiAppointmentDetailBindingDefinition = {
  */
 const TEST_RESULTS_API = `${BASE_URL}/sonline/TestResultsAPI/webapi/mac`;
 
+/**
+ * Past visits are read through the page's own JSON API, not the DOM, for the same
+ * reason as test results: the rendered lobby row carries a date, a doctor name, and a
+ * specialty, and nothing else — no id, so the same visit cannot be recognized again on
+ * the next fetch except by re-deriving it from fields two visits can share. The list
+ * response the SPA renders from carries `appointment_id`, which is stable and unique,
+ * and the summary-availability flag the later visitSummaries resource will key on.
+ *
+ * One detail learned from live calibration: the list holds roughly the last year of
+ * visits — the page's own filter offers a year, three months, or a month, and the
+ * endpoint returns what the widest of those shows. There is no older history behind it
+ * to page through.
+ */
+const APPOINTMENT_ORDER_API = `${BASE_URL}/sonline/AppointmentOrderAPI/webapi/mac`;
+
 const api = {
   /** Every entry on the timeline, in one call. */
   tests: (member: MaccabiMember): string => `${memberPath(TEST_RESULTS_API, member)}/tests`,
@@ -555,6 +572,9 @@ const api = {
     `${memberPath(TEST_RESULTS_API, member)}/getresultsbyid`,
   /** One entry's result document. See documentUrl for the query it needs. */
   document: `${TEST_RESULTS_API}/pdf/openfile`,
+  /** Every past visit the fund still holds, in one call. */
+  visitHistory: (member: MaccabiMember): string =>
+    `${memberPath(APPOINTMENT_ORDER_API, member)}/visits/history`,
 } as const;
 
 function memberPath(base: string, member: MaccabiMember): string {
@@ -831,6 +851,91 @@ export async function readMaccabiMember(page: Page): Promise<MaccabiMember | nul
     memberIdCode: String(memberIdCode),
     gender: typeof info.sex === 'string' ? info.sex : '',
   };
+}
+
+/** One past visit as the history API returns it. Only the fields we read are declared. */
+export interface MaccabiVisitEntry {
+  /**
+   * The fund's own id for the visit. Stable across fetches and unique per visit — the
+   * identity a re-fetch must recognize, and what a future visitSummaries target keys on.
+   */
+  appointment_id?: string | null;
+  /** Local datetime of the visit ("2026-07-15T22:38:34"), no offset. */
+  appointment_date?: string | null;
+  /** The doctor's field, as shown on the row ("רפואת משפחה"). */
+  service_name?: string | null;
+  service_provider_name?: string | null;
+  /** An honorific ("דר", "גב"), reported apart from the name. */
+  service_provider_title?: string | null;
+  /** Whether the fund holds a summary for this visit. The fund's spelling, typo included. */
+  has_summery_file?: boolean | null;
+  /** How the member was identified. See DIGITAL_VISIT_IDENTIFICATION. */
+  identification_method?: number | null;
+  /**
+   * The clinic the visit took place at, as an opaque id. The list API exposes no
+   * location name — this id is the only location datum it carries, so it is kept in
+   * `raw` rather than interpreted or dropped.
+   */
+  facility_id?: string | null;
+}
+
+/**
+ * The `identification_method` of a digital visit — an online exchange with the doctor
+ * rather than a visit in a clinic. Carried by every "ביקור דיגיטלי"-badged row on the
+ * accounts this constant was calibrated against; `raw.identificationMethod` keeps the
+ * underlying code so a mislabel is checkable without re-fetching.
+ */
+const DIGITAL_VISIT_IDENTIFICATION = 4;
+
+/**
+ * Turns one history entry into a `PastVisit`.
+ *
+ * Returns null for an entry with no appointment id — that id is both how the visit is
+ * recognized again on the next fetch and what the later visitSummaries resource will
+ * ask for, so an entry without one is not a visit anything can be done with.
+ */
+export function visitEntryToPastVisit(entry: MaccabiVisitEntry): PastVisit | null {
+  const id = textOrNull(entry.appointment_id);
+  if (!id) return null;
+
+  const name = textOrNull(entry.service_provider_name);
+  const title = textOrNull(entry.service_provider_title);
+  const identification =
+    typeof entry.identification_method === 'number' ? entry.identification_method : null;
+  const facilityId = textOrNull(entry.facility_id);
+  // Evidence for derived or unmapped fields: identificationMethod backs isDigital (a
+  // mapping of the fund's codes, not a field it hands over), and facilityId is the only
+  // location datum the list carries (see MaccabiVisitEntry).
+  const raw = {
+    ...(identification !== null ? { identificationMethod: identification } : {}),
+    ...(facilityId !== null ? { facilityId } : {}),
+  };
+
+  return {
+    id,
+    visitedAt: visitDateTime(entry.appointment_date),
+    // Reported as two fields and shown as one. Joined rather than dropped: a bare
+    // "לב-ארי שרונה" is not how a member recognizes their doctor on a list.
+    doctorName: name && title ? `${title} ${name}` : name,
+    specialty: textOrNull(entry.service_name),
+    isDigital: identification === DIGITAL_VISIT_IDENTIFICATION,
+    summaryAvailable: entry.has_summery_file === true,
+    provider: HealthFundTypes.maccabi,
+    ...(Object.keys(raw).length > 0 ? { raw } : {}),
+  };
+}
+
+/**
+ * Normalizes the API's offset-less local datetime into an offset-explicit ISO one.
+ *
+ * The wall-clock time is kept exactly as the member saw it; the shared datetime parser
+ * attaches the correct Israel offset (+03:00 in DST, +02:00 out of it) for the date,
+ * same convention as the appointments model. Seconds are dropped with it — minute
+ * precision is what every rendered time carries.
+ */
+function visitDateTime(value: string | null | undefined): string | null {
+  const match = /^(\d{4}-\d{2}-\d{2})[T ](\d{2}:\d{2})/.exec(normalizeText(value));
+  return match ? parseIsraeliDateTime(match[1], match[2]) : null;
 }
 
 export interface ScrapedForm17Row {
@@ -1126,6 +1231,10 @@ export class MaccabiScraper extends BaseScraperWithBrowser {
 
     if (targets.includes('form17')) {
       account.form17 = await this.fetchForm17();
+    }
+
+    if (targets.includes('pastVisits')) {
+      account.pastVisits = await this.fetchPastVisits();
     }
 
     return [account];
@@ -1555,5 +1664,99 @@ export class MaccabiScraper extends BaseScraperWithBrowser {
     await waitUntil(async () => elementExists(page, selectors.appointmentRow), 8_000);
 
     return detail;
+  }
+
+  /**
+   * Reads past visits, newest first.
+   *
+   * The lobby's own filter caps the fund's history at about a year; there is no older
+   * page behind it (see the section comment above the visits API).
+   */
+  private async fetchPastVisits(): Promise<PastVisit[]> {
+    const page = this.activePage;
+    await page.goto(urls.pastVisits, { waitUntil: 'domcontentloaded' });
+
+    if (await elementExists(page, selectors.passwordInput)) {
+      const diagnostics = await captureDiagnostics(page, this.options.companyId, 'pastvisits-logged-out');
+      throw new SelectorDriftError('a logged-in past visits page', diagnostics);
+    }
+
+    // Same race as the test-results page: the app writes its bearer token to session
+    // storage while booting, well after domcontentloaded.
+    let member: MaccabiMember | null = null;
+    await waitUntil(async () => {
+      member = await readMaccabiMember(page);
+      return member !== null;
+    }, 15_000);
+
+    if (!member) {
+      const diagnostics = await captureDiagnostics(page, this.options.companyId, 'pastvisits-no-token');
+      throw new SelectorDriftError(
+        "the past visits API token in the page's session storage",
+        diagnostics,
+      );
+    }
+
+    const entries = await this.fetchPastVisitEntries(member);
+    const pastVisits = entries
+      .map((entry) => visitEntryToPastVisit(entry))
+      .filter((visit): visit is PastVisit => visit !== null);
+
+    // Entries came back but none carried an appointment id: the id field has drifted,
+    // and returning an empty year would report "no visits" over data the fund did send.
+    // The fund's own identity is this target's whole reason for being API-read, so this
+    // drift is an error, not a log line — unlike a genuinely empty list, which isn't.
+    if (entries.length > 0 && pastVisits.length === 0) {
+      const diagnostics = await captureDiagnostics(page, this.options.companyId, 'pastvisits-unparsed');
+      throw new SelectorDriftError('an `appointment_id` on the past visits entries', diagnostics);
+    }
+
+    if (pastVisits.length === 0) {
+      // Same reasoning as fetchMedications: an empty history and a response we failed to
+      // read look identical, so a dump is kept without treating "none" as an error.
+      const diagnostics = await captureDiagnostics(page, this.options.companyId, 'pastvisits-empty');
+      this.log('no past visits returned', { diagnostics });
+    }
+    // Newest first — that is the order the question is actually asked in. Unknown times
+    // sort last rather than masquerading as recent.
+    pastVisits.sort((a, b) => (b.visitedAt ?? '').localeCompare(a.visitedAt ?? ''));
+
+    return pastVisits;
+  }
+
+  /** The whole lobby in one call — no scrolling, no per-row clicking. */
+  private async fetchPastVisitEntries(member: MaccabiMember): Promise<MaccabiVisitEntry[]> {
+    const page = this.activePage;
+    const response = await this.apiRequest('the past visits list', () =>
+      page.request.post(api.visitHistory(member), {
+        headers: this.apiHeaders(member),
+        data: {
+          // The site names the member in the body as well as in the URL. Sent the same
+          // way rather than working out which of the two the endpoint actually reads.
+          members: [{ member_id_code: member.memberIdCode, member_id: Number(member.memberId) }],
+        },
+      }),
+    );
+
+    if (!response.ok()) {
+      const diagnostics = await captureDiagnostics(page, this.options.companyId, 'pastvisits-list-failed');
+      throw new SelectorDriftError(
+        `a past visits list (the API answered ${response.status()})`,
+        diagnostics,
+      );
+    }
+
+    const body = (await response.json().catch(() => null)) as {
+      results?: MaccabiVisitEntry[];
+    } | null;
+
+    // A 200 whose body is not a list of visits is drift, not an empty history — the same
+    // distinction the test-results list makes, and for the same reason.
+    if (!Array.isArray(body?.results)) {
+      const diagnostics = await captureDiagnostics(page, this.options.companyId, 'pastvisits-list-shape');
+      throw new SelectorDriftError('a `results` array in the past visits API response', diagnostics);
+    }
+
+    return body.results;
   }
 }

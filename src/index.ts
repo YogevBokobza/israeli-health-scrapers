@@ -48,6 +48,7 @@ export {
   testResultSchema,
   vaccinationSchema,
   form17RequestSchema,
+  pastVisitSchema,
   healthAccountSchema,
   providerIdSchema,
 } from './definitions.js';
@@ -70,6 +71,7 @@ export type {
   TestResult,
   Vaccination,
   Form17Request,
+  PastVisit,
   FetchTarget,
   LoginMethod,
 } from './definitions.js';

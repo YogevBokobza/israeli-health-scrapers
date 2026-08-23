@@ -114,6 +114,11 @@ export const FETCH_TARGETS = [
   'testResultDetails',
   'vaccinations',
   'form17',
+  /**
+   * The lobby list of completed visits — date, doctor, specialty. List-only: what the
+   * doctor wrote at each visit is the later `visitSummaries` resource, not this one.
+   */
+  'pastVisits',
 ] as const;
 export type FetchTarget = (typeof FETCH_TARGETS)[number];
 
@@ -307,6 +312,34 @@ export const form17RequestSchema = z.object({
 export type Form17Request = z.infer<typeof form17RequestSchema>;
 
 /**
+ * One completed visit to a doctor, as the visits lobby lists it.
+ *
+ * List-only by design: `summaryAvailable` says whether the fund holds a visit summary
+ * (סיכום ביקור) for this visit, fetched or not — the summary text itself is the later
+ * `visitSummaries` resource, which costs per-visit requests this target does not make.
+ */
+export const pastVisitSchema = z.object({
+  /** The fund's own appointment id — stable across fetches, unique per visit. */
+  id: z.string(),
+  /**
+   * ISO datetime with an explicit offset (e.g. +03:00) — Israel local time as the
+   * member saw it, same convention as `appointmentSchema.start`. Null when the fund
+   * reports the visit without a time.
+   */
+  visitedAt: z.string().datetime({ offset: true }).nullable(),
+  doctorName: z.string().nullable(),
+  /** The doctor's field as the fund labels it ("רפואת משפחה"). */
+  specialty: z.string().nullable(),
+  /** An online exchange with the doctor rather than a visit in a clinic. */
+  isDigital: z.boolean(),
+  /** Whether the fund holds a summary for this visit, fetched or not. */
+  summaryAvailable: z.boolean(),
+  provider: providerIdSchema,
+  raw: z.record(z.unknown()).optional(),
+});
+export type PastVisit = z.infer<typeof pastVisitSchema>;
+
+/**
  * One member's account at one fund — the analogue of an `account` in the bank
  * scrapers, holding the collections we know how to read.
  */
@@ -318,6 +351,7 @@ export const healthAccountSchema = z.object({
   testResults: z.array(testResultSchema).optional(),
   vaccinations: z.array(vaccinationSchema).optional(),
   form17: z.array(form17RequestSchema).optional(),
+  pastVisits: z.array(pastVisitSchema).optional(),
 });
 export type HealthAccount = z.infer<typeof healthAccountSchema>;
 

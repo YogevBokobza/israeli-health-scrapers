@@ -83,6 +83,15 @@ it that cost real debugging time and are easy to get wrong again:
   endpoint for a study returns an HTML page with a 200, which is why the PDF magic
   number, not the status code, decides whether a document came back.
 
+**Past visits follow the same API-first rule** (`AppointmentOrderAPI`, not their own):
+the rendered lobby rows carry no id at all, while the list response's `appointment_id`
+is the stable fund-native identity — the test-results identity bug (hash ids collapsing
+distinct rows) is what this avoids from day one. The list spans roughly the last year
+(the page's own widest filter; nothing older behind it) and carries no location — only
+an opaque facility id with no name — so `PastVisit` has none. What the doctor wrote at
+each visit is the later `visitSummaries` resource; `pastVisits` is list-only and never
+clicks into summaries.
+
 **Shared parsing lives in `src/helpers/dates.ts`**: `parseIsraeliDate` (day-first
 formats, 2- or 4-digit years) and `deriveExpiry` (computes `daysUntilExpiry` and
 `status` from a `validUntil` ISO date against `EXPIRING_SOON_DAYS`, in `constants.ts`).
