@@ -10,6 +10,7 @@ import {
   labValueToTestResultValue,
   numericMemberId,
   prescriptionRowToMedication,
+  summarizeIdentificationMethods,
   testEntryToTestResult,
   vaccinationRowToVaccination,
   visitEntryToPastVisit,
@@ -679,6 +680,53 @@ describe('visitEntryToPastVisit', () => {
     })!;
     expect(visit.doctorName).toBe('דר שרונה לב-ארי');
     expect(visit.specialty).toBe('רפואת משפחה');
+  });
+});
+
+describe('summarizeIdentificationMethods', () => {
+  it('tallies distinct codes, most common first', () => {
+    expect(
+      summarizeIdentificationMethods([
+        { identification_method: 1 },
+        { identification_method: 4 },
+        { identification_method: 1 },
+        { identification_method: 1 },
+        { identification_method: 4 },
+      ]),
+    ).toEqual([
+      { code: 1, count: 3 },
+      { code: 4, count: 2 },
+    ]);
+  });
+
+  it('breaks a count tie by code, ascending', () => {
+    expect(
+      summarizeIdentificationMethods([
+        { identification_method: 7 },
+        { identification_method: 2 },
+      ]),
+    ).toEqual([
+      { code: 2, count: 1 },
+      { code: 7, count: 1 },
+    ]);
+  });
+
+  it('buckets an entry with no code as null and sorts it last', () => {
+    expect(
+      summarizeIdentificationMethods([
+        { identification_method: null },
+        { identification_method: 4 },
+        {},
+        { identification_method: 4 },
+      ]),
+    ).toEqual([
+      { code: 4, count: 2 },
+      { code: null, count: 2 },
+    ]);
+  });
+
+  it('is empty for an empty lobby', () => {
+    expect(summarizeIdentificationMethods([])).toEqual([]);
   });
 });
 

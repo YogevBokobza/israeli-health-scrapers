@@ -6,6 +6,7 @@ import { HealthFundTypes, type HealthFundId } from '../../src/definitions.js';
 import { BROWSER_LOCALE, BROWSER_TIMEZONE, VIEWPORT } from '../../src/constants.js';
 import { isExpired, loadSession } from '../../src/helpers/session.js';
 import { installCaptureButton } from './capture-button.js';
+import { installApiRecorder } from './api-recorder.js';
 import { fundStartUrl } from './fund-start-urls.js';
 
 /** Real funds only — `mock` is a fixture-backed id with no site to calibrate against. */
@@ -51,8 +52,17 @@ async function main(): Promise<void> {
     'A capture button is floating on the page — pick a target and state there, then click Capture.\n' +
       'It survives navigating around the site. Press Enter here when you are done to close the browser.\n',
   );
+  if (fund === HealthFundTypes.maccabi) {
+    console.log(
+      'Opening the past-visits lobby also prints its identification_method distribution here\n' +
+        '(the isDigital audit) and saves the API JSON under data/captures/maccabi/api/.\n',
+    );
+  }
 
   await installCaptureButton(page, fund);
+  // Records API JSON the DOM snapshot can't — Maccabi's past-visits list carries
+  // identification_method only here. Prints the code distribution when that list loads.
+  await installApiRecorder(page, fund);
   await page.goto(fundStartUrl(fund), { waitUntil: 'domcontentloaded' });
 
   const rl = readline.createInterface({ input: stdin, output: stdout });
