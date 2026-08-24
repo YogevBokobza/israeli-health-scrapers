@@ -899,17 +899,20 @@ export interface MaccabiVisitEntry {
 
 /**
  * The `identification_method` of a digital visit — an online exchange with the doctor
- * rather than a visit in a clinic. Carried by every "ביקור דיגיטלי"-badged row on the
- * accounts this constant was calibrated against; the fund does not document the
- * code→meaning mapping, so this is one calibrated code, not a confirmed closed set.
+ * rather than a visit in a clinic. The fund does not document the code→meaning mapping,
+ * so it was verified rather than assumed (2026-08-24, live account, a full year's lobby):
+ * every "ביקור דיגיטלי"-badged row carried code 4 and every code-4 row was badged — the
+ * digital-badge count equalled the code-4 count exactly — while the non-digital rows
+ * carried other codes (1, 2, and 7 were seen). So 4 is digital, exclusively, on the
+ * account checked; the mapping is confirmed, not merely calibrated against one login.
  *
- * Two mislabels it can produce, both otherwise silent: a digital visit on a different
- * code ships `isDigital: false`, and an in-clinic visit carrying 4 ships digital. The
- * signals that make either visible instead of silent: `raw.identificationMethod` keeps
- * the underlying code on every visit, `fetchPastVisits` logs the whole lobby's code
- * distribution via {@link summarizeIdentificationMethods} on each run, and the
- * calibration tool (`tools/calibrate/identification-audit.ts`) cross-checks that
- * distribution against the count of "ביקור דיגיטלי" rows rendered on a live account.
+ * The mapping is still the fund's undocumented one, and a code never seen could yet be
+ * digital, so the audit that verified it stays wired for drift: `raw.identificationMethod`
+ * keeps the underlying code on every visit, `fetchPastVisits` logs the whole lobby's code
+ * distribution via {@link summarizeIdentificationMethods} on each run, and the calibration
+ * tool (`tools/calibrate/identification-audit.ts`) re-runs the badge/code cross-check on a
+ * live account. A future digital visit on an unseen code would show up there as a
+ * badge-count that no longer matches, instead of shipping `isDigital: false` in silence.
  */
 export const DIGITAL_VISIT_IDENTIFICATION = 4;
 
