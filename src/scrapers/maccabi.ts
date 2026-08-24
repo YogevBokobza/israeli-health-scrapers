@@ -899,11 +899,59 @@ export interface MaccabiVisitEntry {
 
 /**
  * The `identification_method` of a digital visit — an online exchange with the doctor
- * rather than a visit in a clinic. Carried by every "ביקור דיגיטלי"-badged row on the
- * accounts this constant was calibrated against; `raw.identificationMethod` keeps the
- * underlying code so a mislabel is checkable without re-fetching.
+ * rather than a visit in a clinic. The fund does not document the code→meaning mapping,
+ * so it was verified rather than assumed (2026-08-24, live account, a full year's lobby):
+ * every "ביקור דיגיטלי"-badged row carried code 4 and every code-4 row was badged — the
+ * digital-badge count equalled the code-4 count exactly — while the non-digital rows
+ * carried other codes (1, 2, and 7 were seen). So 4 is digital, exclusively, on the
+ * account checked; the mapping is confirmed, not merely calibrated against one login.
+ *
+ * The mapping is still the fund's undocumented one, and a code never seen could yet be
+ * digital, so the audit that verified it stays wired for drift: `raw.identificationMethod`
+ * keeps the underlying code on every visit, `fetchPastVisits` logs the whole lobby's code
+ * distribution via {@link summarizeIdentificationMethods} on each run, and the calibration
+ * tool (`tools/calibrate/identification-audit.ts`) re-runs the badge/code cross-check on a
+ * live account. A future digital visit on an unseen code would show up there as a
+ * badge-count that no longer matches, instead of shipping `isDigital: false` in silence.
  */
-const DIGITAL_VISIT_IDENTIFICATION = 4;
+export const DIGITAL_VISIT_IDENTIFICATION = 4;
+
+/** One `identification_method` code and how many lobby entries carried it. */
+export interface IdentificationMethodTally {
+  /** The fund's code, or null for an entry that carried none. */
+  code: number | null;
+  count: number;
+}
+
+/**
+ * Tallies the distinct `identification_method` codes across a lobby's entries.
+ *
+ * The audit behind {@link DIGITAL_VISIT_IDENTIFICATION}: that constant is one calibrated
+ * code against an undocumented mapping, so a code that never went through calibration has
+ * to be *visible* rather than silently collapsing into `isDigital: false`. Sorted most
+ * common first, ties broken by code; an entry with no code sorts last.
+ */
+export function summarizeIdentificationMethods(
+  entries: readonly Pick<MaccabiVisitEntry, 'identification_method'>[],
+): IdentificationMethodTally[] {
+  const counts = new Map<number | null, number>();
+  for (const entry of entries) {
+    const code =
+      typeof entry.identification_method === 'number' ? entry.identification_method : null;
+    counts.set(code, (counts.get(code) ?? 0) + 1);
+  }
+
+  return [...counts.entries()]
+    .map(([code, count]) => ({ code, count }))
+    .sort((a, b) => {
+      // A codeless entry sorts last regardless of how common it is — the tally is read to
+      // spot codes, and "no code" is the one row that names none.
+      if (a.code === null) return 1;
+      if (b.code === null) return -1;
+      if (b.count !== a.count) return b.count - a.count;
+      return a.code - b.code;
+    });
+}
 
 /**
  * Turns one history entry into a `PastVisit`.
@@ -1716,6 +1764,17 @@ export class MaccabiScraper extends BaseScraperWithBrowser {
     }
 
     const entries = await this.fetchPastVisitEntries(member);
+
+    // The audit signal behind isDigital (see DIGITAL_VISIT_IDENTIFICATION): the whole
+    // lobby's identification_method distribution, logged so a code that never went
+    // through calibration surfaces in the run log instead of silently shipping as
+    // isDigital: false. raw.identificationMethod keeps each visit's own code besides.
+    if (entries.length > 0) {
+      this.log('past visits identification_method distribution', {
+        codes: summarizeIdentificationMethods(entries),
+      });
+    }
+
     const pastVisits = entries
       .map((entry) => visitEntryToPastVisit(entry))
       .filter((visit): visit is PastVisit => visit !== null);
