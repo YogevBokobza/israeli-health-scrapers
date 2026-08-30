@@ -13,6 +13,10 @@ data/
 .DS_Store
 .vscode/
 
+# Claude
+.claude/CLAUDE.md
+.claude/worktrees/
+
 # Graphify local state
 graphify-out/
 graphify-out/.graphify_python
