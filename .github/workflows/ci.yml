@@ -1,27 +1,47 @@
 name: CI
 
 on:
-  pull_request:
   push:
-    branches: [master]
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
 
 jobs:
-  test:
+  verify:
+    name: Node ${{ matrix.node-version }}
     runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: [20, 22]
 
-      - uses: actions/setup-node@v4
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: ${{ matrix.node-version }}
           cache: npm
 
-      - run: npm ci
+      - name: Install dependencies
+        run: npm ci
 
-      # Real Chromium so the DOM-parsing suite (test/scrapers/maccabi-dom.test.ts)
-      # actually runs instead of skipping — that's the coverage that matters most here.
-      - run: npx playwright install --with-deps chromium
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
 
-      - run: npm run typecheck
-      - run: npm test
-      - run: npm run build
+      - name: Typecheck
+        run: npm run typecheck
+
+      # Verbose output names every browser-backed fixture test and makes any
+      # unexpected skip visible in the Actions log.
+      - name: Test
+        run: npm test -- --reporter=verbose
+        env:
+          IHS_DIAGNOSTICS: off
+
+      - name: Build
+        run: npm run build
