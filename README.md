@@ -11,8 +11,9 @@ permissions, agent protocols and CLIs belong to whatever consumes it. The MCP se
 for AI agents lives in [health-mcp](https://github.com/YogevBokobza/health-mcp), the
 same way `moneyman` and `asher-mcp` sit on top of the bank scrapers.
 
-**Status:** early. Maccabi is implemented for standing prescriptions. The other funds
-are declared but not yet built. See [Calibration](#calibration) before the first real run.
+**Status:** early. Maccabi supports medications, upcoming appointments, vaccinations,
+Form 17 requests, test-result metadata and details, and past visits. The other funds are
+declared but not yet built. See [Calibration](#calibration) before the first real run.
 
 ## Install
 
@@ -29,6 +30,14 @@ import { createScraper, HealthFundTypes } from 'israeli-health-scrapers';
 const scraper = createScraper({
   companyId: HealthFundTypes.maccabi,
   storeSession: true,
+  fetch: [
+    'medications',
+    'appointments',
+    'vaccinations',
+    'form17',
+    'testResultDetails',
+    'pastVisits',
+  ],
   // Called only if the fund actually asks for a code.
   otpCodeRetriever: async () => promptTheUserSomehow(),
 });
@@ -38,9 +47,15 @@ const result = await scraper.scrape({ id: '000000000' });
 if (!result.success) {
   console.error(result.errorType, result.errorMessage);
 } else {
-  for (const medication of result.accounts![0].medications) {
-    console.log(medication.name, medication.validUntil, medication.daysUntilExpiry);
-  }
+  const account = result.accounts![0];
+  console.log({
+    medications: account.medications,
+    appointments: account.appointments,
+    vaccinations: account.vaccinations,
+    form17: account.form17,
+    testResults: account.testResults,
+    pastVisits: account.pastVisits,
+  });
 }
 ```
 

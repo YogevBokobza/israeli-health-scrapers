@@ -2,10 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Unreleased]
+## [0.5.1] - 2026-09-11
 
 ### Fixed
 - Maccabi past visits no longer coerce the member id with a bare `Number()` when building the visit-history request body. `memberId` is a string everywhere else (URL path, document query); only this body sent it as a number, and a non-numeric or leading-zero id would have become `NaN`/a wrong integer silently — `JSON.stringify` writing `NaN` out as `null` — so the API would answer an opaque 400 that reads like the bearer token drifted. A new `numericMemberId` guard rejects any non-canonical id up front, failing loudly in the error envelope (with diagnostics) instead. ([#42](https://github.com/YogevBokobza/israeli-health-scrapers/issues/42))
+- Audited Maccabi's undocumented `identification_method` mapping against a full year of live-account visit history and confirmed that code `4` exclusively identifies digital visits. Past-visit runs now log the complete code distribution, while each visit retains its source code in `raw.identificationMethod`, so future mapping drift is visible instead of silently misclassifying `isDigital`. ([#43](https://github.com/YogevBokobza/israeli-health-scrapers/issues/43))
 
 ## [0.5.0] - 2026-08-23
 
@@ -14,6 +15,7 @@ All notable changes to this project will be documented in this file.
 - Maccabi past visits are read through the page's own JSON API (`AppointmentOrderAPI`), not the DOM: the rendered rows carry no id at all, while the API's `appointment_id` is the stable fund-native identity a re-fetch must recognize — the same rationale as the test-results API. The list spans roughly the last year of visits (the page's own widest filter); there is no older history behind it. The list carries no location — the API exposes only an opaque facility id with no name — so the model has none.
 - Added `PastVisit` to the shared model and `pastVisits` to `HealthAccount`.
 
+[0.5.1]: https://github.com/YogevBokobza/israeli-health-scrapers/compare/v0.5.0...v0.5.1
 [0.5.0]: https://github.com/YogevBokobza/israeli-health-scrapers/compare/v0.4.0...v0.5.0
 
 ## [0.4.0] - 2026-08-23
