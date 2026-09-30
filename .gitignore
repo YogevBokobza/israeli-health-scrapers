@@ -30,3 +30,8 @@ graphify-out/cache/
 
 # MCP
 *.mcp.json
+
+# repowise API keys (local)
+.repowise/.env
+.claude/
+.codex/
